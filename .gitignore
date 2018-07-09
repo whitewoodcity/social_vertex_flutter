@@ -1,0 +1,15 @@
+.DS_Store
+.dart_tool/
+
+# idea
+.idea/
+*.iml
+
+.packages
+.pub/
+
+build/
+
+.flutter-plugins
+
+pubspec.lock
