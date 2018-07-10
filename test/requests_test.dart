@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:social_vertex_flutter/requests.dart';
+import 'package:social_vertex_flutter/utils/requests.dart';
 
 // use stdout
 void main() {
