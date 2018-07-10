@@ -51,6 +51,6 @@ Widget getUserCenter(MyHomePageState state) {
 void _showMessage() { //响应消息请求[
 
 }
-void _showContract() {  //相应联系人请求
- mainStage.updateUi(2);
+void _showContract() {  //响应联系人请求
+  mainStage.updateUi(2);
 }

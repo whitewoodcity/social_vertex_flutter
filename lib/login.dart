@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'main.dart';
 import 'package:social_vertex_flutter/utils/keys.dart' as keys;
 
@@ -13,70 +14,45 @@ var mainState;
 Widget login(MyHomePageState state) {
   mainState = state;
   return new Scaffold(
-    appBar: new AppBar(
-      title: new Text("social-vertex-flutter"),
-    ),
-    body: new Container(
-      //margin: EdgeInsets.symmetric(100.0),
-      margin: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50.0),
-      child: new Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          new Row(
-            children: <Widget>[
-              new Expanded(
-                child: new Text("用户名:"),
-              ),
-              new Expanded(
-                flex: 5,
-                child: new TextField(
-                  key: new Key("userName"),
-                  onChanged: setUserName,
-                  textAlign: TextAlign.start,
-                ),
-              ),
-            ],
-          ),
-          new Row(
-            children: <Widget>[
-              new Expanded(
-                key: new Key(""),
-                child: new Text("密码:"),
-              ),
-              new Expanded(
-                flex: 5,
-                child: new TextField(
-                  key: new Key("password"),
-                  textAlign: TextAlign.start,
-                  onChanged: setUserPassword,
-                  obscureText: true,
-                ),
-              )
-            ],
-          ),
-          new Row(
-            children: <Widget>[
-              new Expanded(
-                  child: new RaisedButton(
-                child: new Text(
-                  "登录",
-                  style: TextStyle(fontSize: 20.0, fontFamily: '隶书'),
-                ),
-                onPressed: _login,
-              )),
-              new Expanded(
-                  child: new RaisedButton(
-                onPressed: _roll,
-                child: new Text("注册",
-                    style: TextStyle(fontSize: 20.0, fontFamily: '隶书')),
-              ))
-            ],
-          )
-        ],
+      appBar: new AppBar(
+        title: new Text("登录"),
       ),
-    ),
-  );
+      body: new Center(
+        child: new Column(
+          children: <Widget>[
+            new Image.asset("resources/images/loginIcon.png"),
+            new Form(
+              child: new Column(
+                children: <Widget>[
+                  new TextField(
+                    textAlign: TextAlign.start,
+                    onChanged: setUserName,
+                    decoration:InputDecoration(
+                      labelText: "用户名:"
+                    ),
+                  ),
+                  new TextField(
+                    textAlign: TextAlign.start,
+                    onChanged: setUserPassword,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText: "密码:",
+                    ),
+                  ),
+                  new RaisedButton(
+                    onPressed: _login,
+                    child: new Text("登录"),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _roll,
+        child: Text("注册"),
+      ));
 }
 
 void setUserName(String value) {
@@ -107,4 +83,6 @@ void _login() async {
   }
 }
 
-void _roll() {}
+void _roll() {
+  mainState.showRegister();
+}
