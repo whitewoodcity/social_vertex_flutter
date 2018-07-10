@@ -10,7 +10,7 @@ var _userName;
 var _password;
 var mainState;
 
-Widget getWidget(MyHomePageState state) {
+Widget login(MyHomePageState state) {
   mainState = state;
   return new Scaffold(
     appBar: new AppBar(

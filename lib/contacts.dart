@@ -1,11 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 
-var mainStage;
+var mainState;
 
-Widget getUserCenter(MyHomePageState state) {
-  mainStage=state;
+Widget getContactsList(MyHomePageState myHomePageState) {
+  mainState = myHomePageState;
   return new Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -18,15 +20,11 @@ Widget getUserCenter(MyHomePageState state) {
           ],
         ),
       ),
-      body: new Stack(
+      body: ListView(
         children: <Widget>[
-          new ListView(
-            children: <Widget>[
-              RaisedButton(
-                onPressed: _showMessage,
-                child: Text("Message"),
-              )
-            ],
+          RaisedButton(
+            onPressed: selectContacts,
+            child: Text("联系人"),
           )
         ],
       ),
@@ -48,9 +46,14 @@ Widget getUserCenter(MyHomePageState state) {
         ),
       ));
 }
-void _showMessage() { //响应消息请求[
 
+void _showMessage() {
+  //响应消息请求
+  mainState.updateUi(1);
 }
-void _showContract() {  //相应联系人请求
- mainStage.updateUi(2);
+
+void _showContract() {
+  //相应联系人请求
 }
+
+void selectContacts() {}
