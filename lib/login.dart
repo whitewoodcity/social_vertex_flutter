@@ -20,7 +20,6 @@ Widget login(MyHomePageState state) {
       body: new Center(
         child: new Column(
           children: <Widget>[
-            new Image.asset("resources/images/loginIcon.png"),
             new Form(
               child: new Column(
                 children: <Widget>[

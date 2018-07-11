@@ -33,15 +33,20 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void updateUi(int state) {     //通知Flutter框架更新子Widget状态
+  void updateUi(int state) {
+    //通知Flutter框架更新子Widget状态
     print(state);
     setState(() {
       stage = state;
     });
   }
 
-
-  void showRegister() async {    //弹出注册对话框
+  void showRegister() async {
+    //弹出注册对话框
+    var userName="";
+    var password="";
+    var repassword="";
+    var information = "";
     await Navigator.push(
         context,
         new MaterialPageRoute(
@@ -54,23 +59,49 @@ class MyHomePageState extends State<MyHomePage> {
                     new Text("用户名:"),
                     new TextField(
                       textAlign: TextAlign.start,
+                      onChanged: (String value) {
+                        print(value);
+                        userName = value;
+                      },
                     ),
                     new Text("密码:"),
                     new TextField(
                       textAlign: TextAlign.start,
                       obscureText: true,
+                      onChanged: (String value) {
+                        print(value);
+                        password = value;
+                      },
                     ),
                     new Text("确认密码:"),
                     new TextField(
                       obscureText: true,
+                      onChanged: (String value) {
+                        repassword = value;
+                      },
+                    ),
+                    new SizedBox.fromSize(
+                      size:Size(0.0, 10.0),
                     ),
                     Row(
                       children: <Widget>[
                         Expanded(
                           child: RaisedButton(
-                            onPressed: _register,
+                            onPressed: () {
+                              print("hello");
+                              if (!(userName == "") &&
+                                  !(password == "") &&
+                                  !(repassword == "")) {
+                                if (password == repassword) {
+                                  _register();
+                                } else {
+                                  information = "两次密码不匹配";
+                                }
+                              } else {
+                                information = "输入输入信息不能为空";
+                              }
+                            },
                             child: Text("注册"),
-
                           ),
                         ),
                         Expanded(
@@ -83,6 +114,13 @@ class MyHomePageState extends State<MyHomePage> {
                         )
                       ],
                     ),
+                    new Row(
+                      children: <Widget>[
+                        new Expanded(
+                            child: new FlatButton(
+                                onPressed: null, child: new Text(information))),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -91,8 +129,8 @@ class MyHomePageState extends State<MyHomePage> {
           settings: RouteSettings(name: "async", isInitialRoute: true),
         ));
   }
-  void _register(){    //新用户注册
 
-
+  void _register() {
+    //新用户注册
   }
 }
