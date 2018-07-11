@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'register.dart';
 import 'main.dart';
 import 'package:social_vertex_flutter/utils/keys.dart' as keys;
 
@@ -26,9 +26,7 @@ Widget login(MyHomePageState state) {
                   new TextField(
                     textAlign: TextAlign.start,
                     onChanged: setUserName,
-                    decoration:InputDecoration(
-                      labelText: "用户名:"
-                    ),
+                    decoration: InputDecoration(labelText: "用户名:"),
                   ),
                   new TextField(
                     textAlign: TextAlign.start,
@@ -37,6 +35,9 @@ Widget login(MyHomePageState state) {
                     decoration: InputDecoration(
                       hintText: "密码:",
                     ),
+                  ),
+                  new SizedBox.fromSize(
+                    size: Size(0.00, 10.0),
                   ),
                   new RaisedButton(
                     onPressed: _login,
@@ -82,6 +83,14 @@ void _login() async {
   }
 }
 
-void _roll() {
-  mainState.showRegister();
+void _roll() async {
+  //弹出注册对话框
+  await Navigator.push(
+      mainState.context,
+      new MaterialPageRoute(
+        builder: (BuildContext context) {
+          showRegisterDialog(mainState.context);
+        },
+        settings: RouteSettings(name: "async", isInitialRoute: true),
+      ));
 }
