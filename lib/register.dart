@@ -6,7 +6,7 @@ var password = "";
 var repassword = "";
 var information = "";
 
-StatelessWidget showRegisterDialog(BuildContext context) {
+AlertDialog showRegisterDialog(BuildContext context) {
   return new AlertDialog(
     title: new Text("用户注册"),
     content: new ListView(
@@ -62,7 +62,7 @@ StatelessWidget showRegisterDialog(BuildContext context) {
             Expanded(
               child: RaisedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                 Navigator.pop(context);
                 },
                 child: Text("取消"),
               ),

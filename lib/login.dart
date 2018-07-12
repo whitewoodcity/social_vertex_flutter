@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'register.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/utils/keys.dart' as keys;
+import 'utils/keys.dart' as keys;
 
 var _userName;
 var _password;
@@ -89,7 +89,7 @@ void _roll() async {
       mainState.context,
       new MaterialPageRoute(
         builder: (BuildContext context) {
-          showRegisterDialog(mainState.context);
+          return showRegisterDialog(context);
         },
         settings: RouteSettings(name: "async", isInitialRoute: true),
       ));

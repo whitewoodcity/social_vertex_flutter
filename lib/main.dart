@@ -21,7 +21,6 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   var stage = 0;
-
   @override
   Widget build(BuildContext context) {
     switch (stage) {
@@ -36,7 +35,6 @@ class MyHomePageState extends State<MyHomePage> {
 
   void updateUi(int state) {
     //通知Flutter框架更新子Widget状态
-    print(state);
     setState(() {
       stage = state;
     });
