@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'register.dart';
 import 'main.dart';
 import 'utils/keys.dart' as keys;
@@ -33,7 +34,7 @@ Widget login(MyHomePageState state) {
                     onChanged: setUserPassword,
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: "密码:",
+                     labelText: "密码"
                     ),
                   ),
                   new SizedBox.fromSize(
@@ -84,13 +85,6 @@ void _login() async {
 }
 
 void _roll() async {
-  //弹出注册对话框
-  await Navigator.push(
-      mainState.context,
-      new MaterialPageRoute(
-        builder: (BuildContext context) {
-          return showRegisterDialog(context);
-        },
-        settings: RouteSettings(name: "async", isInitialRoute: true),
-      ));
+await Navigator.push(mainState.context, new MaterialPageRoute(builder:(BuildContext context)=>Register()));
 }
+

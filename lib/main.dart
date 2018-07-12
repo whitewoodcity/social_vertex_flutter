@@ -21,8 +21,12 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   var stage = 0;
+  var registerInf = "";
+  var context;
+
   @override
   Widget build(BuildContext context) {
+    this.context=context;
     switch (stage) {
       case keys.user:
         return getUserCenter(this); //用户中心界面
@@ -37,6 +41,12 @@ class MyHomePageState extends State<MyHomePage> {
     //通知Flutter框架更新子Widget状态
     setState(() {
       stage = state;
+    });
+  }
+
+  void showRegisterError(info) {
+    setState(() {
+      this.registerInf = info;
     });
   }
 }
