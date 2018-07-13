@@ -33,9 +33,7 @@ Widget login(MyHomePageState state) {
                     textAlign: TextAlign.start,
                     onChanged: setUserPassword,
                     obscureText: true,
-                    decoration: InputDecoration(
-                     labelText: "密码"
-                    ),
+                    decoration: InputDecoration(labelText: "密码"),
                   ),
                   new SizedBox.fromSize(
                     size: Size(0.00, 10.0),
@@ -84,7 +82,7 @@ void _login() async {
   }
 }
 
-void _roll() async {
-await Navigator.push(mainState.context, new MaterialPageRoute(builder:(BuildContext context)=>Register()));
+void _roll() {
+  Navigator.of(mainState.context).push(
+      new MaterialPageRoute(builder: (BuildContext context) => Register()));
 }
-

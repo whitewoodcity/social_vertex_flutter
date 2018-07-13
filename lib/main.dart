@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'register.dart';
 import 'contacts.dart';
 import 'login.dart';
 import 'user.dart';
@@ -21,7 +20,6 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   var stage = 0;
-  var registerInf = "";
   var context;
 
   @override
@@ -43,10 +41,4 @@ class MyHomePageState extends State<MyHomePage> {
       stage = state;
     });
   }
-
-  void showRegisterError(info) {
-    setState(() {
-      this.registerInf = info;
-    });
   }
-}

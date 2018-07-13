@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'utils/newuser_info.dart';
 
 class Register extends StatelessWidget {
   @override
@@ -17,9 +18,9 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterState extends State<RegisterPage> {
-  var _userName = "";
-  var _password = "";
-  var _repassword = "";
+  String _userName = "";
+  String _password = "";
+  String _repassword = "";
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +32,7 @@ class RegisterState extends State<RegisterPage> {
             new Text("用户注册"),
             Align(
               alignment: Alignment.centerLeft,
-              child: RaisedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text("Back"),
+              child: BackButton(
               ),
             )
           ],
@@ -73,7 +70,7 @@ class RegisterState extends State<RegisterPage> {
               onPressed: () {
                 if (_userName != "" && _password != "" && _repassword != "") {
                   if (_password == _repassword) {
-                    _register();
+                    _register(NewUser(_userName,_password));
                   } else {
                     _registerAlert("两次密码不匹配");
                   }
@@ -89,13 +86,14 @@ class RegisterState extends State<RegisterPage> {
     );
   }
 
-  void _register() async {
+  void _register(NewUser user) async {
+    var userInfo = json.encode(user);
     HttpClient client = new HttpClient();
     try {
       client
           .open("POST", "192.168.1.110", 8080, "/register")
           .then((HttpClientRequest req) {
-        req.write("hello");
+        req.write(userInfo);
         return req.close();
       }).then((HttpClientResponse response) {
         response.transform(utf8.decoder).listen((contents) {
