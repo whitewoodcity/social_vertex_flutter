@@ -21,6 +21,17 @@ Widget login(MyHomePageState state) {
       body: new Center(
         child: new Column(
           children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Align(
+                    child: Image.asset(
+                      "resources/images/loginIcon.png",
+                      width: 100.00,
+                      height: 100.00,
+                    ),
+                    alignment: Alignment.center,
+                  ),
+                ),
             new Form(
               child: new Column(
                 children: <Widget>[
