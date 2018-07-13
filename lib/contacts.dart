@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'utils/application_menu.dart';
 import 'main.dart';
 
 var mainState;
@@ -13,9 +14,7 @@ Widget getContactsList(MyHomePageState myHomePageState) {
       title: new Text("联系人"),
       centerTitle: true,
     ),
-    drawer: new ListView(
-      children: <Widget>[],
-    ),
+    drawer: showAppMenu(),
     body: new ListView.builder(
       itemBuilder: (BuildContext context, int index) =>
           new EntryItem(data[index]),
@@ -57,9 +56,7 @@ void _showContract() {
   //响应联系人请求
 }
 
-void selectContacts() {
-
-}
+void selectContacts() {}
 
 class Entry {
   final String title;

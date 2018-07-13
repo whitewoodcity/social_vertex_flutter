@@ -18,16 +18,8 @@ class DialogState extends State<DialogStateful> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            new Text("小红"),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: BackButton(),
-            ),
-          ],
-        ),
+        title:new Text("小红"),
+        centerTitle: true,
       ),
       body: new ListView(
         children: <Widget>[
@@ -41,8 +33,22 @@ class DialogState extends State<DialogStateful> {
           ),
         ],
       ),
+      bottomNavigationBar:new BottomAppBar(
+        child: new Row(
+          children: <Widget>[
+            new Expanded(child: new TextField(
+
+            )),
+            new RaisedButton(
+              onPressed: _sendMessage,child: new Text("发送"),
+            )
+          ],
+        ),
+      )
     );
   }
 
-  void _sendMessage() async {}
+  void _sendMessage() async {
+
+  }
 }
