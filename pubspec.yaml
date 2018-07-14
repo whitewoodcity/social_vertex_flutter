@@ -37,6 +37,9 @@ flutter:
       - resources/images/user_background.jpeg
       - resources/images/dark.png
       - resources/images/setting.png
+      - resources/images/group.png
+      - resources/images/person.png
+      - resources/images/message.png
 
 
   # To add assets to your application, add an assets section, like this:

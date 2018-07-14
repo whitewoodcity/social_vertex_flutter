@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'utils/application_menu.dart';
+import 'package:social_vertex_flutter/component/application_menu.dart';
+import 'package:social_vertex_flutter/component/message.dart';
+import 'package:social_vertex_flutter/component/person.dart';
 import 'dialog.dart';
 import 'main.dart';
 
@@ -9,17 +11,18 @@ var mainStage;
 Widget getUserCenter(MyHomePageState state) {
   mainStage = state;
   return new Scaffold(
-    drawer: showAppMenu(),
+    drawer: new Drawer(
+      child: showAppMenu(),
+
+    ),
     appBar: new AppBar(
       title: new Text("消息"),
       centerTitle: true,
     ),
     body: new ListView(
       children: <Widget>[
-        new RaisedButton(
-          onPressed: _showMessage,
-          child: new Text("小红"),
-        )
+        showMessage("爸爸","回家吃饭了"),
+        showMessage("小王", "明天记得把材料带过来")
       ],
     ),
     bottomNavigationBar: new BottomNavigationBar(

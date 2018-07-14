@@ -1,24 +1,30 @@
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'utils/application_menu.dart';
+import 'package:social_vertex_flutter/datamodel/contacts_model.dart';
+import 'component/contact_item.dart';
+import 'component/application_menu.dart';
 import 'main.dart';
 
 var mainState;
+List<Entry> list = new List();
 
 Widget getContactsList(MyHomePageState myHomePageState) {
+  if(list.isEmpty)
+  _loadContacts();
   mainState = myHomePageState;
   return new Scaffold(
     appBar: new AppBar(
       title: new Text("联系人"),
       centerTitle: true,
     ),
-    drawer: showAppMenu(),
+    drawer: new Drawer(
+      child: showAppMenu(),
+    ),
     body: new ListView.builder(
       itemBuilder: (BuildContext context, int index) =>
-          new EntryItem(data[index]),
-      itemCount: data.length,
+          new ContactItem(list[index]),
+      itemCount: list.length,
     ),
     bottomNavigationBar: new BottomNavigationBar(
       items: [
@@ -48,61 +54,27 @@ Widget getContactsList(MyHomePageState myHomePageState) {
 }
 
 void _showMessage() {
-  //响应消息请求
   mainState.updateUi(1);
-}
-
-void _showContract() {
-  //响应联系人请求
 }
 
 void selectContacts() {}
 
-class Entry {
-  final String title;
-  final List<Entry> list;
+void _loadContacts() {
+  //测试数据
 
-  Entry(this.title, [this.list = const <Entry>[]]);
-}
-
-final List<Entry> data = <Entry>[
-  new Entry(
+  list.add(new Entry(
     '我的好友',
     <Entry>[
       new Entry('小勇'),
     ],
-  ),
-  new Entry(
-    '家人',
-    <Entry>[
-      new Entry('爸爸'),
-      new Entry('妈妈'),
-    ],
-  ),
-  new Entry(
-    '同事',
-    <Entry>[
-      new Entry('小张'),
-    ],
-  ),
-];
-
-class EntryItem extends StatelessWidget {
-  const EntryItem(this.entry);
-
-  final Entry entry;
-
-  Widget _buildTiles(Entry root) {
-    if (root.list.isEmpty) return new ListTile(title: new Text(root.title));
-    return new ExpansionTile(
-      key: new PageStorageKey<Entry>(root),
-      title: new Text(root.title),
-      children: root.list.map(_buildTiles).toList(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildTiles(entry);
-  }
+  ));
+  list.add(
+    new Entry(
+      '家人',
+      <Entry>[
+        new Entry('爸爸'),
+        new Entry('妈妈'),
+      ],
+    ),
+  );
 }

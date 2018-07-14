@@ -21,17 +21,17 @@ Widget login(MyHomePageState state) {
       body: new Center(
         child: new Column(
           children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Align(
-                    child: Image.asset(
-                      "resources/images/loginIcon.png",
-                      width: 100.00,
-                      height: 100.00,
-                    ),
-                    alignment: Alignment.center,
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                child: Image.asset(
+                  "resources/images/loginIcon.png",
+                  width: 100.00,
+                  height: 100.00,
                 ),
+                alignment: Alignment.center,
+              ),
+            ),
             new Form(
               child: new Column(
                 children: <Widget>[
@@ -74,22 +74,38 @@ void setUserPassword(String value) {
 }
 
 void _login() async {
-  var userInfo = '{"${_userName}":"${_password}"}';
+  /* String result = "登录中";
+  showDialog<String>(
+      context: mainState.context,
+      builder: (BuildContext build) {
+        return new SimpleDialog(
+          children: <Widget>[
+            new Center(
+              child: new Column(
+                children: <Widget>[
+                  new CircularProgressIndicator(),
+                  new Text(result)
+                ],
+              ),
+            ),
+          ],
+        );
+      });*/
   mainState.updateUi(1);
+  var userInfo = '{"${_userName}":"${_password}"}';
   Socket _socket;
-  if (_socket != null) _socket.destroy();
-  _socket = await Socket.connect("119.23.22.230", 8081);
-  _socket.write(userInfo);
-  _socket.forEach((package) {
-    var backInfo = json.decode(utf8.decode(package));
-    /*
-    验证返回信息
-     */
-  });
   try {
-    _socket.done;
-  } catch (throwable) {
-    print(throwable);
+    if (_socket != null) _socket.destroy();
+    _socket = await Socket.connect("192.168.1.110", 6666);
+    _socket.write(userInfo);
+    _socket.forEach((package) {
+      print("Test");
+      var backInfo = json.decode(utf8.decode(package));
+      print(package);
+    });
+    if (_socket != null) _socket.done;
+  } catch (error) {
+    print(_socket == null ? error : "连接断开");
   }
 }
 
