@@ -40,6 +40,7 @@ flutter:
       - resources/images/group.png
       - resources/images/person.png
       - resources/images/message.png
+      - resources/images/addfriend.png
 
 
   # To add assets to your application, add an assets section, like this:
