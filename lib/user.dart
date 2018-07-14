@@ -13,7 +13,6 @@ Widget getUserCenter(MyHomePageState state) {
   return new Scaffold(
     drawer: new Drawer(
       child: showAppMenu(),
-
     ),
     appBar: new AppBar(
       title: new Text("消息"),
@@ -21,7 +20,7 @@ Widget getUserCenter(MyHomePageState state) {
     ),
     body: new ListView(
       children: <Widget>[
-        showMessage("爸爸","回家吃饭了"),
+        showMessage("爸爸", "回家吃饭了"),
         showMessage("小王", "明天记得把材料带过来")
       ],
     ),
@@ -61,53 +60,4 @@ void _showMessage() {
 void _showContract() {
   //响应联系人请求
   mainStage.updateUi(2);
-}
-
-class Entry {
-  final String title;
-  final List<Entry> list;
-
-  Entry(this.title, [this.list = const <Entry>[]]);
-}
-
-final List<Entry> data = <Entry>[
-  new Entry(
-    '我的好友',
-    <Entry>[
-      new Entry('小勇'),
-    ],
-  ),
-  new Entry(
-    '家人',
-    <Entry>[
-      new Entry('爸爸'),
-      new Entry('妈妈'),
-    ],
-  ),
-  new Entry(
-    '同事',
-    <Entry>[
-      new Entry('小张'),
-    ],
-  ),
-];
-
-class EntryItem extends StatelessWidget {
-  const EntryItem(this.entry);
-
-  final Entry entry;
-
-  Widget _buildTiles(Entry root) {
-    if (root.list.isEmpty) return new ListTile(title: new Text(root.title));
-    return new ExpansionTile(
-      key: new PageStorageKey<Entry>(root),
-      title: new Text(root.title),
-      children: root.list.map(_buildTiles).toList(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildTiles(entry);
-  }
 }
