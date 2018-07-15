@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/component/message_Item.dart';
+import 'package:social_vertex_flutter/component/message_item.dart';
 
 class DialogStateless extends StatelessWidget {
   @override
