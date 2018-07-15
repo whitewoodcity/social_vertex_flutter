@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:social_vertex_flutter/component/application_menu.dart';
 import 'package:social_vertex_flutter/search.dart';
 import 'contact_list.dart';
 import 'message_list.dart';
@@ -32,6 +33,10 @@ class UserState extends State<UserStateful> {
             },
           ),
         ],
+
+      ),
+      drawer: new Drawer(
+        child: showAppMenu(),
       ),
       body: _curPage == 0 ? showMessageList(this) : showContactsList(this),
       bottomNavigationBar: new BottomNavigationBar(
