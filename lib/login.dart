@@ -74,23 +74,6 @@ void setUserPassword(String value) {
 }
 
 void _login() async {
-  /* String result = "登录中";
-  showDialog<String>(
-      context: mainState.context,
-      builder: (BuildContext build) {
-        return new SimpleDialog(
-          children: <Widget>[
-            new Center(
-              child: new Column(
-                children: <Widget>[
-                  new CircularProgressIndicator(),
-                  new Text(result)
-                ],
-              ),
-            ),
-          ],
-        );
-      });*/
   mainState.updateUi(1);
   var userInfo = '{"${_userName}":"${_password}"}';
   Socket _socket;

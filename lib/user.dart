@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/application_menu.dart';
 import 'package:social_vertex_flutter/component/message.dart';
-import 'package:social_vertex_flutter/component/person.dart';
+import 'package:social_vertex_flutter/search.dart';
 import 'dialog.dart';
 import 'main.dart';
 
@@ -17,6 +17,14 @@ Widget getUserCenter(MyHomePageState state) {
     appBar: new AppBar(
       title: new Text("消息"),
       centerTitle: true,
+      actions: <Widget>[
+        new IconButton(
+          icon: new InputDecorator(
+            decoration: new InputDecoration(icon: new Icon(Icons.add)),
+          ),
+          onPressed: _showAddFriend,
+        ),
+      ],
     ),
     body: new ListView(
       children: <Widget>[
@@ -60,4 +68,9 @@ void _showMessage() {
 void _showContract() {
   //响应联系人请求
   mainStage.updateUi(2);
+}
+
+_showAddFriend() {
+  Navigator.of(mainStage.context).push(new MaterialPageRoute(
+      builder: (BuildContext context) => SearchStateless()));
 }

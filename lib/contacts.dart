@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/datamodel/contacts_model.dart';
+import 'package:social_vertex_flutter/search.dart';
 import 'component/contact_item.dart';
 import 'component/application_menu.dart';
 import 'main.dart';
@@ -10,13 +11,19 @@ var mainState;
 List<Entry> list = new List();
 
 Widget getContactsList(MyHomePageState myHomePageState) {
-  if(list.isEmpty)
-  _loadContacts();
+  if (list.isEmpty) _loadContacts();
   mainState = myHomePageState;
   return new Scaffold(
     appBar: new AppBar(
       title: new Text("联系人"),
       centerTitle: true,
+      actions: <Widget>[
+        new IconButton(
+            icon: new InputDecorator(
+              decoration: new InputDecoration(icon: new Icon(Icons.add)),
+            ),
+            onPressed: _showAddFriend),
+      ],
     ),
     drawer: new Drawer(
       child: showAppMenu(),
@@ -77,4 +84,9 @@ void _loadContacts() {
       ],
     ),
   );
+}
+
+_showAddFriend() {
+  Navigator.of(mainState.context).push(new MaterialPageRoute(
+      builder: (BuildContext context) => SearchStateless()));
 }
