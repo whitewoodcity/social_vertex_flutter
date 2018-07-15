@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 
 class MessageEntry extends StatelessWidget {
   String _message;
-  String _source;
   BuildContext _context;
 
-  MessageEntry(this._message, this._source);
+  MessageEntry(this._message);
 
-  Widget _buildEntry(String entry, String source) {
+  Widget _buildEntry(String entry) {
     return new GestureDetector(
       child: new Container(
         child: new Row(
@@ -69,6 +68,6 @@ class MessageEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _context = context;
-    return _buildEntry(_message, this._source);
+    return _buildEntry(_message);
   }
 }
