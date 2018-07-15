@@ -35,10 +35,10 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void updateUi(int state) {
+  void updateUi(int stage) {
     //通知Flutter框架更新子Widget状态
     setState(() {
-      stage = state;
+      this.stage = stage;
     });
   }
   }
