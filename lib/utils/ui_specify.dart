@@ -7,6 +7,7 @@ import 'package:social_vertex_flutter/utils/keys.dart' as keys;
 /// ```Dart
 /// new Scaffold(appBar: genAppBar(state,"title"));
 /// ```
+/*
 ///
 genAppBar(MyHomePageState state, String title) {
   var appBar;
@@ -46,3 +47,4 @@ _commonAppBar(String centerTitle) {
     ),
   );
 }
+*/

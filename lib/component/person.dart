@@ -13,9 +13,7 @@ getPerson(String name) {
         ],
       ),
       new Column(
-        children: <Widget>[
-          new Text(name)
-        ],
+        children: <Widget>[new Text(name)],
       )
     ],
   );
