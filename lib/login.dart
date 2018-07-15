@@ -25,7 +25,7 @@ Widget login(MyHomePageState state) {
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 child: Image.asset(
-                  "resources/images/loginIcon.png",
+                  "assets/images/loginIcon.png",
                   width: 100.00,
                   height: 100.00,
                 ),

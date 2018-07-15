@@ -13,7 +13,7 @@ showAppMenu() {
                 child: new Container(
                   width: 100.0,
                   height: 100.0,
-                  child: new Image.asset("resources/images/user.png"),
+                  child: new Image.asset("assets/images/user.png"),
                 ),
                 borderRadius: new BorderRadius.all(new Radius.circular(90.0)),
               ),
@@ -38,14 +38,14 @@ showAppMenu() {
         items: [
           new BottomNavigationBarItem(
               icon: new Image.asset(
-                "resources/images/setting.png",
+                "assets/images/setting.png",
                 width: 20.0,
                 height: 20.0,
               ),
               title: new Text("设置")),
           new BottomNavigationBarItem(
               icon: new Image.asset(
-                "resources/images/dark.png",
+                "assets/images/dark.png",
                 width: 20.0,
                 height: 20.0,
               ),

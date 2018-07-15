@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:social_vertex_flutter/dialog.dart';
 
-showMessage(String name, String message) {
+var _context;
+
+showMessage(String name, String message, BuildContext context) {
+  _context = context;
   return new GestureDetector(
     child: new Column(
       children: <Widget>[
@@ -10,7 +14,7 @@ showMessage(String name, String message) {
             new Expanded(
                 flex: 1,
                 child: new Image.asset(
-                  "resources/images/message.png",
+                  "assets/images/message.png",
                   width: 30.0,
                   height: 30.0,
                 )),
@@ -32,11 +36,11 @@ showMessage(String name, String message) {
       ],
     ),
     onTap: () {
-      _showDialog(name);
+      _showDialog();
     },
   );
 }
 
-void _showDialog(String name) {
-  print(name);
+_showDialog() {
+  Navigator.of(_context).push(new MaterialPageRoute(builder: (BuildContext context)=>new DialogStateless()));
 }

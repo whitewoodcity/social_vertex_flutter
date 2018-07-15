@@ -7,7 +7,7 @@ getGroup(String title) {
       new Column(
         children: <Widget>[
           new Image.asset(
-            "resources/images/group.png",
+            "assets/images/group.png",
             width: 30.0,
             height: 30.0,
           ),

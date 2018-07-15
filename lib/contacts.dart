@@ -37,14 +37,14 @@ Widget getContactsList(MyHomePageState myHomePageState) {
       items: [
         new BottomNavigationBarItem(
             icon: new Image.asset(
-              "resources/images/message.png",
+              "assets/images/message.png",
               width: 30.0,
               height: 30.0,
             ),
             title: new Text("消息")),
         new BottomNavigationBarItem(
             icon: new Image.asset(
-              "resources/images/contacts.png",
+              "assets/images/contacts.png",
               width: 30.0,
               height: 30.0,
             ),

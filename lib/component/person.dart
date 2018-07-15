@@ -6,7 +6,7 @@ getPerson(String name) {
       new Column(
         children: <Widget>[
           new Image.asset(
-            "resources/images/person.png",
+            "assets/images/person.png",
             width: 20.0,
             height: 20.0,
           )
