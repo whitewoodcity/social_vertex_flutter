@@ -13,14 +13,13 @@ class UserStateful extends StatefulWidget {
 class UserState extends State<UserStateful> {
   int _curPage = 0;
   var context;
-  var title = "消息";
 
   @override
   Widget build(BuildContext context) {
     this.context = context;
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(title),
+        title: new Text(_curPage==0?"消息":"联系人"),
         centerTitle: true,
         actions: <Widget>[
           new IconButton(
