@@ -32,6 +32,7 @@ void _loadContacts() {
       <Entry>[
         new Entry('爸爸'),
         new Entry('妈妈'),
+        new Entry("小宝")
       ],
     ),
   );
