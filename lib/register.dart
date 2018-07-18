@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'datamodel/newuser_info.dart';
+import 'package:social_vertex_flutter/login.dart';
+import 'package:social_vertex_flutter/datamodel/newuser_info.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
