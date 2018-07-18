@@ -2,32 +2,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/message_item.dart';
 
-class DialogStateless extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(title: "dialog", home: new DialogStateful());
-  }
-}
-
+var _name;
 class DialogStateful extends StatefulWidget {
   @override
   DialogState createState() => new DialogState();
+
+  DialogStateful(name){
+    _name=name;
+  }
+
 }
 
 class DialogState extends State<DialogStateful> {
   var _message = "";
-  var _receiveMessage;
-  List<MessageEntry> list = new List();
+  List<MessageEntry> _list = new List();
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text("小红"),
+          title: new Text(_name),
           centerTitle: true,
         ),
         body: new ListView(
-          children:_messageManage() ,
+          children:_list,
         ),
         bottomNavigationBar: new BottomAppBar(
           child: new Row(
@@ -49,12 +47,11 @@ class DialogState extends State<DialogStateful> {
   _sendMessage() {
     updata(new MessageEntry(_message));
   }
-  _messageManage(){
-    return list;
-  }
+ 
   void updata(MessageEntry entry){
     setState(() {
-      list.add(entry);
+      _list=new List.from(_list);
+      _list.add(new MessageEntry(_message));
     });
   }
 }

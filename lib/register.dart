@@ -3,14 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:social_vertex_flutter/login.dart';
 import 'utils/newuser_info.dart';
-
-class Register extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: new RegisterPage());
-  }
-}
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -26,17 +20,8 @@ class RegisterState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            new Text("用户注册"),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: BackButton(
-              ),
-            )
-          ],
-        ),
+        title: new Text("用户注册"),
+        centerTitle: true,
       ),
       body: new ListView(
         children: <Widget>[
@@ -70,7 +55,7 @@ class RegisterState extends State<RegisterPage> {
               onPressed: () {
                 if (_userName != "" && _password != "" && _repassword != "") {
                   if (_password == _repassword) {
-                    _register(NewUser(_userName,_password));
+                    _register(NewUser(_userName, _password));
                   } else {
                     _registerAlert("两次密码不匹配");
                   }

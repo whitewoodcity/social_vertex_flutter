@@ -24,9 +24,7 @@ showAppMenu() {
                   fontFamily: "微软雅黑",
                 ),
               ),
-              new Text(
-                "752544765@qq.com"
-              )
+              new Text("752544765@qq.com")
             ],
           ),
           color: Colors.lightBlue,

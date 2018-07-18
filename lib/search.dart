@@ -3,20 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:social_vertex_flutter/component/search_item.dart';
 
-class SearchStateless extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(title: "搜索", home: new SearchStateful());
-  }
-}
-
 class SearchStateful extends StatefulWidget {
   @override
   SearchState createState() => new SearchState();
 }
 
 class SearchState extends State<SearchStateful> {
-  var _searchType;
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +16,10 @@ class SearchState extends State<SearchStateful> {
       appBar: new AppBar(
         title: new Text("添加"),
         centerTitle: true,
-        leading: new IconButton(
-            icon: new InputDecorator(
-              decoration: new InputDecoration(icon: new Icon(Icons.arrow_back)),
-            ),
-            onPressed:(){
-              Navigator.pop(context);
-            }),
       ),
       body: new Scaffold(
         appBar: new AppBar(
+          automaticallyImplyLeading: false,
           title: new Row(
             children: <Widget>[
               new Expanded(
@@ -58,7 +44,5 @@ class SearchState extends State<SearchStateful> {
     );
   }
 
-  void _search() {
-
-  }
+  void _search() {}
 }
