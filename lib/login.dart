@@ -26,8 +26,8 @@ class LoginStateful extends StatefulWidget {
 }
 
 class LoginState extends State<LoginStateful> {
-  var _userName;
-  var _password;
+  var _userName = "";
+  var _password = "";
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,13 @@ class LoginState extends State<LoginStateful> {
                     size: Size(0.00, 10.0),
                   ),
                   new RaisedButton(
-                    onPressed: _login,
+                    onPressed: () {
+                      if (_password != "" && _userName != "") {
+                        _login();
+                      } else {
+                        _showMesssge("用户名/密码不能为空！");
+                      }
+                    },
                     child: new Text("登录"),
                   )
                 ],
@@ -106,19 +112,22 @@ class LoginState extends State<LoginStateful> {
       if (_socket != null) _socket.destroy();
       _socket = await Socket.connect(config.host, config.tcpPort);
       _socket.write(userInfo);
-      _socket.forEach((package) {
+      _socket.forEach((package){
+        print("foreach().......");
         var backInfo = json.decode(utf8.decode(package));
         if (backInfo["login"] == false) {
           _showMesssge("Login failed");
         } else {
           userInf.id = backInfo["user"]["id"];
-          userInf.socket = _socket;
           _showUser();
-          return;
+          _socket.destroy();
         }
-        print(backInfo);
       });
-      if (_socket != null) _socket.done;
+      try {
+        await _socket.done; //当Socket关闭时触发
+      } catch (e) {
+        _showMesssge(e.toString());
+      }
     } catch (error) {
       _showMesssge("网络异常,请检查网络！");
     }
@@ -132,15 +141,14 @@ class LoginState extends State<LoginStateful> {
   void _showMesssge(String message) {
     showDialog(
         context: context,
-        builder: (BuildContext context) =>
-        new SimpleDialog(
-          title: new Text("消息"),
-          children: <Widget>[
-            new Center(
-              child: new Text(message),
-            )
-          ],
-        ));
+        builder: (BuildContext context) => new SimpleDialog(
+              title: new Text("消息"),
+              children: <Widget>[
+                new Center(
+                  child: new Text(message),
+                )
+              ],
+            ));
   }
 
   void _showUser() {
