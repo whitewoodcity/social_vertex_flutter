@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/main.dart';
 import 'package:social_vertex_flutter/register.dart';
 import 'package:social_vertex_flutter/user.dart';
+import "package:social_vertex_flutter/config/config.dart" as config;
+import 'package:social_vertex_flutter/utils/requests.dart' as md5;
+import 'package:social_vertex_flutter/datamodel/user_info.dart' as userInf;
 
 class LoginStateless extends StatelessWidget {
   @override
@@ -29,6 +32,7 @@ class LoginState extends State<LoginStateful> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: new Key("login"),
       appBar: new AppBar(
         title: new Text("登录"),
       ),
@@ -89,29 +93,58 @@ class LoginState extends State<LoginStateful> {
   }
 
   void _login() async {
-    Navigator.of(context).push(new MaterialPageRoute(
-        builder: (BuildContext context) => new UserStateful()));
-
-    var userInfo = '{"${_userName}":"${_password}"}';
-    Socket _socket;
+    Socket _socket = null;
+    var password = md5.generateMd5(_password);
+    var userInfo = '''{
+                       "type":"user",
+                       "action":"login",
+                       "user":"${_userName}",
+                       "crypto":"${password}",
+                       "version":0.1
+                   }''';
     try {
       if (_socket != null) _socket.destroy();
-      _socket = await Socket.connect("192.168.1.110", 6666);
+      _socket = await Socket.connect(config.host, config.tcpPort);
       _socket.write(userInfo);
       _socket.forEach((package) {
-        print("Test");
         var backInfo = json.decode(utf8.decode(package));
-        print(package);
+        if (backInfo["login"] == false) {
+          _showMesssge("Login failed");
+        } else {
+          userInf.id = backInfo["user"]["id"];
+          userInf.socket = _socket;
+          _showUser();
+          return;
+        }
+        print(backInfo);
       });
       if (_socket != null) _socket.done;
     } catch (error) {
-      print(_socket == null ? error : "连接断开");
+      _showMesssge("网络异常,请检查网络！");
     }
   }
 
   void _roll() {
-    Navigator
-        .of(context)
-        .push(new MaterialPageRoute(builder: (BuildContext context) => new RegisterPage()));
+    Navigator.of(context).push(new MaterialPageRoute(
+        builder: (BuildContext context) => new RegisterPage()));
+  }
+
+  void _showMesssge(String message) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+        new SimpleDialog(
+          title: new Text("消息"),
+          children: <Widget>[
+            new Center(
+              child: new Text(message),
+            )
+          ],
+        ));
+  }
+
+  void _showUser() {
+    Navigator.of(context).push(new MaterialPageRoute(
+        builder: (BuildContext context) => new UserStateful()));
   }
 }

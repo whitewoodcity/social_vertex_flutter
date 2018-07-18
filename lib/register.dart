@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/login.dart';
-import 'package:social_vertex_flutter/datamodel/newuser_info.dart';
+import "package:social_vertex_flutter/config/config.dart" as config;
+import 'package:social_vertex_flutter/utils/requests.dart' as md5;
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -55,7 +55,7 @@ class RegisterState extends State<RegisterPage> {
               onPressed: () {
                 if (_userName != "" && _password != "" && _repassword != "") {
                   if (_password == _repassword) {
-                    _register(NewUser(_userName, _password));
+                    _register();
                   } else {
                     _registerAlert("两次密码不匹配");
                   }
@@ -71,18 +71,24 @@ class RegisterState extends State<RegisterPage> {
     );
   }
 
-  void _register(NewUser user) async {
-    var userInfo = json.encode(user);
+  void _register() async {
+    var password = md5.generateMd5(_password);
+    var info = '''{"type":"user",
+    "action":"registry",
+    "user":"${_userName}",
+    "crypto":"${password}",
+    "version":0.1}''';
     HttpClient client = new HttpClient();
     try {
       client
-          .open("POST", "192.168.1.110", 8080, "/register")
+          .open("POST", config.host, config.httpPort, "/")
           .then((HttpClientRequest req) {
-        req.write(userInfo);
+        req.write(info);
         return req.close();
       }).then((HttpClientResponse response) {
         response.transform(utf8.decoder).listen((contents) {
-          print(contents);
+          var resultData = json.decode(contents);
+          _registerAlert(resultData["info"]);
         });
       });
     } finally {
@@ -91,30 +97,29 @@ class RegisterState extends State<RegisterPage> {
   }
 
   void _registerAlert(String info) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) => SimpleDialog(
-                  title: Text("消息"),
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(info),
-                    ),
-                    SizedBox.fromSize(
-                      size: Size(0.00, 10.00),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: RaisedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text("确定"),
-                      ),
-                    )
-                  ],
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => SimpleDialog(
+            title: Text("消息"),
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: Text(info),
+              ),
+              SizedBox.fromSize(
+                size: Size(0.00, 10.00),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: RaisedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("确定"),
                 ),
-            settings: RouteSettings(name: "aysc", isInitialRoute: true)));
+              ),
+            ],
+          ),
+    );
   }
 }

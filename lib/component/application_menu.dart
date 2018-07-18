@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:social_vertex_flutter/datamodel/user_info.dart' as userInfo;
 
 showAppMenu() {
   int curIndex = 0;
@@ -18,13 +19,12 @@ showAppMenu() {
                 borderRadius: new BorderRadius.all(new Radius.circular(90.0)),
               ),
               new Text(
-                "骄阳似火",
+                userInfo.id,
                 style: new TextStyle(
                   fontSize: 20.0,
                   fontFamily: "微软雅黑",
                 ),
               ),
-              new Text("752544765@qq.com")
             ],
           ),
           color: Colors.lightBlue,
