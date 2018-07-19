@@ -29,6 +29,8 @@ class LoginState extends State<LoginStateful> {
   var _userName = "";
   var _password = "";
 
+  Socket _socket;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -99,13 +101,12 @@ class LoginState extends State<LoginStateful> {
   }
 
   void _login() async {
-    Socket _socket = null;
     var password = md5.generateMd5(_password);
     var userInfo = '''{
                        "type":"user",
                        "action":"login",
-                       "user":"${_userName}",
-                       "crypto":"${password}",
+                       "user":"$_userName",
+                       "crypto":"$password",
                        "version":0.1
                    }''';
     try {
