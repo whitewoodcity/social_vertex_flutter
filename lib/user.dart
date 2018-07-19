@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/application_menu.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/search.dart';
+import 'search.dart';
 import 'message_list.dart';
 
 MyHomePageState homeState;

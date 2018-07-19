@@ -4,7 +4,7 @@ import 'package:social_vertex_flutter/component/application_menu.dart';
 import 'package:social_vertex_flutter/component/contacts_group.dart';
 import 'package:social_vertex_flutter/component/person.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/search.dart';
+import 'search.dart';
 
 MyHomePageState _homeState;
 

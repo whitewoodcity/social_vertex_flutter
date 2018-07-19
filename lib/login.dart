@@ -4,9 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/register.dart';
-import 'package:social_vertex_flutter/user.dart';
-import "package:social_vertex_flutter/config/config.dart" as config;
+import 'register.dart';
 import 'package:social_vertex_flutter/utils/requests.dart' as md5;
 
 var _userName = "";

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:social_vertex_flutter/component/search_item.dart';
 
 class SearchStateful extends StatefulWidget {

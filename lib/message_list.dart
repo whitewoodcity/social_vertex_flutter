@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/message_list_item.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/config/config.dart' as config;
 
 List<String> _list = [];
 MyHomePageState _homeState;
