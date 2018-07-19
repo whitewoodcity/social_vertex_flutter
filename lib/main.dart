@@ -7,7 +7,7 @@ import 'dialog.dart';
 import 'contact_list.dart';
 import 'user.dart';
 import 'login.dart';
-import 'utils/keys.dart' as Key;
+import 'utils/keys.dart' as keys;
 import 'config/config.dart' as config;
 
 void main() => runApp(new MyApplication()); //整个应用的入口
@@ -35,11 +35,11 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     this.context = context;
     switch (curPage) {
-      case Key.user:
+      case keys.user:
         return showUser(this);
-      case Key.contacts:
+      case keys.contacts:
         return showContacts(this, list);
-      case Key.dialog:
+      case keys.dialog:
         return showChatDialog(friendName, this, messageList);
       default:
         return showLogin(this);
