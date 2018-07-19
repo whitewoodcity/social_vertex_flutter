@@ -1,71 +1,102 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/datamodel/contacts_model.dart';
-import 'user.dart';
-import 'component/contact_list_item.dart';
-import 'package:social_vertex_flutter/datamodel/user_info.dart' as userInfo;
-import 'package:social_vertex_flutter/config/config.dart' as config;
+import 'package:social_vertex_flutter/component/application_menu.dart';
+import 'package:social_vertex_flutter/component/contacts_group.dart';
+import 'package:social_vertex_flutter/component/person.dart';
+import 'datamodel/contacts_model.dart';
+import 'main.dart';
+import 'package:social_vertex_flutter/search.dart';
 
-List<Entry> _list = new List();
-UserState _state;
+MyHomePageState _homeState;
 
-Widget showContactsList(UserState state) {
-  _state = state;
-  print(_list.length);
-  if (_list.length == 0) {
-    _loadContacts();
-  }
-  return new ListView.builder(
-    itemBuilder: (BuildContext context, int index) =>
-        new ContactItem(_list[index]),
-    itemCount: _list.length,
+Widget showContacts(MyHomePageState state, List<Entry> list) {
+  _homeState = state;
+  if(list.length==0) loadData();
+  var _curPage = 1;
+  return new Scaffold(
+    appBar: new AppBar(
+      title: new Text("联系人"),
+      centerTitle: true,
+      actions: <Widget>[
+        new IconButton(
+          icon: new InputDecorator(
+            decoration: new InputDecoration(icon: new Icon(Icons.add)),
+          ),
+          onPressed: () {
+            Navigator.of(_homeState.context).push(new MaterialPageRoute(
+                builder: (BuildContext context) => new SearchStateful()));
+          },
+        ),
+      ],
+    ),
+    drawer: new Drawer(
+      child: showAppMenu(state.userName),
+    ),
+    body: new ListView.builder(
+      itemBuilder: (BuildContext context, int index) =>
+          new ContactItem(list[index]),
+      itemCount: list.length,
+    ),
+    bottomNavigationBar: new BottomNavigationBar(
+      items: [
+        new BottomNavigationBarItem(
+            icon: new Image.asset(
+              "assets/images/message.png",
+              width: 30.0,
+              height: 30.0,
+            ),
+            title: new Text("消息")),
+        new BottomNavigationBarItem(
+            icon: new Image.asset(
+              "assets/images/contacts.png",
+              width: 30.0,
+              height: 30.0,
+            ),
+            title: new Text("联系人")),
+      ],
+      onTap: (index) {
+        if (index == 0) {
+          state.updateUi(1);
+        }
+      },
+      currentIndex: _curPage,
+    ),
   );
 }
-
-void _loadContacts() async {
+void loadData(){
   var getFriendList = ''' {
     "type":"friend",
     "action":"list",
-    "from":"${userInfo.id}",
+    "from":"${_homeState.userName}",
     "version":0.1
   }''';
-  Socket _socket;
-  try {
-    if (_socket != null) _socket.destroy();
-    _socket = await Socket.connect(config.host, config.tcpPort);
-    _socket.write(getFriendList);
-    _socket.forEach((package) {
-      var list = json.decode(utf8.decode(package));
-      var groups = list["results"];
-      for (var group in groups) {
-        List<Entry> friends = new List();
-
-        var lists = group["lists"];
-        for (var friend in lists) {
-          friends.add(new Entry(friend["nickname"]));
-        }
-        _list.add(new Entry(group["group"], friends));
-      }
-    });
-    if (_socket != null) _socket.close();
-    if (_socket != null) _socket.done;
-  } catch (e) {
-    _showMessage("网络似乎断开了....");
-  }
+  _homeState.sendMessage(getFriendList);
 }
 
-void _showMessage(String message) {
-  showDialog(
-      context: _state.context,
-      builder: (BuildContext context) => new SimpleDialog(
-            title: new Text("消息"),
-            children: <Widget>[
-              new Center(
-                child: new Text(message),
-              ),
-            ],
-          ));
+class ContactItem extends StatelessWidget {
+  ContactItem(this.entry);
+
+  final Entry entry;
+
+  Widget _buildTiles(Entry root) {
+    if (root.list.isEmpty)
+      return new GestureDetector(
+        child: new ListTile(
+          title: getPerson(root.title),
+        ),
+        onTap: () {
+          _homeState.showChat(root.title);
+        },
+      );
+    return new ExpansionTile(
+      key: new PageStorageKey<Entry>(root),
+      title: getGroup(root.title),
+      children: root.list.map(_buildTiles).toList(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildTiles(entry);
+  }
 }

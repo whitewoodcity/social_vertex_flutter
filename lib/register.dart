@@ -75,8 +75,8 @@ class RegisterState extends State<RegisterPage> {
     var password = md5.generateMd5(_password);
     var info = '''{"type":"user",
     "action":"registry",
-    "user":"${_userName}",
-    "crypto":"${password}",
+    "user":"$_userName",
+    "crypto":"$password",
     "version":0.1}''';
     HttpClient client = new HttpClient();
     try {
@@ -104,7 +104,7 @@ class RegisterState extends State<RegisterPage> {
             children: <Widget>[
               Align(
                 alignment: Alignment.center,
-                child: Text(info),
+                child: Text(info==null?"注册失败":info),
               ),
               SizedBox.fromSize(
                 size: Size(0.00, 10.00),

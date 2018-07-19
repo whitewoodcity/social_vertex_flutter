@@ -52,7 +52,6 @@ class Message extends StatelessWidget {
   }
 
   _showDialog() {
-    Navigator.of(_context).push(new MaterialPageRoute(
-        builder: (BuildContext context) => new DialogStateful(_name)));
+
   }
 }

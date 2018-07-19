@@ -3,157 +3,99 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/main.dart';
+import 'main.dart';
 import 'package:social_vertex_flutter/register.dart';
 import 'package:social_vertex_flutter/user.dart';
 import "package:social_vertex_flutter/config/config.dart" as config;
 import 'package:social_vertex_flutter/utils/requests.dart' as md5;
-import 'package:social_vertex_flutter/datamodel/user_info.dart' as userInf;
 
-class LoginStateless extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: "登录",
-      home: new LoginStateful(),
-    );
-  }
-}
+var _userName = "";
+var _password = "";
+MyHomePageState homeState;
 
-class LoginStateful extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => new LoginState();
-}
-
-class LoginState extends State<LoginStateful> {
-  var _userName = "";
-  var _password = "";
-
-  Socket _socket;
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      key: new Key("login"),
-      appBar: new AppBar(
-        title: new Text("登录"),
-      ),
-      body: new Center(
-        child: new Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                child: Image.asset(
-                  "assets/images/loginIcon.png",
-                  width: 100.00,
-                  height: 100.00,
+Widget showLogin(MyHomePageState state) {
+  homeState = state;
+  return new Scaffold(
+    key: new Key("login"),
+    appBar: new AppBar(
+      title: new Text("登录"),
+    ),
+    body: new Center(
+      child: new ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              child: Image.asset(
+                "assets/images/loginIcon.png",
+                width: 100.00,
+                height: 100.00,
+              ),
+              alignment: Alignment.center,
+            ),
+          ),
+          new Form(
+            child: new Column(
+              children: <Widget>[
+                new TextField(
+                  textAlign: TextAlign.start,
+                  onChanged: setUserName,
+                  decoration: InputDecoration(labelText: "用户名:"),
                 ),
-                alignment: Alignment.center,
-              ),
+                new TextField(
+                  textAlign: TextAlign.start,
+                  onChanged: setUserPassword,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: "密码"),
+                ),
+                new SizedBox.fromSize(
+                  size: Size(0.00, 10.0),
+                ),
+                new RaisedButton(
+                  onPressed: () {
+                    if (_password != "" && _userName != "") {
+                      _login();
+                    } else {
+                      homeState.showMesssge("用户名/密码不能为空！");
+                    }
+                  },
+                  child: new Text("登录"),
+                )
+              ],
             ),
-            new Form(
-              child: new Column(
-                children: <Widget>[
-                  new TextField(
-                    textAlign: TextAlign.start,
-                    onChanged: setUserName,
-                    decoration: InputDecoration(labelText: "用户名:"),
-                  ),
-                  new TextField(
-                    textAlign: TextAlign.start,
-                    onChanged: setUserPassword,
-                    obscureText: true,
-                    decoration: InputDecoration(labelText: "密码"),
-                  ),
-                  new SizedBox.fromSize(
-                    size: Size(0.00, 10.0),
-                  ),
-                  new RaisedButton(
-                    onPressed: () {
-                      if (_password != "" && _userName != "") {
-                        _login();
-                      } else {
-                        _showMesssge("用户名/密码不能为空！");
-                      }
-                    },
-                    child: new Text("登录"),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _roll,
-        child: Text("注册"),
-      ),
-    );
-  }
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: _roll,
+      child: Text("注册"),
+    ),
+  );
+}
 
-  void setUserName(String value) {
-    _userName = value;
-  }
+void setUserName(String value) {
+  _userName = value;
+}
 
-  void setUserPassword(String value) {
-    _password = value;
-  }
+void setUserPassword(String value) {
+  _password = value;
+}
 
-  void _login() async {
-    var password = md5.generateMd5(_password);
-    var userInfo = '''{
+void _login() async {
+  var password = md5.generateMd5(_password);
+  var userInfo = '''{
                        "type":"user",
                        "action":"login",
                        "user":"$_userName",
                        "crypto":"$password",
                        "version":0.1
                    }''';
-    try {
-      if (_socket != null) _socket.destroy();
-      _socket = await Socket.connect(config.host, config.tcpPort);
-      _socket.write(userInfo);
-      _socket.forEach((package){
-        print("foreach().......");
-        var backInfo = json.decode(utf8.decode(package));
-        if (backInfo["login"] == false) {
-          _showMesssge("Login failed");
-        } else {
-          userInf.id = backInfo["user"]["id"];
-          _showUser();
-          _socket.destroy();
-        }
-      });
-      try {
-        await _socket.done; //当Socket关闭时触发
-      } catch (e) {
-        _showMesssge(e.toString());
-      }
-    } catch (error) {
-      _showMesssge("网络异常,请检查网络！");
-    }
-  }
+  await homeState.initConnect();
+   homeState.sendMessage(userInfo);
+}
 
-  void _roll() {
-    Navigator.of(context).push(new MaterialPageRoute(
-        builder: (BuildContext context) => new RegisterPage()));
-  }
-
-  void _showMesssge(String message) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => new SimpleDialog(
-              title: new Text("消息"),
-              children: <Widget>[
-                new Center(
-                  child: new Text(message),
-                )
-              ],
-            ));
-  }
-
-  void _showUser() {
-    Navigator.of(context).push(new MaterialPageRoute(
-        builder: (BuildContext context) => new UserStateful()));
-  }
+void _roll() {
+  Navigator.of(homeState.context).push(new MaterialPageRoute(
+      builder: (BuildContext context) => new RegisterPage()));
 }

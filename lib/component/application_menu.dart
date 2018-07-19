@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/datamodel/user_info.dart' as userInfo;
+import 'package:social_vertex_flutter/main.dart';
 
-showAppMenu() {
+showAppMenu(String userName) {
   int curIndex = 0;
   return new Scaffold(
     body: new ListView(
@@ -19,7 +19,7 @@ showAppMenu() {
                 borderRadius: new BorderRadius.all(new Radius.circular(90.0)),
               ),
               new Text(
-                userInfo.id,
+                userName,
                 style: new TextStyle(
                   fontSize: 20.0,
                   fontFamily: "微软雅黑",
