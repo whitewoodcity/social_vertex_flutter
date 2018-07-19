@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/message_item.dart';
-import 'datamodel/contacts_model.dart';
 import 'dialog.dart';
 import 'contact_list.dart';
 import 'user.dart';

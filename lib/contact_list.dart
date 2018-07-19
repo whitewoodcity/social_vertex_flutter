@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/application_menu.dart';
 import 'package:social_vertex_flutter/component/contacts_group.dart';
 import 'package:social_vertex_flutter/component/person.dart';
-import 'datamodel/contacts_model.dart';
 import 'main.dart';
 import 'package:social_vertex_flutter/search.dart';
 
@@ -11,7 +10,7 @@ MyHomePageState _homeState;
 
 Widget showContacts(MyHomePageState state, List<Entry> list) {
   _homeState = state;
-  if(list.length==0) loadData();
+  if (list.length == 0) loadData();
   var _curPage = 1;
   return new Scaffold(
     appBar: new AppBar(
@@ -63,7 +62,8 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
     ),
   );
 }
-void loadData(){
+
+void loadData() {
   var getFriendList = ''' {
     "type":"friend",
     "action":"list",
@@ -99,4 +99,17 @@ class ContactItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return _buildTiles(entry);
   }
+}
+
+class ContactsModel {
+  List<Entry> list;
+
+  ContactsModel(this.list);
+}
+
+class Entry {
+  final String title;
+  final List<Entry> list;
+
+  Entry(this.title, [this.list = const <Entry>[]]);
 }

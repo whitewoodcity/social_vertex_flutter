@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/application_menu.dart';
-import 'package:social_vertex_flutter/datamodel/contacts_model.dart';
 import 'main.dart';
 import 'package:social_vertex_flutter/search.dart';
 import 'message_list.dart';
