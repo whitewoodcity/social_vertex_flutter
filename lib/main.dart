@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/message_item.dart';
-import 'component/search_item.dart';
 import 'search.dart';
 import 'dialog.dart';
 import 'contact_list.dart';
@@ -106,32 +105,46 @@ class MyHomePageState extends State<MyHomePage> {
             }
             break;
           case "friend": //获取好友列表
-            List<Entry> result = [];
-            var groups = backInf["results"];
-            for (var group in groups) {
-              List<Entry> friends = new List();
-              var lists = group["lists"];
-              print(lists);
-              for (var friend in lists) {
-                friends.add(new Entry(friend["nickname"]));
+            if (backInf["action"] == "list") {
+              List<Entry> result = [];
+              var groups = backInf["results"];
+              for (var group in groups) {
+                List<Entry> friends = new List();
+                var lists = group["lists"];
+                print(lists);
+                for (var friend in lists) {
+                  friends.add(new Entry(friend["nickname"]));
+                }
+                result.add(new Entry(group["group"], friends));
               }
-              result.add(new Entry(group["group"], friends));
+              if (result.length > 0) {
+                updateContactsList(result);
+              } else {
+                showMesssge("好友列表为空");
+              }
             }
-            if (result.length > 0) {
-              updateContactsList(result);
-            } else {
-              showMesssge("好友列表为空");
+            if (backInf["action"] == "request") {
+              showMesssge(backInf["info"]);
             }
             break;
           case "message": //获取消息
             var status = backInf["info"];
             if (status == "OK") {
               updateChartList(backInf["body"]);
+            } else {
+              showMesssge(backInf["info"]);
             }
             if (backInf["from"] != userName) updateChartList(backInf["body"]);
             break;
           case "search": //搜索好友
-
+            if (backInf["user"] != null) {
+              if (searchList.length != 0)
+                searchList.removeRange(0, searchList.length);
+              searchList.add(new SearchItem(backInf["user"]["user"]));
+              updateSearchList();
+            } else {
+              showMesssge("该用户不存在，换个姿势试试！");
+            }
             break;
         }
       },
@@ -145,6 +158,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   void sendMessage(String message) {
     //向服务器发送数据
+    print(message);
     _socket.write(message);
   }
 
@@ -163,13 +177,10 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void updateSearchList(String item) {
+  void updateSearchList() {
     //更新搜索好友列表
     setState(() {
       searchList = new List.from(searchList);
-      searchList.add(new SearchItem(item));
     });
   }
-
-  void _messageStatus() {}
 }

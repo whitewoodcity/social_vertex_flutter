@@ -22,7 +22,7 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
             decoration: new InputDecoration(icon: new Icon(Icons.add)),
           ),
           onPressed: () {
-            homePageState.updateUi(4);
+            _homeState.updateUi(4);
           },
         ),
       ],
