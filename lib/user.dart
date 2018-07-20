@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/component/application_menu.dart';
+import 'component/application_menu.dart';
 import 'main.dart';
-import 'search.dart';
 import 'message_list.dart';
 
 MyHomePageState homeState;
@@ -20,8 +19,7 @@ Widget showUser(MyHomePageState state) {
             decoration: new InputDecoration(icon: new Icon(Icons.add)),
           ),
           onPressed: () {
-            Navigator.of(homeState.context).push(new MaterialPageRoute(
-                builder: (BuildContext context) => new SearchStateful()));
+           homeState.updateUi(4);
           },
         ),
       ],

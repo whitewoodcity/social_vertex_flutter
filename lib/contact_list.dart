@@ -22,8 +22,7 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
             decoration: new InputDecoration(icon: new Icon(Icons.add)),
           ),
           onPressed: () {
-            Navigator.of(_homeState.context).push(new MaterialPageRoute(
-                builder: (BuildContext context) => new SearchStateful()));
+            homePageState.updateUi(4);
           },
         ),
       ],
@@ -39,19 +38,21 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
     bottomNavigationBar: new BottomNavigationBar(
       items: [
         new BottomNavigationBarItem(
-            icon: new Image.asset(
-              "assets/images/message.png",
-              width: 30.0,
-              height: 30.0,
-            ),
-            title: new Text("消息")),
+          icon: new Image.asset(
+            "assets/images/message.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: new Text("消息"),
+        ),
         new BottomNavigationBarItem(
-            icon: new Image.asset(
-              "assets/images/contacts.png",
-              width: 30.0,
-              height: 30.0,
-            ),
-            title: new Text("联系人")),
+          icon: new Image.asset(
+            "assets/images/contacts.png",
+            width: 30.0,
+            height: 30.0,
+          ),
+          title: new Text("联系人"),
+        ),
       ],
       onTap: (index) {
         if (index == 0) {

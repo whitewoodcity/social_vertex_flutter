@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/message_item.dart';
+import 'component/search_item.dart';
+import 'search.dart';
 import 'dialog.dart';
 import 'contact_list.dart';
 import 'user.dart';
@@ -31,6 +33,7 @@ class MyHomePageState extends State<MyHomePage> {
   List<Entry> list = []; //好友列表
   String userName; //用户名
   List<MessageEntry> messageList = []; //消息列表
+  List<SearchItem> searchList = []; //搜索好友列表
 
   Widget build(BuildContext context) {
     this.context = context;
@@ -41,6 +44,8 @@ class MyHomePageState extends State<MyHomePage> {
         return showContacts(this, list);
       case keys.dialog:
         return showChatDialog(friendName, this, messageList);
+      case keys.search:
+        return showSearchDialog(this, searchList);
       default:
         return showLogin(this);
     }
@@ -62,6 +67,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   void updateUi(int index) {
     //切换页面
+    print(index);
     setState(() {
       curPage = index;
     });
@@ -116,10 +122,13 @@ class MyHomePageState extends State<MyHomePage> {
             } else {
               showMesssge("好友列表为空");
             }
-
             break;
           case "message": //获取消息
-
+            var status = backInf["info"];
+            if (status == "OK") {
+              updateChartList(backInf["body"]);
+            }
+            if (backInf["from"] != userName) updateChartList(backInf["body"]);
             break;
           case "search": //搜索好友
 
@@ -136,10 +145,6 @@ class MyHomePageState extends State<MyHomePage> {
 
   void sendMessage(String message) {
     //向服务器发送数据
-    var entry = json.decode(message);
-    if (entry["type"] == "message") {
-      updateChartList(entry["body"]);
-    }
     _socket.write(message);
   }
 
@@ -157,4 +162,14 @@ class MyHomePageState extends State<MyHomePage> {
       messageList.add(new MessageEntry(message));
     });
   }
+
+  void updateSearchList(String item) {
+    //更新搜索好友列表
+    setState(() {
+      searchList = new List.from(searchList);
+      searchList.add(new SearchItem(item));
+    });
+  }
+
+  void _messageStatus() {}
 }

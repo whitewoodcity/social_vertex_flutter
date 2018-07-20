@@ -10,16 +10,9 @@ MyHomePageState _homeState;
 
 Widget showMessageList(MyHomePageState state) {
   _homeState = state;
-  if (_list.length == 0) _loadData();
   return new ListView.builder(
     itemBuilder: (BuildContext context, int index) =>
         new MessageListItem(_list[index]),
     itemCount: _list.length,
   );
-}
-
-void _loadData() {
-  //测试数据
-  _list.add("小张");
-  _list.add("小明");
 }
