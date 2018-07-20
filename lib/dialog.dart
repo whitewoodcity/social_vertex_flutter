@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/message_item.dart';
 import 'main.dart';
 
-Widget showChatDialog(String name, MyHomePageState state, List<MessageEntry> list) {
+Widget showChatDialog(
+    String name, MyHomePageState state, List<MessageEntry> list) {
   var _message = "";
   return new Scaffold(
     appBar: new AppBar(
@@ -38,6 +39,9 @@ Widget showChatDialog(String name, MyHomePageState state, List<MessageEntry> lis
                   onChanged: (value) {
                     _message = value;
                   },
+                  controller: new TextEditingController(
+                    text: "",
+                  ),
                 ),
               ),
               new RaisedButton(
