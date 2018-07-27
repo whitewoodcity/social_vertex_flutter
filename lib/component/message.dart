@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/dialog.dart';
 
 class Message extends StatelessWidget {
   var _name;

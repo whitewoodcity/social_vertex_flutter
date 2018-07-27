@@ -30,10 +30,38 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
     drawer: new Drawer(
       child: showAppMenu(state.userName),
     ),
-    body: new ListView.builder(
-      itemBuilder: (BuildContext context, int index) =>
-          new ContactItem(list[index]),
-      itemCount: list.length,
+    body: Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                hintText: '搜索',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: Colors.black,
+                      width: 1.0,
+                      style: BorderStyle.solid),
+                ),
+              ),
+              enabled: true,
+            onSubmitted: (value){
+                if(value!="") {
+                  state.showUserInfo(5, value);
+                }
+            },
+            ),
+
+        ),
+        Expanded(
+          child: new ListView.builder(
+            itemBuilder: (BuildContext context, int index) =>
+                new ContactItem(list[index]),
+            itemCount: list.length,
+          ),
+        ),
+      ],
     ),
     bottomNavigationBar: new BottomNavigationBar(
       items: [

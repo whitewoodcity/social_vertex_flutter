@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/component/message_item.dart';
+import 'user_info.dart';
 import 'search.dart';
 import 'dialog.dart';
 import 'contact_list.dart';
@@ -33,6 +34,8 @@ class MyHomePageState extends State<MyHomePage> {
   String userName; //用户名
   List<MessageEntry> messageList = []; //消息列表
   List<SearchItem> searchList = []; //搜索好友列表
+  String           searchKey;
+  List<UserInfoItem>     userInfoList=[new UserInfoItem(new UserInfoModel(id:'ZXJ2017',name: "哲学家" ),),];
 
   Widget build(BuildContext context) {
     this.context = context;
@@ -45,6 +48,8 @@ class MyHomePageState extends State<MyHomePage> {
         return showChatDialog(friendName, this, messageList);
       case keys.search:
         return showSearchDialog(this, searchList);
+      case keys.userInfo:
+        return showInfo(this,searchKey,userInfoList);
       default:
         return showLogin(this);
     }
@@ -78,6 +83,13 @@ class MyHomePageState extends State<MyHomePage> {
       curPage = 3;
       friendName = name;
     });
+  }
+  void showUserInfo(int status,String keyWord){  //显示search界面
+    setState(() {
+      curPage = status;
+      searchKey = keyWord;
+    });
+
   }
 
   /*
