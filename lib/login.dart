@@ -84,10 +84,9 @@ void _login() async {
   var password = md5.generateMd5(_password);
   var userInfo = '''{
                        "type":"user",
-                       "action":"login",
-                       "user":"$_userName",
-                       "crypto":"$password",
-                       "version":0.1
+                       "subtype":"login",
+                       "id":"$_userName",
+                       "password":"$password",
                    }''';
   await homeState.initConnect();
    homeState.sendMessage(userInfo);

@@ -49,10 +49,10 @@ Widget showChatDialog(
                 onPressed: () {
                   var message = '''{
             "type":"message",
-            "from":"${state.userName}",
+            "subtype":"text"
             "to":"$name",
              "body":"$_message",
-              "version":0.1
+             "version":0.1
                 }''';
                   state.sendMessage(message);
                 },

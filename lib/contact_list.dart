@@ -93,6 +93,7 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
 }
 
 void loadData() {
+  //todo 此步不需要，用户登录成功之后，直接返回好友列表。无需再次请求
   var getFriendList = ''' {
     "type":"friend",
     "action":"list",

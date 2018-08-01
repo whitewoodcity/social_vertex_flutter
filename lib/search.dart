@@ -58,9 +58,8 @@ void _search() {
   if (_target != null && _target.trim() != "") {
     var message = '''{
       "type":"search",
-      "action":"request",
-      "user":"$_target",
-      "version":0.1
+      "subtype":"info",
+      "keyword":"$_target"
     }''';
     homePageState.sendMessage(message);
   } else {

@@ -73,11 +73,13 @@ class RegisterState extends State<RegisterPage> {
 
   void _register() async {
     var password = md5.generateMd5(_password);
-    var info = '''{"type":"user",
-    "action":"registry",
-    "user":"$_userName",
-    "crypto":"$password",
-    "version":0.1}''';
+    var info = '''{
+    "type":"user",
+    "subtype":"registry",
+    "id":"$_userName"
+    "nickName":"$_userName",
+    "password":"$password"
+    ''';
     HttpClient client = new HttpClient();
     try {
       client
