@@ -13,13 +13,13 @@ MyHomePageState homeState;
 
 Widget showLogin(MyHomePageState state) {
   homeState = state;
-  return new Scaffold(
-    key: new Key("login"),
-    appBar: new AppBar(
-      title: new Text("登录"),
+  return Scaffold(
+    key: Key("login"),
+    appBar: AppBar(
+      title: Text("登录"),
     ),
-    body: new Center(
-      child: new ListView(
+    body: Center(
+      child: ListView(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -32,24 +32,24 @@ Widget showLogin(MyHomePageState state) {
               alignment: Alignment.center,
             ),
           ),
-          new Form(
-            child: new Column(
+          Form(
+            child: Column(
               children: <Widget>[
-                new TextField(
+                TextField(
                   textAlign: TextAlign.start,
                   onChanged: setUserName,
                   decoration: InputDecoration(labelText: "用户名:"),
                 ),
-                new TextField(
+                TextField(
                   textAlign: TextAlign.start,
                   onChanged: setUserPassword,
                   obscureText: true,
                   decoration: InputDecoration(labelText: "密码"),
                 ),
-                new SizedBox.fromSize(
+                SizedBox.fromSize(
                   size: Size(0.00, 10.0),
                 ),
-                new RaisedButton(
+                RaisedButton(
                   onPressed: () {
                     if (_password != "" && _userName != "") {
                       _login();
@@ -57,7 +57,7 @@ Widget showLogin(MyHomePageState state) {
                       homeState.showMessage("用户名/密码不能为空！");
                     }
                   },
-                  child: new Text("登录"),
+                  child: Text("登录"),
                 )
               ],
             ),
@@ -93,6 +93,6 @@ void _login() async {
 }
 
 void _roll() {
-  Navigator.of(homeState.context).push(new MaterialPageRoute(
-      builder: (BuildContext context) => new RegisterPage()));
+  Navigator.of(homeState.context).push(MaterialPageRoute(
+      builder: (BuildContext context) => RegisterPage()));
 }

@@ -11,6 +11,7 @@ MyHomePageState homeState;
 
 Widget showUser(MyHomePageState state) {
   homeState = state;
+
   int _curPage = 0;
   return Scaffold(
     appBar: AppBar(
