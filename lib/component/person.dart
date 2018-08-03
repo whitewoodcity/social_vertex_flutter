@@ -1,19 +1,19 @@
 import 'package:flutter/cupertino.dart';
 
 getPerson(String name) {
-  return new Row(
+  return Row(
     children: <Widget>[
-      new Column(
+      Column(
         children: <Widget>[
-          new Image.asset(
+          Image.asset(
             "assets/images/person.png",
             width: 20.0,
             height: 20.0,
           )
         ],
       ),
-      new Column(
-        children: <Widget>[new Text(name)],
+      Column(
+        children: <Widget>[Text(name)],
       )
     ],
   );

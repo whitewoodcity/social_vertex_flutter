@@ -10,9 +10,9 @@ MyHomePageState _homeState;
 
 Widget showMessageList(MyHomePageState state) {
   _homeState = state;
-  return new ListView.builder(
+  return ListView.builder(
     itemBuilder: (BuildContext context, int index) =>
-        new MessageListItem(_list[index]),
+        MessageListItem(_list[index]),
     itemCount: _list.length,
   );
 }

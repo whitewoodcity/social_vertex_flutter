@@ -11,43 +11,43 @@ Widget showChatDialog(
   var _message = "";
   if(state.curChartTarget!=name) list.removeRange(0, list.length);
   state.curChartTarget = name;
-  return new Scaffold(
-    appBar: new AppBar(
-      title: new Text(name == null ? "未知好友" : name.trim()),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(name == null ? "未知好友" : name.trim()),
       centerTitle: true,
-      leading: new IconButton(
-          icon: new InputDecorator(
-            decoration: new InputDecoration(icon: new Icon(Icons.arrow_back)),
+      leading: IconButton(
+          icon: InputDecorator(
+            decoration: InputDecoration(icon: Icon(Icons.arrow_back)),
           ),
           onPressed: () {
             state.updateUi(2);
           }),
     ),
-    body: new Column(
+    body: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        new Expanded(
-          child: new ListView(
+        Expanded(
+          child: ListView(
             children: list,
           ),
         ),
-        new Container(
+        Container(
           color: Colors.white,
-          padding: new EdgeInsets.all(10.0),
-          child: new Row(
+          padding: EdgeInsets.all(10.0),
+          child: Row(
             children: <Widget>[
-              new Expanded(
-                child: new TextField(
+              Expanded(
+                child: TextField(
                   onChanged: (value) {
                     _message = value;
                   },
-                  controller: new TextEditingController(
+                  controller: TextEditingController(
                     text: "",
                   ),
                 ),
               ),
-              new RaisedButton(
-                child: new Text("发送"),
+              RaisedButton(
+                child: Text("发送"),
                 onPressed: () {
                   var message = {
                     "type": "message",

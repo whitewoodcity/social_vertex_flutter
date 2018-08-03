@@ -18,21 +18,21 @@ class RegisterState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("用户注册"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("用户注册"),
         centerTitle: true,
       ),
-      body: new ListView(
+      body: ListView(
         children: <Widget>[
-          new TextField(
+          TextField(
             textAlign: TextAlign.start,
             onChanged: (value) {
               _userName = value;
             },
             decoration: InputDecoration(labelText: "用户名"),
           ),
-          new TextField(
+          TextField(
             textAlign: TextAlign.start,
             obscureText: true,
             onChanged: (String value) {
@@ -40,14 +40,14 @@ class RegisterState extends State<RegisterPage> {
             },
             decoration: InputDecoration(labelText: "密码"),
           ),
-          new TextField(
+          TextField(
             obscureText: true,
             onChanged: (String value) {
               _repassword = value;
             },
             decoration: InputDecoration(labelText: "确认密码"),
           ),
-          new SizedBox.fromSize(
+          SizedBox.fromSize(
             size: Size(0.0, 10.0),
           ),
           Center(
@@ -79,7 +79,7 @@ class RegisterState extends State<RegisterPage> {
       "id": "$_userName",
       "password": "$password"
     };
-    HttpClient client = new HttpClient();
+    HttpClient client = HttpClient();
     try {
       client
           .open("POST", config.host, config.httpPort, "/user")

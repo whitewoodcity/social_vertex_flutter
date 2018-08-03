@@ -54,7 +54,7 @@ Widget showLogin(MyHomePageState state) {
                     if (_password != "" && _userName != "") {
                       _login();
                     } else {
-                      homeState.showMesssge("用户名/密码不能为空！");
+                      homeState.showMessage("用户名/密码不能为空！");
                     }
                   },
                   child: new Text("登录"),
@@ -83,13 +83,13 @@ void setUserPassword(String value) {
 void _login() async {
   var password = md5.generateMd5(_password);
   var userInfo = {
-                       "type":"user",
-                       "subtype":"login",
-                       "id":"$_userName",
-                       "password":"$password"
-                   };
+    "type": "user",
+    "subtype": "login",
+    "id": "$_userName",
+    "password": "$password"
+  };
   await homeState.initConnect();
-   homeState.sendMessage(json.encode(userInfo)+"\r\n");
+  homeState.sendMessage(json.encode(userInfo) + "\r\n");
 }
 
 void _roll() {

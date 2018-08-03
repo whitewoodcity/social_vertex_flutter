@@ -4,23 +4,23 @@ import 'package:social_vertex_flutter/main.dart';
 
 showAppMenu(String userName) {
   int curIndex = 0;
-  return new Scaffold(
-    body: new ListView(
+  return Scaffold(
+    body: ListView(
       children: <Widget>[
-        new Container(
-          child: new Column(
+        Container(
+          child: Column(
             children: <Widget>[
-              new ClipRRect(
-                child: new Container(
+              ClipRRect(
+                child: Container(
                   width: 100.0,
                   height: 100.0,
-                  child: new Image.asset("assets/images/user.png"),
+                  child: Image.asset("assets/images/user.png"),
                 ),
-                borderRadius: new BorderRadius.all(new Radius.circular(90.0)),
+                borderRadius: BorderRadius.all(Radius.circular(90.0)),
               ),
-              new Text(
+              Text(
                 userName,
-                style: new TextStyle(
+                style: TextStyle(
                   fontSize: 20.0,
                   fontFamily: "微软雅黑",
                 ),
@@ -32,22 +32,22 @@ showAppMenu(String userName) {
         )
       ],
     ),
-    bottomNavigationBar: new BottomNavigationBar(
+    bottomNavigationBar: BottomNavigationBar(
         items: [
-          new BottomNavigationBarItem(
-              icon: new Image.asset(
+          BottomNavigationBarItem(
+              icon: Image.asset(
                 "assets/images/setting.png",
                 width: 20.0,
                 height: 20.0,
               ),
-              title: new Text("设置")),
-          new BottomNavigationBarItem(
-              icon: new Image.asset(
+              title: Text("设置")),
+          BottomNavigationBarItem(
+              icon: Image.asset(
                 "assets/images/dark.png",
                 width: 20.0,
                 height: 20.0,
               ),
-              title: new Text("夜间"))
+              title: Text("夜间"))
         ],
         onTap: (value) {
           print(value);

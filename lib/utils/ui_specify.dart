@@ -5,7 +5,7 @@ import 'package:social_vertex_flutter/utils/keys.dart' as keys;
 
 /// Usage:
 /// ```Dart
-/// new Scaffold(appBar: genAppBar(state,"title"));
+/// Scaffold(appBar: genAppBar(state,"title"));
 /// ```
 /*
 ///
@@ -24,23 +24,23 @@ _iOSAppBar(MyHomePageState state, String centerTitle) {
   return CupertinoNavigationBar(
       backgroundColor: Colors.blue,
       leading: CupertinoButton(
-        child: new Text('返回', style: new TextStyle(color: Colors.white)),
+        child: Text('返回', style: TextStyle(color: Colors.white)),
         padding: EdgeInsets.zero,
         onPressed: () {
           state.updateUi(keys.login);
         },
       ),
-      middle: new Text(centerTitle));
+      middle: Text(centerTitle));
 }
 
 /// for Android and Fuchsia? Design
 _commonAppBar(String centerTitle) {
-  return new AppBar(
+  return AppBar(
     title: Row(
       children: <Widget>[
         Expanded(
-          child: new Center(
-            child: new Text(centerTitle),
+          child: Center(
+            child: Text(centerTitle),
           ),
         ),
       ],

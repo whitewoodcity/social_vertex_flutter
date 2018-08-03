@@ -54,11 +54,11 @@ class UserInfoState extends State<UserInfoItem> {
         child: ListView(
           children: <Widget>[
             ClipRect(
-              child: new Container(
+              child: Container(
                 width: 100.0,
                 height: 100.0,
                 child: IconButton(
-                  icon: new Image.asset(
+                  icon: Image.asset(
                     "assets/images/user.png",
                     width: 100.0,
                     height: 100.0,
@@ -67,7 +67,7 @@ class UserInfoState extends State<UserInfoItem> {
                 ),
               ),
             ),
-            new Center(
+            Center(
               child: Column(
                 children: <Widget>[
                   Text(

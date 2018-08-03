@@ -8,36 +8,36 @@ class MessageEntry extends StatelessWidget {
   MessageEntry(this._message);
 
   Widget _buildEntry(String entry) {
-    return new GestureDetector(
-      child: new Container(
-        child: new Row(
+    return GestureDetector(
+      child: Container(
+        child: Row(
           children: <Widget>[
-            new Column(
+            Column(
               children: <Widget>[
-                new IconButton(
-                    icon: new InputDecorator(
+                IconButton(
+                    icon: InputDecorator(
                       decoration:
-                          InputDecoration(icon: new Icon(Icons.person_outline)),
+                          InputDecoration(icon: Icon(Icons.person_outline)),
                     ),
                     onPressed: null)
               ],
             ),
-            new ClipRRect(
-              child: new Container(
+            ClipRRect(
+              child: Container(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: _message == null
                       ? null
-                      : new Text(
+                      : Text(
                           _message,
-                          style: new TextStyle(fontSize: 18.0),
+                          style: TextStyle(fontSize: 18.0),
                         ),
                 ),
                 color: Colors.grey,
                 width: 200.0,
-                margin: new EdgeInsets.only(left: 2.00),
+                margin: EdgeInsets.only(left: 2.00),
               ),
-              borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
             )
           ],
         ),
@@ -46,10 +46,10 @@ class MessageEntry extends StatelessWidget {
         showDialog(
           context: _context,
           builder: (BuildContext context) {
-            return new SimpleDialog(
+            return SimpleDialog(
               children: <Widget>[
-                new Center(
-                  child: new Text(
+                Center(
+                  child: Text(
                     _message,
                     style: TextStyle(
                         fontSize: 22.0,

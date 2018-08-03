@@ -12,14 +12,14 @@ MyHomePageState homeState;
 Widget showUser(MyHomePageState state) {
   homeState = state;
   int _curPage = 0;
-  return new Scaffold(
-    appBar: new AppBar(
-      title: new Text("消息"),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text("消息"),
       centerTitle: true,
       actions: <Widget>[
-        new IconButton(
-          icon: new InputDecorator(
-            decoration: new InputDecoration(icon: new Icon(Icons.add)),
+        IconButton(
+          icon: InputDecorator(
+            decoration: InputDecoration(icon: Icon(Icons.add)),
           ),
           onPressed: () {
             homeState.updateUi(4);
@@ -27,26 +27,26 @@ Widget showUser(MyHomePageState state) {
         ),
       ],
     ),
-    drawer: new Drawer(
+    drawer: Drawer(
       child: showAppMenu(homeState.userName),
     ),
     body: showMessageList(homeState),
-    bottomNavigationBar: new BottomNavigationBar(
+    bottomNavigationBar: BottomNavigationBar(
       items: [
-        new BottomNavigationBarItem(
-            icon: new Image.asset(
+        BottomNavigationBarItem(
+            icon: Image.asset(
               "assets/images/message.png",
               width: 30.0,
               height: 30.0,
             ),
-            title: new Text("消息")),
-        new BottomNavigationBarItem(
-            icon: new Image.asset(
+            title: Text("消息")),
+        BottomNavigationBarItem(
+            icon: Image.asset(
               "assets/images/contacts.png",
               width: 30.0,
               height: 30.0,
             ),
-            title: new Text("联系人")),
+            title: Text("联系人")),
       ],
       onTap: (index) {
         if (index == 1) {
@@ -59,7 +59,7 @@ Widget showUser(MyHomePageState state) {
 }
 
 void _obtainLeftMessage() {        /**todo 获取离线消息**/
-  var httpClient = new HttpClient();
+  var httpClient = HttpClient();
   httpClient
       .open("POST", config.host, config.httpPort, "/user")
       .then((request) {

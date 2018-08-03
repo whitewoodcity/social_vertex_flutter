@@ -8,32 +8,32 @@ class Message extends StatelessWidget {
   Message(this._name);
 
   Widget _build() {
-    return new GestureDetector(
-      child: new Column(
+    return GestureDetector(
+      child: Column(
         children: <Widget>[
-          new Row(
+          Row(
             children: <Widget>[
-              new Expanded(
+              Expanded(
                 flex: 1,
-                child: new Image.asset(
+                child: Image.asset(
                   "assets/images/message.png",
                   width: 30.0,
                   height: 30.0,
                 ),
               ),
-              new Expanded(
+              Expanded(
                 flex: 9,
-                child: new Padding(
-                  padding: new EdgeInsets.only(left: 5.00),
-                  child: new Text(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 5.00),
+                  child: Text(
                     _name,
-                    style: new TextStyle(fontSize: 20.0),
+                    style: TextStyle(fontSize: 20.0),
                   ),
                 ),
               ),
             ],
           ),
-          new Divider(
+          Divider(
             color: Colors.black12,
           ),
         ],

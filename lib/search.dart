@@ -10,14 +10,14 @@ String _target;
 Widget showSearchDialog(MyHomePageState state, List<SearchItem> list) {
   homePageState = state;
 
-  return new Scaffold(
-    appBar: new AppBar(
-      title: new Text("添加"),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text("添加"),
       centerTitle: true,
-      leading: new IconButton(
-        icon: new InputDecorator(
-          decoration: new InputDecoration(
-            icon: new Icon(Icons.arrow_back),
+      leading: IconButton(
+        icon: InputDecorator(
+          decoration: InputDecoration(
+            icon: Icon(Icons.arrow_back),
           ),
         ),
         onPressed: () {
@@ -25,23 +25,23 @@ Widget showSearchDialog(MyHomePageState state, List<SearchItem> list) {
         },
       ),
     ),
-    body: new Scaffold(
-      appBar: new AppBar(
+    body: Scaffold(
+      appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: new Row(
+        title: Row(
           children: <Widget>[
-            new Expanded(
-              child: new TextField(
+            Expanded(
+              child: TextField(
                 onChanged: (value) {
                   _target = value;
                 },
               ),
               flex: 8,
             ),
-            new Expanded(
-              child: new RaisedButton(
+            Expanded(
+              child: RaisedButton(
                 onPressed: _search,
-                child: new Text("搜索"),
+                child: Text("搜索"),
               ),
               flex: 2,
             )
@@ -49,7 +49,7 @@ Widget showSearchDialog(MyHomePageState state, List<SearchItem> list) {
         ),
         backgroundColor: Colors.white70,
       ),
-      body: new ListView(
+      body: ListView(
         children: list,
       ),
     ),
@@ -66,7 +66,7 @@ void _search() {
     };
     homePageState.sendMessage(json.encode(message) + "\r\n");
   } else {
-    homePageState.showMesssge("搜索内容不能为空....");
+    homePageState.showMessage("搜索内容不能为空....");
   }
 }
 
@@ -76,7 +76,7 @@ class SearchItem extends StatefulWidget {
   SearchItem(this.result);
 
   @override
-  SearchItemState createState() => new SearchItemState(result);
+  SearchItemState createState() => SearchItemState(result);
 }
 
 class SearchItemState extends State<SearchItem> {
@@ -86,25 +86,25 @@ class SearchItemState extends State<SearchItem> {
 
   @override
   Widget build(BuildContext context) {
-    return new Row(
+    return Row(
       children: <Widget>[
-        new Expanded(
-          child: new Row(
+        Expanded(
+          child: Row(
             children: <Widget>[
-              new Column(
+              Column(
                 children: <Widget>[
-                  new Image.asset(
+                  Image.asset(
                     "assets/images/person.png",
                     width: 20.0,
                     height: 20.0,
                   ),
                 ],
               ),
-              new Column(
+              Column(
                 children: <Widget>[
-                  new Padding(
-                      padding: new EdgeInsets.only(left: 5.00),
-                      child: new Text(
+                  Padding(
+                      padding: EdgeInsets.only(left: 5.00),
+                      child: Text(
                         result,
                         overflow: TextOverflow.ellipsis,
                       )),
@@ -114,12 +114,12 @@ class SearchItemState extends State<SearchItem> {
           ),
           flex: 8,
         ),
-        new Expanded(
-          child: new Align(
+        Expanded(
+          child: Align(
             alignment: Alignment.centerRight,
-            child: new IconButton(
-              icon: new InputDecorator(
-                decoration: new InputDecoration(icon: new Icon(Icons.add)),
+            child: IconButton(
+              icon: InputDecorator(
+                decoration: InputDecoration(icon: Icon(Icons.add)),
               ),
               onPressed: () {
                 var message = {

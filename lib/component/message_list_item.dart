@@ -8,22 +8,22 @@ class MessageListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new GestureDetector(
-      child: new Row(
+    return GestureDetector(
+      child: Row(
         children: <Widget>[
-          new Expanded(
-            child: new IconButton(
-              icon: new InputDecorator(
+          Expanded(
+            child: IconButton(
+              icon: InputDecorator(
                   decoration:
-                      new InputDecoration(icon: new Icon(Icons.message))),
+                      InputDecoration(icon: Icon(Icons.message))),
               onPressed: () {},
             ),
             flex: 1,
           ),
-          new Expanded(
+          Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: new Text(_message),
+              child: Text(_message),
             ),
             flex: 9,
           ),

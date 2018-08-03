@@ -12,14 +12,14 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
   _homeState = state;
   state.curChartTarget="";
   var _curPage = 1;
-  return new Scaffold(
-    appBar: new AppBar(
-      title: new Text("联系人"),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text("联系人"),
       centerTitle: true,
       actions: <Widget>[
-        new IconButton(
-          icon: new InputDecorator(
-            decoration: new InputDecoration(icon: new Icon(Icons.add)),
+        IconButton(
+          icon: InputDecorator(
+            decoration: InputDecoration(icon: Icon(Icons.add)),
           ),
           onPressed: () {
             _homeState.updateUi(4);
@@ -27,7 +27,7 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
         ),
       ],
     ),
-    drawer: new Drawer(
+    drawer: Drawer(
       child: showAppMenu(state.userName),
     ),
     body: Column(
@@ -55,31 +55,31 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
 
         ),
         Expanded(
-          child: new ListView.builder(
+          child: ListView.builder(
             itemBuilder: (BuildContext context, int index) =>
-                new ContactItem(list[index]),
+                ContactItem(list[index]),
             itemCount: list.length,
           ),
         ),
       ],
     ),
-    bottomNavigationBar: new BottomNavigationBar(
+    bottomNavigationBar: BottomNavigationBar(
       items: [
-        new BottomNavigationBarItem(
-          icon: new Image.asset(
+        BottomNavigationBarItem(
+          icon: Image.asset(
             "assets/images/message.png",
             width: 30.0,
             height: 30.0,
           ),
-          title: new Text("消息"),
+          title: Text("消息"),
         ),
-        new BottomNavigationBarItem(
-          icon: new Image.asset(
+        BottomNavigationBarItem(
+          icon: Image.asset(
             "assets/images/contacts.png",
             width: 30.0,
             height: 30.0,
           ),
-          title: new Text("联系人"),
+          title: Text("联系人"),
         ),
       ],
       onTap: (index) {
@@ -99,16 +99,16 @@ class ContactItem extends StatelessWidget {
 
   Widget _buildTiles(Entry root) {
     if (root.list.isEmpty)
-      return new GestureDetector(
-        child: new ListTile(
+      return GestureDetector(
+        child: ListTile(
           title: getPerson(root.title),
         ),
         onTap: () {
           _homeState.showChat(root.title);
         },
       );
-    return new ExpansionTile(
-      key: new PageStorageKey<Entry>(root),
+    return ExpansionTile(
+      key: PageStorageKey<Entry>(root),
       title: getGroup(root.title),
       children: root.list.map(_buildTiles).toList(),
     );
