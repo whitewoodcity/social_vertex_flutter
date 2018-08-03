@@ -73,24 +73,26 @@ class RegisterState extends State<RegisterPage> {
 
   void _register() async {
     var password = md5.generateMd5(_password);
-    var info = '''{
-    "type":"user",
-    "subtype":"registry",
-    "id":"$_userName"
-    "nickName":"$_userName",
-    "password":"$password"
-    ''';
+    var info = {
+      "type": "user",
+      "subtype": "register",
+      "id": "$_userName",
+      "password": "$password"
+    };
     HttpClient client = new HttpClient();
     try {
       client
-          .open("POST", config.host, config.httpPort, "/")
+          .open("POST", config.host, config.httpPort, "/user")
           .then((HttpClientRequest req) {
-        req.write(info);
+        req.write(json.encode(info) + "\r\n");
         return req.close();
       }).then((HttpClientResponse response) {
         response.transform(utf8.decoder).listen((contents) {
           var resultData = json.decode(contents);
-          _registerAlert(resultData["info"]);
+          print(resultData);
+          _registerAlert(resultData["register"] == true
+              ? "注册成功"
+              : resultData["info"] != null ? resultData["info"] : "注册失败");
         });
       });
     } finally {
@@ -106,7 +108,7 @@ class RegisterState extends State<RegisterPage> {
             children: <Widget>[
               Align(
                 alignment: Alignment.center,
-                child: Text(info==null?"注册失败":info),
+                child: Text(info),
               ),
               SizedBox.fromSize(
                 size: Size(0.00, 10.00),

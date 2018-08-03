@@ -34,8 +34,15 @@ class MyHomePageState extends State<MyHomePage> {
   String userName; //用户名
   List<MessageEntry> messageList = []; //消息列表
   List<SearchItem> searchList = []; //搜索好友列表
-  String           searchKey;
-  List<UserInfoItem>     userInfoList=[new UserInfoItem(new UserInfoModel(id:'ZXJ2017',name: "哲学家" ),),];
+
+  String searchKey;
+  String curChartTarget;            //当前聊天对象
+
+  List<UserInfoItem> userInfoList = [
+    new UserInfoItem(
+      new UserInfoModel(id: 'ZXJ2017', name: "哲学家"),
+    ),
+  ];
 
   Widget build(BuildContext context) {
     this.context = context;
@@ -49,7 +56,7 @@ class MyHomePageState extends State<MyHomePage> {
       case keys.search:
         return showSearchDialog(this, searchList);
       case keys.userInfo:
-        return showInfo(this,searchKey,userInfoList);
+        return showInfo(this, searchKey, userInfoList);
       default:
         return showLogin(this);
     }
@@ -69,6 +76,79 @@ class MyHomePageState extends State<MyHomePage> {
             ));
   }
 
+  void _showRequest(String message, String to) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => new SimpleDialog(
+            title: new Text("好友请求"),
+            children: <Widget>[
+              new Column(
+                children: <Widget>[
+                  new Row(
+                    children: <Widget>[
+                      new Container(
+                        height: 100.0,
+                        alignment: Alignment.center,
+                        child: new Text(
+                          message,
+                          style: TextStyle(fontSize: 18.0),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  new Row(
+                    children: <Widget>[
+                      new SizedBox(
+                        height: 10.0,
+                      )
+                    ],
+                  ),
+                  new Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new RaisedButton(
+                        onPressed: () {
+                          var agree = {
+                            "type": "friend",
+                            "subtype": "response",
+                            "to": "$to",
+                            "accept": true,
+                            "version": "0.1"
+                          };
+                          sendMessage(json.encode(agree) + "\r\n");
+                          _dynamicUpdataFriendList(to);
+                          Navigator.pop(context);
+                        },
+                        child: new Text("接受"),
+                      ),
+                      new SizedBox(
+                        width: 10.0,
+                      ),
+                      new RaisedButton(
+                        onPressed: () {
+                          var agree = {
+                            "type": "friend",
+                            "subtype": "response",
+                            "to": "$to",
+                            "accept": false,
+                            "version": "0.1"
+                          };
+                          sendMessage(json.encode(agree) + "\r\n");
+                          Navigator.pop(context);
+                        },
+                        child: new Text("拒绝"),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+    );
+  }
+
   void updateUi(int index) {
     //切换页面
     print(index);
@@ -84,12 +164,13 @@ class MyHomePageState extends State<MyHomePage> {
       friendName = name;
     });
   }
-  void showUserInfo(int status,String keyWord){  //显示search界面
+
+  void showUserInfo(int status, String keyWord) {
+    //显示search界面
     setState(() {
       curPage = status;
       searchKey = keyWord;
     });
-
   }
 
   /*
@@ -103,59 +184,58 @@ class MyHomePageState extends State<MyHomePage> {
     _socket = await Socket.connect(config.host, config.tcpPort);
     _socket.forEach(
       (package) {
-        var backInf = json.decode(utf8.decode(package));
+        var backInf = json.decode(utf8.decode(package).trim());
         var type = backInf["type"];
-        print(backInf);
+        print("返回消息：$backInf");
         switch (type) {
           case "user": //登录
             bool loginStatus = backInf["login"];
             if (loginStatus) {
-              userName = backInf["user"]["id"];
-              this.updateUi(1);
-            } else {
-              this.showMesssge(backInf['info']);
-            }
-            break;
-          case "friend": //获取好友列表
-            if (backInf["action"] == "list") {
-              List<Entry> result = [];
-              var groups = backInf["results"];
-              for (var group in groups) {
-                List<Entry> friends = new List();
-                var lists = group["lists"];
-                print(lists);
-                for (var friend in lists) {
+              userName = backInf["id"];
+              List<Entry> friends = new List();
+
+              if (backInf["friends"].length > 0) {
+                for (var friend in backInf["friends"]) {
+                  print(friend.runtimeType);
                   friends.add(new Entry(friend["nickname"]));
                 }
-                result.add(new Entry(group["group"], friends));
+                list.add(Entry("我的好友", friends));
               }
-              if (result.length > 0) {
-                updateContactsList(result);
-              } else {
-                showMesssge("好友列表为空");
-              }
-            }
-            if (backInf["action"] == "request") {
-              showMesssge(backInf["info"]);
+              this.updateUi(1);
+            } else {
+              this.showMesssge(
+                  backInf['info'] == null ? "登陆失败" : backInf["info"]);
             }
             break;
           case "message": //获取消息
-            var status = backInf["info"];
-            if (status == "OK") {
+
+            if(curChartTarget==backInf["from"]){
+
               updateChartList(backInf["body"]);
-            } else {
-              showMesssge(backInf["info"]);
+
+            }else{
+               /**todo 更新到消息列表中去**/
             }
-            if (backInf["from"] != userName) updateChartList(backInf["body"]);
+
             break;
           case "search": //搜索好友
-            if (backInf["user"] != null) {
+            if (backInf["info"] != null) {
               if (searchList.length != 0)
                 searchList.removeRange(0, searchList.length);
-              searchList.add(new SearchItem(backInf["user"]["user"]));
+              searchList.add(new SearchItem(backInf["info"]["id"]));
               updateSearchList();
             } else {
               showMesssge("该用户不存在，换个姿势试试！");
+            }
+            break;
+          case "friend":       //添加好友请求和回复
+            var subtype = backInf["subtype"];
+            if (subtype == "request") {
+              _showRequest(backInf["message"], backInf["from"]);
+            } else {
+              if(backInf["accept"]){
+                _dynamicUpdataFriendList(backInf["from"]);
+              }
             }
             break;
         }
@@ -167,18 +247,25 @@ class MyHomePageState extends State<MyHomePage> {
       this.showMesssge("连接断开");
     }
   }
+  void _dynamicUpdataFriendList(String nickName){     //更新好友列表
+    list = new List.from(list);
+    if(list.length>0){
+      list.first.list.add(new Entry(nickName));
+    }else{
+      List<Entry> friend =new  List();
+      friend.add(new Entry(nickName));
+      list.add(new Entry("我的好友",friend));
+    }
+    setState(() {
+      this.list = list;
+    });
+
+  }
 
   void sendMessage(String message) {
     //向服务器发送数据
     print(message);
     _socket.write(message);
-  }
-
-  void updateContactsList(List<Entry> list) {
-    //更新联系人列表
-    setState(() {
-      this.list = list;
-    });
   }
 
   void updateChartList(String message) {

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'component/application_menu.dart';
 import 'main.dart';
 import 'message_list.dart';
+import 'package:social_vertex_flutter/config/config.dart' as config;
 
 MyHomePageState homeState;
 
@@ -19,7 +22,7 @@ Widget showUser(MyHomePageState state) {
             decoration: new InputDecoration(icon: new Icon(Icons.add)),
           ),
           onPressed: () {
-           homeState.updateUi(4);
+            homeState.updateUi(4);
           },
         ),
       ],
@@ -45,12 +48,21 @@ Widget showUser(MyHomePageState state) {
             ),
             title: new Text("联系人")),
       ],
-      onTap: (index){
-        if(index==1){
+      onTap: (index) {
+        if (index == 1) {
           state.updateUi(2);
         }
       },
       currentIndex: _curPage,
     ),
   );
+}
+
+void _obtainLeftMessage() {        /**todo 获取离线消息**/
+  var httpClient = new HttpClient();
+  httpClient
+      .open("POST", config.host, config.httpPort, "/user")
+      .then((request) {
+
+  });
 }

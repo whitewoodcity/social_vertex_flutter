@@ -9,9 +9,11 @@ import 'main.dart';
 Widget showChatDialog(
     String name, MyHomePageState state, List<MessageEntry> list) {
   var _message = "";
+  if(state.curChartTarget!=name) list.removeRange(0, list.length);
+  state.curChartTarget = name;
   return new Scaffold(
     appBar: new AppBar(
-      title: new Text(name == null ? "未知好友" : name),
+      title: new Text(name == null ? "未知好友" : name.trim()),
       centerTitle: true,
       leading: new IconButton(
           icon: new InputDecorator(
@@ -47,14 +49,15 @@ Widget showChatDialog(
               new RaisedButton(
                 child: new Text("发送"),
                 onPressed: () {
-                  var message = '''{
-            "type":"message",
-            "subtype":"text"
-            "to":"$name",
-             "body":"$_message",
-             "version":0.1
-                }''';
-                  state.sendMessage(message);
+                  var message = {
+                    "type": "message",
+                    "subtype": "text",
+                    "to": "$name",
+                    "body": "$_message",
+                    "version": 0.1
+                  };
+                  state.updateChartList(_message);
+                  state.sendMessage(json.encode(message)+"\r\n");
                 },
               ),
             ],

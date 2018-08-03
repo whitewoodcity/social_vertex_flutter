@@ -10,7 +10,7 @@ MyHomePageState _homeState;
 
 Widget showContacts(MyHomePageState state, List<Entry> list) {
   _homeState = state;
-  if (list.length == 0) loadData();
+  state.curChartTarget="";
   var _curPage = 1;
   return new Scaffold(
     appBar: new AppBar(
@@ -92,17 +92,6 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
   );
 }
 
-void loadData() {
-  //todo 此步不需要，用户登录成功之后，直接返回好友列表。无需再次请求
-  var getFriendList = ''' {
-    "type":"friend",
-    "action":"list",
-    "from":"${_homeState.userName}",
-    "version":0.1
-  }''';
-  _homeState.sendMessage(getFriendList);
-}
-
 class ContactItem extends StatelessWidget {
   ContactItem(this.entry);
 
@@ -140,6 +129,5 @@ class ContactsModel {
 class Entry {
   final String title;
   final List<Entry> list;
-
   Entry(this.title, [this.list = const <Entry>[]]);
 }

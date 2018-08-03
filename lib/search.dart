@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
@@ -56,12 +58,13 @@ Widget showSearchDialog(MyHomePageState state, List<SearchItem> list) {
 
 void _search() {
   if (_target != null && _target.trim() != "") {
-    var message = '''{
-      "type":"search",
-      "subtype":"info",
-      "keyword":"$_target"
-    }''';
-    homePageState.sendMessage(message);
+    var message = {
+      "type": "search",
+      "subtype": "info",
+      "keyword": "$_target",
+      "version": "0.1"
+    };
+    homePageState.sendMessage(json.encode(message) + "\r\n");
   } else {
     homePageState.showMesssge("搜索内容不能为空....");
   }
@@ -119,15 +122,14 @@ class SearchItemState extends State<SearchItem> {
                 decoration: new InputDecoration(icon: new Icon(Icons.add)),
               ),
               onPressed: () {
-                var message = '''{
-           "type":"friend",
-           "action":"request",
-           "from":"${homePageState.userName}",
-           "to":"$result",
-           "message":"请添加我为你的好友，我是${homePageState.userName}",
-           "version":0.1
-            }''';
-                homePageState.sendMessage(message);
+                var message = {
+                  "type": "friend",
+                  "subtype": "request",
+                  "to": "$result",
+                  "message": "请添加我为你的好友，我是${homePageState.userName}",
+                  "version": 0.1
+                };
+                homePageState.sendMessage(json.encode(message) + "\r\n");
               },
             ),
           ),

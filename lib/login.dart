@@ -82,14 +82,14 @@ void setUserPassword(String value) {
 
 void _login() async {
   var password = md5.generateMd5(_password);
-  var userInfo = '''{
+  var userInfo = {
                        "type":"user",
                        "subtype":"login",
                        "id":"$_userName",
-                       "password":"$password",
-                   }''';
+                       "password":"$password"
+                   };
   await homeState.initConnect();
-   homeState.sendMessage(userInfo);
+   homeState.sendMessage(json.encode(userInfo)+"\r\n");
 }
 
 void _roll() {
