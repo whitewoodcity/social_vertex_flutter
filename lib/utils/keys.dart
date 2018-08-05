@@ -4,4 +4,5 @@ const int contacts = 2;
 const int dialog = 3;
 const int search = 4;
 const int userInfo = 5;
+const int systemInfo=6;
 

@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/component/message_item.dart';
+import 'system_info.dart';
+import 'component/message_item.dart';
 import 'user_info.dart';
 import 'search.dart';
 import 'dialog.dart';
@@ -32,8 +33,15 @@ class MyHomePageState extends State<MyHomePage> {
   Socket _socket;
   List<Entry> list = []; //好友列表
   String userName; //用户名
-  List<MessageEntry> messageList = []; //消息列表
+  List<MessageEntry> messageList = []; //聊天消息列表
   List<SearchItem> searchList = []; //搜索好友列表
+  List<MessageListModel> userMessage = [   //消息列表
+    MessageListModel(name: "yangkui", type: "message"),
+    MessageListModel(name: "系统消息", type: "friend")
+  ];
+  List<SystemInfoModel> systemInfoList =[
+    SystemInfoModel(type: "好友请求",info:"我是yangkui请求加你为好友",to: "yangxiong")
+  ];
 
   String searchKey;
   String curChartTarget; //当前聊天对象
@@ -48,7 +56,7 @@ class MyHomePageState extends State<MyHomePage> {
     this.context = context;
     switch (curPage) {
       case keys.user:
-        return showUser(this);
+        return showUser(this, userMessage);
       case keys.contacts:
         return showContacts(this, list);
       case keys.dialog:
@@ -57,6 +65,8 @@ class MyHomePageState extends State<MyHomePage> {
         return showSearchDialog(this, searchList);
       case keys.userInfo:
         return showInfo(this, searchKey, userInfoList);
+      case keys.systemInfo:
+        return showSystemInfo(this,systemInfoList);
       default:
         return showLogin(this);
     }
@@ -128,14 +138,14 @@ class MyHomePageState extends State<MyHomePage> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          var agree = {
+                          var refuse = {
                             "type": "friend",
                             "subtype": "response",
                             "to": "$to",
                             "accept": false,
                             "version": "0.1"
                           };
-                          sendMessage(json.encode(agree) + "\r\n");
+                          sendMessage(json.encode(refuse) + "\r\n");
                           Navigator.pop(context);
                         },
                         child: Text("拒绝"),
@@ -213,6 +223,7 @@ class MyHomePageState extends State<MyHomePage> {
               updateChartList(backInf["body"]);
             } else {
               /**todo 更新到消息列表中去**/
+
             }
 
             break;

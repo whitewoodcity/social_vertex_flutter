@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/component/message_item.dart';
+import 'component/message_item.dart';
 import 'main.dart';
 
 Widget showChatDialog(

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:social_vertex_flutter/main.dart';
 
 showAppMenu(String userName) {
   int curIndex = 0;

@@ -1,13 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MessageEntry extends StatelessWidget {
-  String _message;
-  BuildContext _context;
+///
+/// 聊天消息实体
+///
 
+class MessageEntry extends StatefulWidget {
+ final String _message;
   MessageEntry(this._message);
 
-  Widget _buildEntry(String entry) {
+  @override
+  MessageItem createState()=>MessageItem(_message);
+}
+class MessageItem extends State<MessageEntry>{
+  var _message;
+
+  MessageItem(this._message);
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
         child: Row(
@@ -17,7 +28,7 @@ class MessageEntry extends StatelessWidget {
                 IconButton(
                     icon: InputDecorator(
                       decoration:
-                          InputDecoration(icon: Icon(Icons.person_outline)),
+                      InputDecoration(icon: Icon(Icons.person_outline)),
                     ),
                     onPressed: null)
               ],
@@ -29,9 +40,9 @@ class MessageEntry extends StatelessWidget {
                   child: _message == null
                       ? null
                       : Text(
-                          _message,
-                          style: TextStyle(fontSize: 18.0),
-                        ),
+                    _message,
+                    style: TextStyle(fontSize: 18.0),
+                  ),
                 ),
                 color: Colors.grey,
                 width: 200.0,
@@ -44,7 +55,7 @@ class MessageEntry extends StatelessWidget {
       ),
       onTap: () {
         showDialog(
-          context: _context,
+          context: context,
           builder: (BuildContext context) {
             return SimpleDialog(
               children: <Widget>[
@@ -65,9 +76,6 @@ class MessageEntry extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _context = context;
-    return _buildEntry(_message);
-  }
+
+
 }
