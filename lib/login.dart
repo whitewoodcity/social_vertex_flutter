@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'user.dart';
 import 'main.dart';
 import 'register.dart';
 import 'package:social_vertex_flutter/utils/requests.dart' as md5;
@@ -89,6 +90,7 @@ void _login() async {
     "password": "$password"
   };
   await homeState.initConnect();
+  homeState.userInfo = User(id: _userName,password: password);
   homeState.sendMessage(json.encode(userInfo) + "\r\n");
 }
 

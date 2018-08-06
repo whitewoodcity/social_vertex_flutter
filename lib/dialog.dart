@@ -6,7 +6,7 @@ import 'component/message_item.dart';
 import 'main.dart';
 
 Widget showChatDialog(
-    String name, MyHomePageState state, List<MessageEntry> list) {
+    String name, MyHomePageState state, List<MessageEntry> list,[String message]) {
   var _message = "";
   if(state.curChartTarget!=name) list.removeRange(0, list.length);
   state.curChartTarget = name;

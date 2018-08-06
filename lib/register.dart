@@ -82,20 +82,20 @@ class RegisterState extends State<RegisterPage> {
     HttpClient client = HttpClient();
     try {
       client
-          .open("POST", config.host, config.httpPort, "/user")
-          .then((HttpClientRequest req) {
-        req.write(json.encode(info) + "\r\n");
-        return req.close();
-      }).then((HttpClientResponse response) {
-        response.transform(utf8.decoder).listen((contents) {
-          var resultData = json.decode(contents);
+          .put(config.host, config.httpPort, "/user/register")
+          .then((HttpClientRequest request) {
+        request.write(json.encode(info) + "\r\n");
+        return request.close();
+      }).then((response) {
+        response.transform(utf8.decoder).listen((data) {
+          var resultData = json.decode(data);
           print(resultData);
           _registerAlert(resultData["register"] == true
               ? "注册成功"
               : resultData["info"] != null ? resultData["info"] : "注册失败");
         });
       });
-    } finally {
+    } catch (e) {
       if (client != null) client.close();
     }
   }
@@ -127,3 +127,21 @@ class RegisterState extends State<RegisterPage> {
     );
   }
 }
+/*  try {
+      client
+          .open("PUT", config.host, config.httpPort, "/user")
+          .then((HttpClientRequest req) {
+        req.write(json.encode(info) + "\r\n");
+        return req.close();
+      }).then((HttpClientResponse response) {
+        response.transform(utf8.decoder).listen((contents) {
+          var resultData = json.decode(contents);
+          print(resultData);
+          _registerAlert(resultData["register"] == true
+              ? "注册成功"
+              : resultData["info"] != null ? resultData["info"] : "注册失败");
+        });
+      });
+    } finally {
+      if (client != null) client.close();
+    }*/
