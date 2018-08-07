@@ -1,22 +1,20 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'user.dart';
 import 'main.dart';
 import 'register.dart';
-import 'package:social_vertex_flutter/utils/util.dart' as util;
-import 'config/constants.dart' as constants;
-
-var _userName = "";
-var _password = "";
-MyHomePageState homeState;
+import 'utils/util.dart';
+import 'config/constants.dart';
 
 Widget showLogin(MyHomePageState state) {
-  homeState = state;
+
+  var _id = "";
+  var _password = "";
+
   return Scaffold(
-    key: Key(constants.login),
+    key: Key(login),
     appBar: AppBar(
       title: Text("登录"),
     ),
@@ -39,24 +37,24 @@ Widget showLogin(MyHomePageState state) {
               children: <Widget>[
                 TextField(
                   textAlign: TextAlign.start,
-                  onChanged: setUserName,
-                  decoration: InputDecoration(labelText: "用户名:"),
+                  onChanged: (value) => (_id = value),
+                  decoration: InputDecoration(labelText: "用户名："),
                 ),
                 TextField(
                   textAlign: TextAlign.start,
-                  onChanged: setUserPassword,
+                  onChanged: (value) => (_password = value),
                   obscureText: true,
-                  decoration: InputDecoration(labelText: "密码"),
+                  decoration: InputDecoration(labelText: "密码："),
                 ),
                 SizedBox.fromSize(
                   size: Size(0.00, 10.0),
                 ),
                 RaisedButton(
                   onPressed: () {
-                    if (_password != "" && _userName != "") {
-                      _login();
+                    if (_password != "" && _id != "") {
+                      _login(state, _id, _password);
                     } else {
-                      homeState.showMessage("用户名/密码不能为空！");
+                      state.showMessage("用户名/密码不能为空！");
                     }
                   },
                   child: Text("登录"),
@@ -68,34 +66,26 @@ Widget showLogin(MyHomePageState state) {
       ),
     ),
     floatingActionButton: FloatingActionButton(
-      onPressed: _roll,
+      onPressed: () => (_roll(state)),
       child: Text("注册"),
     ),
   );
 }
 
-void setUserName(String value) {
-  _userName = value;
-}
-
-void setUserPassword(String value) {
-  _password = value;
-}
-
-void _login() async {
-  var password = util.md5(_password);
+void _login(MyHomePageState state, String _id, String _password) async {
+  _password = md5(_password);
   var userInfo = {
-    constants.type: constants.user,
-    constants.subtype: constants.login,
-    constants.id: "$_userName",
-    constants.password: "$password"
+    type: user,
+    subtype: login,
+    id: _id,
+    password: _password
   };
-  await homeState.initConnect();
-  homeState.userInfo = User(id: _userName,password: password);
-  homeState.sendMessage(json.encode(userInfo) + constants.end);
+  await state.initConnect();
+  state.userInfo = User(id: _id,password: _password);
+  state.sendMessage(json.encode(userInfo) + end);
 }
 
-void _roll() {
-  Navigator.of(homeState.context).push(MaterialPageRoute(
+void _roll(MyHomePageState state) {
+  Navigator.of(state.context).push(MaterialPageRoute(
       builder: (BuildContext context) => RegisterPage()));
 }
