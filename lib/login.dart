@@ -69,7 +69,6 @@ Widget showLogin(MyHomePageState state) {
 }
 
 void _login(MyHomePageState state) async {
-
   var userInfo = {
     type: user,
     subtype: login,

@@ -75,7 +75,7 @@ void _search(MyHomePageState state) {
       response.transform(utf8.decoder).listen((data) {
         result = json.decode(data);
         if (result[constants.user] != null) {
-          state.updateSearchList(result[constants.user][constants.id], state);
+          state.updateSearchList(result[constants.user][constants.id]);
         } else {
           state.showMessage("对不起,查无该用户！");
         }

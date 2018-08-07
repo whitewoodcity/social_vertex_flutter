@@ -30,8 +30,12 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage> {
   var context;
   var currentPage = 100;
-  var friendName;
+
+  String id;
+  String password;
   Socket _socket;
+
+  String friendName;
   List<Entry> list = []; //好友列表
   String userName; //用户名
   List<MessageEntry> messageList = []; //聊天消息列表
@@ -41,8 +45,6 @@ class MyHomePageState extends State<MyHomePage> {
 
   String searchKey;
   String curChartTarget; //当前聊天对象
-  String id;
-  String password;
 
   Widget build(BuildContext context) {
     this.context = context;
@@ -113,7 +115,7 @@ class MyHomePageState extends State<MyHomePage> {
                           var agree = {
                             constants.type: constants.friend,
                             constants.subtype: constants.response,
-                            constants.to: "$to",
+                            constants.to: to,
                             constants.accept: true,
                             constants.version: constants.currentVersion
                           };
@@ -268,12 +270,11 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void updateSearchList(String result, MyHomePageState state) {
+  void updateSearchList(String result) {
     //更新搜索好友列表
     setState(() {
       searchList = List.from(searchList);
-      searchList.add(SearchItem(result, state));
+      searchList.add(SearchItem(result, this));
     });
   }
-
 }
