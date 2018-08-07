@@ -6,9 +6,9 @@ import 'component/message_item.dart';
 import 'main.dart';
 
 Widget showChatDialog(
-    String name, MyHomePageState state, List<MessageEntry> list,[String message]) {
+    String name, MyHomePageState state,[String message]) {
   var _message = "";
-  if(state.curChartTarget!=name) list.removeRange(0, list.length);
+  if(state.curChartTarget!=name) state.messageList.removeRange(0, state.messageList.length);
   state.curChartTarget = name;
   return Scaffold(
     appBar: AppBar(
@@ -27,7 +27,7 @@ Widget showChatDialog(
       children: <Widget>[
         Expanded(
           child: ListView(
-            children: list,
+            children: state.messageList,
           ),
         ),
         Container(

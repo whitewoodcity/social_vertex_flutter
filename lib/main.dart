@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'system_info.dart';
 import 'component/message_item.dart';
-import 'user_info.dart';
 import 'search.dart';
 import 'dialog.dart';
 import 'contact_list.dart';
@@ -17,8 +17,11 @@ void main() => runApp(MyApplication()); //整个应用的入口
 
 class MyApplication extends StatelessWidget {
   @override
-  Widget build(BuildContext context) =>
-      MaterialApp(title: "IM通讯", home: MyHomePage());
+  Widget build(BuildContext context) => MaterialApp(
+        title: "IM通讯",
+        home: MyHomePage(),
+        theme: config.APPLICATION_THEME,
+      );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -35,34 +38,26 @@ class MyHomePageState extends State<MyHomePage> {
   String userName; //用户名
   List<MessageEntry> messageList = []; //聊天消息列表
   List<SearchItem> searchList = []; //搜索好友列表
-  List<MessageListModel> userMessage = [];   //消息列表
-  List<SystemInfoModel> systemInfoList =[];
+  List<MessageListModel> userMessage = []; //消息列表
+  List<SystemInfoModel> systemInfoList = [];
 
   String searchKey;
   String curChartTarget; //当前聊天对象
-  User    userInfo;      //当前用户信息
-
-  List<UserInfoItem> userInfoList = [
-    UserInfoItem(
-      UserInfoModel(id: 'ZXJ2017', name: "哲学家"),
-    ),
-  ];
+  User userInfo; //当前用户信息
 
   Widget build(BuildContext context) {
     this.context = context;
     switch (curPage) {
       case keys.user:
-        return showUser(this, userMessage,userInfo);
+        return showUser(this);
       case keys.contacts:
-        return showContacts(this, list);
+        return showContacts(this);
       case keys.dialog:
-        return showChatDialog(friendName, this, messageList);
+        return showChatDialog(friendName, this);
       case keys.search:
-        return showSearchDialog(this, searchList);
-      case keys.userInfo:
-        return showInfo(this, searchKey, userInfoList);
+        return showSearchDialog(this);
       case keys.systemInfo:
-        return showSystemInfo(this,systemInfoList);
+        return showSystemInfo(this);
       default:
         return showLogin(this);
     }
@@ -190,7 +185,7 @@ class MyHomePageState extends State<MyHomePage> {
     try {
       _socket = await Socket.connect(config.host, config.tcpPort);
       _socket.forEach(
-            (package) {
+        (package) {
           var backInf = json.decode(utf8.decode(package).trim());
           print(backInf);
           var type = backInf["type"];
@@ -216,26 +211,16 @@ class MyHomePageState extends State<MyHomePage> {
               }
               break;
             case "message": //获取消息
-
               if (curChartTarget == backInf["from"]) {
                 updateChartList(backInf["body"]);
               } else {
-                /**todo 更新到消息列表中去**/
-                print(backInf.toString());
-                userMessage.add(
-                    MessageListModel(name: backInf["from"], type: backInf["type"],message: backInf["body"]));
+
+                userMessage.add(MessageListModel(
+                    name: backInf["from"],
+                    type: backInf["type"],
+                    message: backInf["body"]));
               }
 
-              break;
-            case "search": //搜索好友
-              if (backInf["info"] != null) {
-                if (searchList.length != 0)
-                  searchList.removeRange(0, searchList.length);
-                searchList.add(SearchItem(backInf["info"]["id"]));
-                updateSearchList();
-              } else {
-                showMessage("该用户不存在，换个姿势试试！");
-              }
               break;
             case "friend": //添加好友请求和回复
               var subtype = backInf["subtype"];
@@ -250,14 +235,9 @@ class MyHomePageState extends State<MyHomePage> {
           }
         },
       );
-      try {
         _socket.done;
-      } catch (error) {
-        this.showMessage("连接断开");
-      }
-    }catch(e){
+    } catch (e) {
       showMessage("网络异常!");
-
     }
   }
 
@@ -290,10 +270,12 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void updateSearchList() {
+  void updateSearchList(String result) {
     //更新搜索好友列表
     setState(() {
       searchList = List.from(searchList);
+      searchList.add(SearchItem(result));
     });
   }
+
 }

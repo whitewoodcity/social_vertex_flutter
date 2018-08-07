@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:social_vertex_flutter/config/config.dart' as config;
 
 showAppMenu(String userName) {
   int curIndex = 0;
@@ -41,11 +42,15 @@ showAppMenu(String userName) {
               ),
               title: Text("设置")),
           BottomNavigationBarItem(
-              icon: Image.asset(
-                "assets/images/dark.png",
-                width: 20.0,
-                height: 20.0,
-              ),
+              icon: IconButton(
+                  icon: Image.asset(
+                    "assets/images/dark.png",
+                    width: 20.0,
+                    height: 20.0,
+                  ),
+                  onPressed: () {
+
+                  }),
               title: Text("夜间"))
         ],
         onTap: (value) {
