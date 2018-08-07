@@ -182,61 +182,71 @@ class MyHomePageState extends State<MyHomePage> {
     if (_socket != null) {
       _socket.destroy();
     }
+
+    List<int> message = List<int>();
+
     try {
       _socket = await Socket.connect(constants.server, constants.tcpPort);
       _socket.forEach(
         (package) {
-          var backInf = json.decode(utf8.decode(package).trim());
-          print(backInf);
-          var type = backInf[constants.type];
-          print("返回消息：$backInf");
-          switch (type) {
-            case constants.user: //登录
-              bool loginStatus = backInf[constants.login];
-              if (loginStatus) {
-                userName = backInf[constants.id];
-                List<Entry> friends = List();
+          message.addAll(package);//粘包
+          if (utf8.decode(message).endsWith(constants.end)) {
+            var backInf = json.decode(utf8.decode(message).trim());
+            message.clear();
 
-                if (backInf[constants.friends].length > 0) {
-                  for (var friend in backInf[constants.friends]) {
-                    print(friend.runtimeType);
-                    friends.add(Entry(friend[constants.nickname]));
+            print(backInf);
+            var type = backInf[constants.type];
+            print("返回消息：$backInf");
+            switch (type) {
+              case constants.user: //登录
+                bool loginStatus = backInf[constants.login];
+                if (loginStatus) {
+                  userName = backInf[constants.id];
+                  List<Entry> friends = List();
+
+                  if (backInf[constants.friends].length > 0) {
+                    for (var friend in backInf[constants.friends]) {
+                      print(friend.runtimeType);
+                      friends.add(Entry(friend[constants.nickname]));
+                    }
+                    list.add(Entry("我的好友", friends));
                   }
-                  list.add(Entry("我的好友", friends));
+                  this.updateUi(1);
+                } else {
+                  this.showMessage(backInf[constants.info] == null
+                      ? "登陆失败"
+                      : backInf[constants.info]);
                 }
-                this.updateUi(1);
-              } else {
-                this.showMessage(
-                    backInf[constants.info] == null ? "登陆失败" : backInf[constants.info]);
-              }
-              break;
-            case constants.message: //获取消息
-              if (curChartTarget == backInf[constants.from]) {
-                updateChartList(backInf[constants.body]);
-              } else {
-
-                userMessage.add(MessageListModel(
-                    name: backInf[constants.from],
-                    type: backInf[constants.type],
-                    message: backInf[constants.body]));
-              }
-
-              break;
-            case constants.friend: //添加好友请求和回复
-              var subtype = backInf[constants.subtype];
-              if (subtype == constants.request) {
-                _showRequest(backInf[constants.message], backInf[constants.from]);
-              } else {
-                if (backInf[constants.accept]) {
-                  _dynamicUpdataFriendList(backInf[constants.from]);
+                break;
+              case constants.message: //获取消息
+                if (curChartTarget == backInf[constants.from]) {
+                  updateChartList(backInf[constants.body]);
+                } else {
+                  userMessage.add(MessageListModel(
+                      name: backInf[constants.from],
+                      type: backInf[constants.type],
+                      message: backInf[constants.body]));
                 }
-              }
-              break;
+
+                break;
+              case constants.friend: //添加好友请求和回复
+                var subtype = backInf[constants.subtype];
+                if (subtype == constants.request) {
+                  _showRequest(
+                      backInf[constants.message], backInf[constants.from]);
+                } else {
+                  if (backInf[constants.accept]) {
+                    _dynamicUpdataFriendList(backInf[constants.from]);
+                  }
+                }
+                break;
+            }
           }
         },
       );
-        _socket.done;
+      _socket.done;
     } catch (e) {
+      message.clear();
       showMessage("网络异常!");
     }
   }
