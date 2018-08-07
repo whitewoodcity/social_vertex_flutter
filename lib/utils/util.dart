@@ -9,3 +9,4 @@ String md5(String data) {
   var password = hex.encode(digest.bytes);
   return password;
 }
+

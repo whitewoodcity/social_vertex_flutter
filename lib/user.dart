@@ -8,11 +8,8 @@ import 'component/application_menu.dart';
 import 'main.dart';
 import 'config/constants.dart' as constants;
 
-MyHomePageState homeState;
-
 Widget showUser(MyHomePageState state) {
-  homeState = state;
-  _obtainLeftMessage();
+  _obtainLeftMessage(state);
 
   int _curPage = 0;
   return Scaffold(
@@ -25,21 +22,21 @@ Widget showUser(MyHomePageState state) {
             decoration: InputDecoration(icon: Icon(Icons.add)),
           ),
           onPressed: () {
-            homeState.updateUi(4);
+            state.updateUi(4);
           },
         ),
       ],
     ),
     drawer: Drawer(
-      child: showAppMenu(homeState.userName),
+      child: showAppMenu(state.userName),
     ),
     body: ListView.builder(
       itemBuilder: (BuildContext context, int index) => MessageListItem(
-          homeState.userMessage[index]._name,
-          homeState.userMessage[index]._type,
-          homeState,
-          homeState.userMessage[index]._message),
-      itemCount: homeState.userMessage.length,
+          state.userMessage[index]._name,
+          state.userMessage[index]._type,
+          state,
+          state.userMessage[index]._message),
+      itemCount: state.userMessage.length,
     ),
     bottomNavigationBar: BottomNavigationBar(
       items: [
@@ -68,10 +65,10 @@ Widget showUser(MyHomePageState state) {
   );
 }
 
-void _obtainLeftMessage() {
+void _obtainLeftMessage(MyHomePageState state) {
   var req = {
-    constants.id: "${homeState.userInfo.id}",
-    constants.password: "${homeState.userInfo.password}",
+    constants.id: "${state.id}",
+    constants.password: "${state.password}",
     constants.version: constants.currentVersion
   };
   var httpClient = HttpClient();
@@ -87,13 +84,13 @@ void _obtainLeftMessage() {
       var messages = result[constants.messages];
       if (friends != null && friends.length > 0) {
         for (var friend in friends) {
-          homeState.systemInfoList.add(SystemInfoModel(
+          state.systemInfoList.add(SystemInfoModel(
               type: "好友请求", info: friend[constants.id], to: friend[constants.nickname]));
         }
       }
       if (messages != null && messages.length > 0) {
         for (var message in messages) {
-          homeState.userMessage
+          state.userMessage
               .add(MessageListModel(name: message[constants.id], type: constants.message));
         }
       }
@@ -197,21 +194,5 @@ class MessageListEntry extends State<MessageListItem> {
         }
       },
     );
-  }
-}
-///
-///
-/// 用户model
-/// @id 用户名
-/// @password 用户密码
-///
-
-class User {
-  String id;
-  String password;
-
-  User({String id, String password}) {
-    this.id = id;
-    this.password = password;
   }
 }

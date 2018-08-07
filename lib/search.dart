@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'config/constants.dart' as constants;
 
-MyHomePageState homePageState;
 String _target;
 
 Widget showSearchDialog(MyHomePageState state) {
-  homePageState = state;
 
   return Scaffold(
     appBar: AppBar(
@@ -42,7 +40,7 @@ Widget showSearchDialog(MyHomePageState state) {
             ),
             Expanded(
               child: RaisedButton(
-                onPressed: _search,
+                onPressed: (){_search(state);},
                 child: Text("搜索"),
               ),
               flex: 2,
@@ -52,55 +50,57 @@ Widget showSearchDialog(MyHomePageState state) {
         backgroundColor: Colors.white70,
       ),
       body: ListView(
-        children: homePageState.searchList,
+        children: state.searchList,
       ),
     ),
   );
 }
 
-void _search() {
+void _search(MyHomePageState state) {
   if (_target != null && _target.trim() != "") {
     var message = {
       constants.type: constants.search,
       constants.subtype: constants.info,
-      constants.id: "${homePageState.userInfo.id}",
-      constants.password: "${homePageState.userInfo.password}",
-      constants.keyword: "$_target",
-      constants.version: "0.2"
+      constants.id: state.id,
+      constants.password: state.password,
+      constants.keyword: _target,
+      constants.version: constants.currentVersion
     };
     var httpClient = HttpClient();
     var result;
     httpClient.put(constants.server, constants.httpPort, "/${constants.search}/${constants.info}").then((request) {
-      request.write(json.encode(message) + "\r\n");
+      request.write(json.encode(message) + constants.end);
       return request.close();
     }).then((response) {
       response.transform(utf8.decoder).listen((data) {
         result = json.decode(data);
         if (result[constants.user] != null) {
-          homePageState.updateSearchList(result[constants.user][constants.id]);
+          state.updateSearchList(result[constants.user][constants.id], state);
         } else {
-          homePageState.showMessage("对不起,查无该用户！");
+          state.showMessage("对不起,查无该用户！");
         }
       });
     });
   } else {
-    homePageState.showMessage("搜索内容不能为空....");
+    state.showMessage("搜索内容不能为空....");
   }
 }
 
 class SearchItem extends StatefulWidget {
   final String result;
+  MyHomePageState state;
 
-  SearchItem(this.result);
+  SearchItem(this.result, this.state);
 
   @override
-  SearchItemState createState() => SearchItemState(result);
+  SearchItemState createState() => SearchItemState(result, state);
 }
 
 class SearchItemState extends State<SearchItem> {
   final String result;
+  MyHomePageState state;
 
-  SearchItemState(this.result);
+  SearchItemState(this.result, this.state);
 
   @override
   Widget build(BuildContext context) {
@@ -143,12 +143,12 @@ class SearchItemState extends State<SearchItem> {
                 var message = {
                   constants.type: constants.friend,
                   constants.subtype: constants.request,
-                  constants.to: "$result",
-                  constants.message: "请添加我为你的好友，我是${homePageState.userName}",
+                  constants.to: result,
+                  constants.message: "请添加我为你的好友，我是${state.userName}",
                   constants.version: constants.currentVersion
                 };
                 Scaffold.of(context).showSnackBar(SnackBar(content: Text("请求已经发送！")));
-                homePageState.sendMessage(json.encode(message) + constants.end);
+                state.sendMessage(json.encode(message) + constants.end);
               },
             ),
           ),

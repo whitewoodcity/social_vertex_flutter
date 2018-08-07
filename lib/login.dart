@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'user.dart';
 import 'main.dart';
 import 'register.dart';
 import 'utils/util.dart';
@@ -73,6 +72,9 @@ Widget showLogin(MyHomePageState state) {
 }
 
 void _login(MyHomePageState state, String _id, String _password) async {
+  state.id = _id;
+  state.password = _password;
+
   _password = md5(_password);
   var userInfo = {
     type: user,
@@ -81,7 +83,6 @@ void _login(MyHomePageState state, String _id, String _password) async {
     password: _password
   };
   await state.initConnect();
-  state.userInfo = User(id: _id,password: _password);
   state.sendMessage(json.encode(userInfo) + end);
 }
 

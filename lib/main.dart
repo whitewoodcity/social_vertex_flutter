@@ -41,7 +41,8 @@ class MyHomePageState extends State<MyHomePage> {
 
   String searchKey;
   String curChartTarget; //当前聊天对象
-  User userInfo; //当前用户信息
+  String id;
+  String password;
 
   Widget build(BuildContext context) {
     this.context = context;
@@ -66,7 +67,7 @@ class MyHomePageState extends State<MyHomePage> {
     showDialog(
         context: context,
         builder: (BuildContext context) => SimpleDialog(
-              title: Text("消息"),
+//              title: Text("消息"),
               children: <Widget>[
                 Center(
                   child: Text(message),
@@ -116,7 +117,7 @@ class MyHomePageState extends State<MyHomePage> {
                             constants.accept: true,
                             constants.version: constants.currentVersion
                           };
-                          sendMessage(json.encode(agree) + "\r\n");
+                          sendMessage(json.encode(agree) + constants.end);
                           _dynamicUpdataFriendList(to);
                           Navigator.pop(context);
                         },
@@ -267,11 +268,11 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void updateSearchList(String result) {
+  void updateSearchList(String result, MyHomePageState state) {
     //更新搜索好友列表
     setState(() {
       searchList = List.from(searchList);
-      searchList.add(SearchItem(result));
+      searchList.add(SearchItem(result, state));
     });
   }
 
