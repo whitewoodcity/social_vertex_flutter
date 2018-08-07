@@ -1,13 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'package:social_vertex_flutter/config/config.dart' as config;
 
 MyHomePageState homePageState;
 String _target;
 
-Widget showSearchDialog(MyHomePageState state, List<SearchItem> list) {
+Widget showSearchDialog(MyHomePageState state) {
   homePageState = state;
 
   return Scaffold(
@@ -50,7 +52,7 @@ Widget showSearchDialog(MyHomePageState state, List<SearchItem> list) {
         backgroundColor: Colors.white70,
       ),
       body: ListView(
-        children: list,
+        children: homePageState.searchList,
       ),
     ),
   );
@@ -61,10 +63,26 @@ void _search() {
     var message = {
       "type": "search",
       "subtype": "info",
+      "id": "${homePageState.userInfo.id}",
+      "password": "${homePageState.userInfo.password}",
       "keyword": "$_target",
-      "version": "0.1"
+      "version": "0.2"
     };
-    homePageState.sendMessage(json.encode(message) + "\r\n");
+    var httpClient = HttpClient();
+    var result;
+    httpClient.put(config.host, config.httpPort, "search/info").then((request) {
+      request.write(json.encode(message) + "\r\n");
+      return request.close();
+    }).then((response) {
+      response.transform(utf8.decoder).listen((data) {
+        result = json.decode(data);
+        if (result["user"] != null) {
+          homePageState.updateSearchList(result["user"]["id"]);
+        } else {
+          homePageState.showMessage("对不起,查无该用户！");
+        }
+      });
+    });
   } else {
     homePageState.showMessage("搜索内容不能为空....");
   }
@@ -129,6 +147,7 @@ class SearchItemState extends State<SearchItem> {
                   "message": "请添加我为你的好友，我是${homePageState.userName}",
                   "version": 0.1
                 };
+                Scaffold.of(context).showSnackBar(SnackBar(content: new Text("请求已经发送！")));
                 homePageState.sendMessage(json.encode(message) + "\r\n");
               },
             ),

@@ -7,7 +7,7 @@ import 'main.dart';
 MyHomePageState homePageState;
 
 Widget showSystemInfo(
-    MyHomePageState homePage, List<SystemInfoModel> infoList) {
+    MyHomePageState homePage) {
   homePageState = homePage;
   return Scaffold(
     appBar: AppBar(
@@ -21,8 +21,8 @@ Widget showSystemInfo(
     ),
     body: ListView.builder(
         itemBuilder: (BuildContext context, int index) => SystemInfo(
-            infoList[index].type, infoList[index].info, infoList[index].to),
-        itemCount: infoList.length),
+            homePage.systemInfoList[index].type, homePage.systemInfoList[index].info, homePage.systemInfoList[index].to),
+        itemCount: homePage.systemInfoList.length),
   );
 }
 

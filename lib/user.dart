@@ -9,12 +9,9 @@ import 'main.dart';
 import 'package:social_vertex_flutter/config/config.dart' as config;
 
 MyHomePageState homeState;
-User user;
 
-Widget showUser(
-    MyHomePageState state, List<MessageListModel> list, User userInfo) {
+Widget showUser(MyHomePageState state) {
   homeState = state;
-  user = userInfo;
   _obtainLeftMessage();
 
   int _curPage = 0;
@@ -38,11 +35,11 @@ Widget showUser(
     ),
     body: ListView.builder(
       itemBuilder: (BuildContext context, int index) => MessageListItem(
-          list[index]._name,
-          list[index]._type,
+          homeState.userMessage[index]._name,
+          homeState.userMessage[index]._type,
           homeState,
-          list[index]._message),
-      itemCount: list.length,
+          homeState.userMessage[index]._message),
+      itemCount: homeState.userMessage.length,
     ),
     bottomNavigationBar: BottomNavigationBar(
       items: [
@@ -72,15 +69,11 @@ Widget showUser(
 }
 
 void _obtainLeftMessage() {
-  /**
-   * todo 获取离线消息
-   *
-   */
   var req = {
     "type": "user",
     "subtype": "left",
-    "id": "${user._id}",
-    "password": "${user._password}",
+    "id": "${homeState.userInfo.id}",
+    "password": "${homeState.userInfo.password}",
     "version": "1.0"
   };
   var httpClient = HttpClient();
@@ -109,6 +102,14 @@ void _obtainLeftMessage() {
     });
   });
 }
+
+///
+/// 消息列表实体
+/// @ name 发送消息方的id
+/// @type  消息类型(message/inform)
+/// @message 消息内容
+///
+///
 
 class MessageListModel {
   String _name;
@@ -156,16 +157,16 @@ class MessageListEntry extends State<MessageListItem> {
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
-                icon: InputDecorator(
-                  decoration: InputDecoration(
-                    icon: Icon(
-                      _type == "message" ? Icons.message : Icons.notifications,
-                      size: 40.0,
-                    ),
+              icon: InputDecorator(
+                decoration: InputDecoration(
+                  icon: Icon(
+                    _type == "message" ? Icons.message : Icons.notifications,
+                    size: 40.0,
                   ),
                 ),
-                onPressed: () {},
               ),
+              onPressed: () {},
+            ),
           ),
           Expanded(
             child: Padding(
@@ -200,13 +201,19 @@ class MessageListEntry extends State<MessageListItem> {
     );
   }
 }
+///
+///
+/// 用户model
+/// @id 用户名
+/// @password 用户密码
+///
 
 class User {
-  String _id;
-  String _password;
+  String id;
+  String password;
 
   User({String id, String password}) {
-    _id = id;
-    _password = password;
+    this.id = id;
+    this.password = password;
   }
 }

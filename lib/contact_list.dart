@@ -7,7 +7,7 @@ import 'main.dart';
 
 MyHomePageState _homeState;
 
-Widget showContacts(MyHomePageState state, List<Entry> list) {
+Widget showContacts(MyHomePageState state) {
   _homeState = state;
   state.curChartTarget="";
   var _curPage = 1;
@@ -56,8 +56,8 @@ Widget showContacts(MyHomePageState state, List<Entry> list) {
         Expanded(
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) =>
-                ContactItem(list[index]),
-            itemCount: list.length,
+                ContactItem(_homeState.list[index]),
+            itemCount: _homeState.list.length,
           ),
         ),
       ],
