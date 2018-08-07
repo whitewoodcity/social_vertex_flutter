@@ -182,7 +182,6 @@ class MyHomePageState extends State<MyHomePage> {
   /*
   处理Socket事件
    */
-
   initConnect() async {
     if (_socket != null) {
       _socket.destroy();
@@ -257,7 +256,6 @@ class MyHomePageState extends State<MyHomePage> {
       }
     }catch(e){
       showMessage("网络异常!");
-
     }
   }
 
