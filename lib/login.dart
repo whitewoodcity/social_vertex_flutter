@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'user.dart';
 import 'main.dart';
 import 'register.dart';
-import 'package:social_vertex_flutter/utils/requests.dart' as md5;
+import 'package:social_vertex_flutter/utils/util.dart' as util;
+import 'config/constants.dart' as constants;
 
 var _userName = "";
 var _password = "";
@@ -15,7 +16,7 @@ MyHomePageState homeState;
 Widget showLogin(MyHomePageState state) {
   homeState = state;
   return Scaffold(
-    key: Key("login"),
+    key: Key(constants.login),
     appBar: AppBar(
       title: Text("登录"),
     ),
@@ -82,16 +83,16 @@ void setUserPassword(String value) {
 }
 
 void _login() async {
-  var password = md5.generateMd5(_password);
+  var password = util.md5(_password);
   var userInfo = {
-    "type": "user",
-    "subtype": "login",
-    "id": "$_userName",
-    "password": "$password"
+    constants.type: constants.user,
+    constants.subtype: constants.login,
+    constants.id: "$_userName",
+    constants.password: "$password"
   };
   await homeState.initConnect();
   homeState.userInfo = User(id: _userName,password: password);
-  homeState.sendMessage(json.encode(userInfo) + "\r\n");
+  homeState.sendMessage(json.encode(userInfo) + constants.end);
 }
 
 void _roll() {

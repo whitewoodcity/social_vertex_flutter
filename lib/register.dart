@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import "package:social_vertex_flutter/config/constants.dart" as constants;
-import 'package:social_vertex_flutter/utils/requests.dart' as md5;
+import "config/constants.dart" as constants;
+import 'utils/util.dart' as util;
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -72,27 +72,27 @@ class RegisterState extends State<RegisterPage> {
   }
 
   void _register() async {
-    var password = md5.generateMd5(_password);
+    var password = util.md5(_password);
     var info = {
-      "type": "user",
-      "subtype": "register",
-      "id": "$_userName",
-      "password": "$password"
+      constants.type: constants.user,
+      constants.subtype: constants.register,
+      constants.id: "$_userName",
+      constants.password: "$password"
     };
     HttpClient client = HttpClient();
     try {
       client
-          .put(constants.host, constants.httpPort, "/user/register")
+          .put(constants.server, constants.httpPort, "/${constants.user}/${constants.register}")
           .then((HttpClientRequest request) {
-        request.write(json.encode(info) + "\r\n");
+        request.write(json.encode(info) + constants.end);
         return request.close();
       }).then((response) {
         response.transform(utf8.decoder).listen((data) {
           var resultData = json.decode(data);
           print(resultData);
-          _registerAlert(resultData["register"] == true
+          _registerAlert(resultData[constants.register] == true
               ? "注册成功"
-              : resultData["info"] != null ? resultData["info"] : "注册失败");
+              : resultData[constants.info] != null ? resultData[constants.info] : "注册失败");
         });
       });
     } catch (e) {
@@ -127,21 +127,3 @@ class RegisterState extends State<RegisterPage> {
     );
   }
 }
-/*  try {
-      client
-          .open("PUT", config.host, config.httpPort, "/user")
-          .then((HttpClientRequest req) {
-        req.write(json.encode(info) + "\r\n");
-        return req.close();
-      }).then((HttpClientResponse response) {
-        response.transform(utf8.decoder).listen((contents) {
-          var resultData = json.decode(contents);
-          print(resultData);
-          _registerAlert(resultData["register"] == true
-              ? "注册成功"
-              : resultData["info"] != null ? resultData["info"] : "注册失败");
-        });
-      });
-    } finally {
-      if (client != null) client.close();
-    }*/

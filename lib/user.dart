@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'system_info.dart';
 import 'component/application_menu.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/config/constants.dart' as constants;
+import 'config/constants.dart' as constants;
 
 MyHomePageState homeState;
 
@@ -70,33 +70,31 @@ Widget showUser(MyHomePageState state) {
 
 void _obtainLeftMessage() {
   var req = {
-    "type": "user",
-    "subtype": "left",
-    "id": "${homeState.userInfo.id}",
-    "password": "${homeState.userInfo.password}",
-    "version": "1.0"
+    constants.id: "${homeState.userInfo.id}",
+    constants.password: "${homeState.userInfo.password}",
+    constants.version: constants.currentVersion
   };
   var httpClient = HttpClient();
   httpClient
-      .open("PUT", constants.host, constants.httpPort, "/user/offline")
+      .open("PUT", constants.server, constants.httpPort, "/${constants.user}/${constants.offline}")
       .then((request) {
-    request.write(json.encode(req) + "\r\n");
+    request.write(json.encode(req) + constants.end);
     return request.close();
   }).then((response) {
     response.transform(utf8.decoder).listen((data) {
       var result = json.decode(data);
-      var friends = result["friends"];
-      var messages = result["messages"];
+      var friends = result[constants.friends];
+      var messages = result[constants.messages];
       if (friends != null && friends.length > 0) {
         for (var friend in friends) {
           homeState.systemInfoList.add(SystemInfoModel(
-              type: "好友请求", info: friend["id"], to: friend["nickName"]));
+              type: "好友请求", info: friend[constants.id], to: friend[constants.nickname]));
         }
       }
       if (messages != null && messages.length > 0) {
         for (var message in messages) {
           homeState.userMessage
-              .add(MessageListModel(name: message["id"], type: "message"));
+              .add(MessageListModel(name: message[constants.id], type: constants.message));
         }
       }
     });
@@ -160,7 +158,7 @@ class MessageListEntry extends State<MessageListItem> {
               icon: InputDecorator(
                 decoration: InputDecoration(
                   icon: Icon(
-                    _type == "message" ? Icons.message : Icons.notifications,
+                    _type == constants.message ? Icons.message : Icons.notifications,
                     size: 40.0,
                   ),
                 ),
@@ -191,7 +189,7 @@ class MessageListEntry extends State<MessageListItem> {
         ],
       ),
       onTap: () {
-        if (_type == "message") {
+        if (_type == constants.message) {
           homePageState.friendName = _name;
           homePageState.updateUi(3);
         } else {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'config/constants.dart' as constants;
 
 MyHomePageState homePageState;
 
@@ -79,11 +80,11 @@ class SystemInfoItem extends State<SystemInfo> {
               child: Text("同意"),
               onPressed: () {
                 var agree = {
-                  "type": "friend",
-                  "subtype": "response",
-                  "to": "$to",
-                  "accept": true,
-                  "version": "0.1"
+                  constants.type: constants.friend,
+                  constants.subtype: constants.response,
+                  constants.to: "$to",
+                  constants.accept: true,
+                  constants.version: "0.2"
                 };
                 homePageState.sendMessage(json.encode(agree) + "\r\n");
               },
@@ -95,13 +96,13 @@ class SystemInfoItem extends State<SystemInfo> {
               child: Text("拒绝"),
               onPressed: () {
                 var refuse = {
-                  "type": "friend",
-                  "subtype": "response",
-                  "to": "$to",
-                  "accept": false,
-                  "version": "0.1"
+                  constants.type: constants.friend,
+                  constants.subtype: constants.response,
+                  constants.to: "$to",
+                  constants.accept: false,
+                  constants.version: constants.currentVersion
                 };
-                homePageState.sendMessage(json.encode(refuse) + "\r\n");
+                homePageState.sendMessage(json.encode(refuse) + constants.end);
               },
             )
           ],

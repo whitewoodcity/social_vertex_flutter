@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:social_vertex_flutter/utils/requests.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

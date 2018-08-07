@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -10,7 +9,6 @@ import 'dialog.dart';
 import 'contact_list.dart';
 import 'user.dart';
 import 'login.dart';
-import 'config/constants.dart' as constants;
 import 'config/constants.dart' as constants;
 
 void main() => runApp(MyApplication()); //整个应用的入口
@@ -31,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   var context;
-  var curPage = 100;
+  var currentPage = 100;
   var friendName;
   Socket _socket;
   List<Entry> list = []; //好友列表
@@ -47,16 +45,16 @@ class MyHomePageState extends State<MyHomePage> {
 
   Widget build(BuildContext context) {
     this.context = context;
-    switch (curPage) {
-      case constants.user:
+    switch (currentPage) {
+      case constants.userPage:
         return showUser(this);
       case constants.contacts:
         return showContacts(this);
       case constants.dialog:
         return showChatDialog(friendName, this);
-      case constants.search:
+      case constants.searchPage:
         return showSearchDialog(this);
-      case constants.systemInfo:
+      case constants.systemPage:
         return showSystemInfo(this);
       default:
         return showLogin(this);
@@ -112,11 +110,11 @@ class MyHomePageState extends State<MyHomePage> {
                       RaisedButton(
                         onPressed: () {
                           var agree = {
-                            "type": "friend",
-                            "subtype": "response",
-                            "to": "$to",
-                            "accept": true,
-                            "version": "0.1"
+                            constants.type: constants.friend,
+                            constants.subtype: constants.response,
+                            constants.to: "$to",
+                            constants.accept: true,
+                            constants.version: constants.currentVersion
                           };
                           sendMessage(json.encode(agree) + "\r\n");
                           _dynamicUpdataFriendList(to);
@@ -130,13 +128,13 @@ class MyHomePageState extends State<MyHomePage> {
                       RaisedButton(
                         onPressed: () {
                           var refuse = {
-                            "type": "friend",
-                            "subtype": "response",
-                            "to": "$to",
-                            "accept": false,
-                            "version": "0.1"
+                            constants.type: constants.friend,
+                            constants.subtype: constants.response,
+                            constants.to: "$to",
+                            constants.accept: false,
+                            constants.version: constants.currentVersion
                           };
-                          sendMessage(json.encode(refuse) + "\r\n");
+                          sendMessage(json.encode(refuse) + constants.end);
                           Navigator.pop(context);
                         },
                         child: Text("拒绝"),
@@ -154,14 +152,14 @@ class MyHomePageState extends State<MyHomePage> {
     //切换页面
     print(index);
     setState(() {
-      curPage = index;
+      currentPage = index;
     });
   }
 
   void showChat(String name) {
     //显示聊天对框
     setState(() {
-      curPage = 3;
+      currentPage = 3;
       friendName = name;
     });
   }
@@ -169,7 +167,7 @@ class MyHomePageState extends State<MyHomePage> {
   void showUserInfo(int status, String keyWord) {
     //显示search界面
     setState(() {
-      curPage = status;
+      currentPage = status;
       searchKey = keyWord;
     });
   }
@@ -182,52 +180,52 @@ class MyHomePageState extends State<MyHomePage> {
       _socket.destroy();
     }
     try {
-      _socket = await Socket.connect(constants.host, constants.tcpPort);
+      _socket = await Socket.connect(constants.server, constants.tcpPort);
       _socket.forEach(
         (package) {
           var backInf = json.decode(utf8.decode(package).trim());
           print(backInf);
-          var type = backInf["type"];
+          var type = backInf[constants.type];
           print("返回消息：$backInf");
           switch (type) {
-            case "user": //登录
-              bool loginStatus = backInf["login"];
+            case constants.user: //登录
+              bool loginStatus = backInf[constants.login];
               if (loginStatus) {
-                userName = backInf["id"];
+                userName = backInf[constants.id];
                 List<Entry> friends = List();
 
-                if (backInf["friends"].length > 0) {
-                  for (var friend in backInf["friends"]) {
+                if (backInf[constants.friends].length > 0) {
+                  for (var friend in backInf[constants.friends]) {
                     print(friend.runtimeType);
-                    friends.add(Entry(friend["nickname"]));
+                    friends.add(Entry(friend[constants.nickname]));
                   }
                   list.add(Entry("我的好友", friends));
                 }
                 this.updateUi(1);
               } else {
                 this.showMessage(
-                    backInf['info'] == null ? "登陆失败" : backInf["info"]);
+                    backInf[constants.info] == null ? "登陆失败" : backInf[constants.info]);
               }
               break;
-            case "message": //获取消息
-              if (curChartTarget == backInf["from"]) {
-                updateChartList(backInf["body"]);
+            case constants.message: //获取消息
+              if (curChartTarget == backInf[constants.from]) {
+                updateChartList(backInf[constants.body]);
               } else {
 
                 userMessage.add(MessageListModel(
-                    name: backInf["from"],
-                    type: backInf["type"],
-                    message: backInf["body"]));
+                    name: backInf[constants.from],
+                    type: backInf[constants.type],
+                    message: backInf[constants.body]));
               }
 
               break;
-            case "friend": //添加好友请求和回复
-              var subtype = backInf["subtype"];
-              if (subtype == "request") {
-                _showRequest(backInf["message"], backInf["from"]);
+            case constants.friend: //添加好友请求和回复
+              var subtype = backInf[constants.subtype];
+              if (subtype == constants.request) {
+                _showRequest(backInf[constants.message], backInf[constants.from]);
               } else {
-                if (backInf["accept"]) {
-                  _dynamicUpdataFriendList(backInf["from"]);
+                if (backInf[constants.accept]) {
+                  _dynamicUpdataFriendList(backInf[constants.from]);
                 }
               }
               break;

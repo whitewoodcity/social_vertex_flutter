@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'component/message_item.dart';
+import 'config/constants.dart' as constants;
 import 'main.dart';
 
 Widget showChatDialog(
@@ -49,11 +49,11 @@ Widget showChatDialog(
                 child: Text("发送"),
                 onPressed: () {
                   var message = {
-                    "type": "message",
-                    "subtype": "text",
-                    "to": "$name",
-                    "body": "$_message",
-                    "version": 0.1
+                    constants.type: constants.message,
+                    constants.subtype: constants.text,
+                    constants.to: "$name",
+                    constants.body: "$_message",
+                    constants.version: constants.currentVersion
                   };
                   state.updateChartList(_message);
                   state.sendMessage(json.encode(message)+"\r\n");

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/config/constants.dart' as constants;
+import 'config/constants.dart' as constants;
 
 MyHomePageState homePageState;
 String _target;
@@ -61,23 +61,23 @@ Widget showSearchDialog(MyHomePageState state) {
 void _search() {
   if (_target != null && _target.trim() != "") {
     var message = {
-      "type": "search",
-      "subtype": "info",
-      "id": "${homePageState.userInfo.id}",
-      "password": "${homePageState.userInfo.password}",
-      "keyword": "$_target",
-      "version": "0.2"
+      constants.type: constants.search,
+      constants.subtype: constants.info,
+      constants.id: "${homePageState.userInfo.id}",
+      constants.password: "${homePageState.userInfo.password}",
+      constants.keyword: "$_target",
+      constants.version: "0.2"
     };
     var httpClient = HttpClient();
     var result;
-    httpClient.put(constants.host, constants.httpPort, "search/info").then((request) {
+    httpClient.put(constants.server, constants.httpPort, "/${constants.search}/${constants.info}").then((request) {
       request.write(json.encode(message) + "\r\n");
       return request.close();
     }).then((response) {
       response.transform(utf8.decoder).listen((data) {
         result = json.decode(data);
-        if (result["user"] != null) {
-          homePageState.updateSearchList(result["user"]["id"]);
+        if (result[constants.user] != null) {
+          homePageState.updateSearchList(result[constants.user][constants.id]);
         } else {
           homePageState.showMessage("对不起,查无该用户！");
         }
@@ -141,14 +141,14 @@ class SearchItemState extends State<SearchItem> {
               ),
               onPressed: () {
                 var message = {
-                  "type": "friend",
-                  "subtype": "request",
-                  "to": "$result",
-                  "message": "请添加我为你的好友，我是${homePageState.userName}",
-                  "version": 0.1
+                  constants.type: constants.friend,
+                  constants.subtype: constants.request,
+                  constants.to: "$result",
+                  constants.message: "请添加我为你的好友，我是${homePageState.userName}",
+                  constants.version: constants.currentVersion
                 };
-                Scaffold.of(context).showSnackBar(SnackBar(content: new Text("请求已经发送！")));
-                homePageState.sendMessage(json.encode(message) + "\r\n");
+                Scaffold.of(context).showSnackBar(SnackBar(content: Text("请求已经发送！")));
+                homePageState.sendMessage(json.encode(message) + constants.end);
               },
             ),
           ),
