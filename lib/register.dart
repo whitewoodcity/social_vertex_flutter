@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import "package:social_vertex_flutter/config/config.dart" as config;
+import "package:social_vertex_flutter/config/constants.dart" as constants;
 import 'package:social_vertex_flutter/utils/requests.dart' as md5;
 
 class RegisterPage extends StatefulWidget {
@@ -82,7 +82,7 @@ class RegisterState extends State<RegisterPage> {
     HttpClient client = HttpClient();
     try {
       client
-          .put(config.host, config.httpPort, "/user/register")
+          .put(constants.host, constants.httpPort, "/user/register")
           .then((HttpClientRequest request) {
         request.write(json.encode(info) + "\r\n");
         return request.close();

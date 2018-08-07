@@ -10,8 +10,8 @@ import 'dialog.dart';
 import 'contact_list.dart';
 import 'user.dart';
 import 'login.dart';
-import 'utils/keys.dart' as keys;
-import 'config/config.dart' as config;
+import 'config/constants.dart' as constants;
+import 'config/constants.dart' as constants;
 
 void main() => runApp(MyApplication()); //整个应用的入口
 
@@ -20,7 +20,7 @@ class MyApplication extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
         title: "IM通讯",
         home: MyHomePage(),
-        theme: config.APPLICATION_THEME,
+        theme: constants.applicationTheme,
       );
 }
 
@@ -48,15 +48,15 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     this.context = context;
     switch (curPage) {
-      case keys.user:
+      case constants.user:
         return showUser(this);
-      case keys.contacts:
+      case constants.contacts:
         return showContacts(this);
-      case keys.dialog:
+      case constants.dialog:
         return showChatDialog(friendName, this);
-      case keys.search:
+      case constants.search:
         return showSearchDialog(this);
-      case keys.systemInfo:
+      case constants.systemInfo:
         return showSystemInfo(this);
       default:
         return showLogin(this);
@@ -182,7 +182,7 @@ class MyHomePageState extends State<MyHomePage> {
       _socket.destroy();
     }
     try {
-      _socket = await Socket.connect(config.host, config.tcpPort);
+      _socket = await Socket.connect(constants.host, constants.tcpPort);
       _socket.forEach(
         (package) {
           var backInf = json.decode(utf8.decode(package).trim());

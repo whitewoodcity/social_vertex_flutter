@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/config/config.dart' as config;
+import 'package:social_vertex_flutter/config/constants.dart' as constants;
 
 MyHomePageState homePageState;
 String _target;
@@ -70,7 +70,7 @@ void _search() {
     };
     var httpClient = HttpClient();
     var result;
-    httpClient.put(config.host, config.httpPort, "search/info").then((request) {
+    httpClient.put(constants.host, constants.httpPort, "search/info").then((request) {
       request.write(json.encode(message) + "\r\n");
       return request.close();
     }).then((response) {

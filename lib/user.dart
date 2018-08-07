@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'system_info.dart';
 import 'component/application_menu.dart';
 import 'main.dart';
-import 'package:social_vertex_flutter/config/config.dart' as config;
+import 'package:social_vertex_flutter/config/constants.dart' as constants;
 
 MyHomePageState homeState;
 
@@ -78,7 +78,7 @@ void _obtainLeftMessage() {
   };
   var httpClient = HttpClient();
   httpClient
-      .open("PUT", config.host, config.httpPort, "/user/offline")
+      .open("PUT", constants.host, constants.httpPort, "/user/offline")
       .then((request) {
     request.write(json.encode(req) + "\r\n");
     return request.close();
