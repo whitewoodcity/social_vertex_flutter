@@ -9,9 +9,6 @@ import 'config/constants.dart';
 
 Widget showLogin(MyHomePageState state) {
 
-  var _id = "";
-  var _password = "";
-
   return Scaffold(
     key: Key(login),
     appBar: AppBar(
@@ -36,12 +33,12 @@ Widget showLogin(MyHomePageState state) {
               children: <Widget>[
                 TextField(
                   textAlign: TextAlign.start,
-                  onChanged: (value) => (_id = value),
+                  onChanged: (value) => (state.id = value),
                   decoration: InputDecoration(labelText: "用户名："),
                 ),
                 TextField(
                   textAlign: TextAlign.start,
-                  onChanged: (value) => (_password = value),
+                  onChanged: (value) => (state.password = value),
                   obscureText: true,
                   decoration: InputDecoration(labelText: "密码："),
                 ),
@@ -50,8 +47,8 @@ Widget showLogin(MyHomePageState state) {
                 ),
                 RaisedButton(
                   onPressed: () {
-                    if (_password != "" && _id != "") {
-                      _login(state, _id, _password);
+                    if (state.id != "" && state.password != "") {
+                      _login(state);
                     } else {
                       state.showMessage("用户名/密码不能为空！");
                     }
@@ -71,16 +68,13 @@ Widget showLogin(MyHomePageState state) {
   );
 }
 
-void _login(MyHomePageState state, String _id, String _password) async {
-  state.id = _id;
-  state.password = _password;
+void _login(MyHomePageState state) async {
 
-  _password = md5(_password);
   var userInfo = {
     type: user,
     subtype: login,
-    id: _id,
-    password: _password
+    id: state.id,
+    password: md5(state.password)
   };
   await state.initConnect();
   state.sendMessage(json.encode(userInfo) + end);
