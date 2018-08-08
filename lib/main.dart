@@ -29,7 +29,15 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   var context;
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   var currentPage = 100;
+  int lastPage = 0;
 
   String id;
   String password;
@@ -49,6 +57,21 @@ class MyHomePageState extends State<MyHomePage> {
 
   Widget build(BuildContext context) {
     this.context = context;
+    return WillPopScope(
+        child: _changePage(),
+        onWillPop: () {
+          if (currentPage == constants.userPage ||
+              currentPage == constants.contacts) {
+            updateUi(constants.loginPage);
+          } else if (currentPage == constants.loginPage) {
+            exit(1);
+          } else {
+            updateUi(lastPage);
+          }
+        });
+  }
+
+  Widget _changePage() {
     switch (currentPage) {
       case constants.userPage:
         return showUser(this);
@@ -154,7 +177,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   void updateUi(int index) {
     //切换页面
-    print(index);
+    lastPage = currentPage;
     setState(() {
       currentPage = index;
     });
@@ -192,22 +215,23 @@ class MyHomePageState extends State<MyHomePage> {
         (package) {
           message.addAll(package); //粘包
           if (utf8.decode(message).endsWith(constants.end)) {
-            List<String> msgs = utf8.decode(message).trim().split(constants.end);
-            for(String msg in msgs){
+            List<String> msgs =
+                utf8.decode(message).trim().split(constants.end);
+            for (String msg in msgs) {
               processMessage(msg);
             }
             message.clear();
           }
         },
       );
-      _socket.done;
+        _socket.done;
     } catch (e) {
       message.clear();
       showMessage("网络异常!");
     }
   }
 
-  void processMessage(String message){
+  void processMessage(String message) {
     var backInf = json.decode(message);
     var type = backInf[constants.type];
     print("返回消息：$backInf");
@@ -247,13 +271,12 @@ class MyHomePageState extends State<MyHomePage> {
       case constants.friend: //添加好友请求和回复
         var subtype = backInf[constants.subtype];
         if (subtype == constants.request) {
-          _showRequest(
-              backInf[constants.message], backInf[constants.from]);
+          _showRequest(backInf[constants.message], backInf[constants.from]);
         } else {
           if (backInf[constants.accept]) {
             _dynamicUpdataFriendList(backInf[constants.from]);
-          }else{
-            showMessage(backInf[constants.from]+"拒绝加你为好友！");
+          } else {
+            showMessage(backInf[constants.from] + "拒绝加你为好友！");
           }
         }
         break;

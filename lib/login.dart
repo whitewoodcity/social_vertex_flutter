@@ -8,7 +8,7 @@ import 'utils/util.dart';
 import 'config/constants.dart';
 
 Widget showLogin(MyHomePageState state) {
-
+  _clearUserData(state);
   return Scaffold(
     key: Key(login),
     appBar: AppBar(
@@ -82,4 +82,10 @@ void _login(MyHomePageState state) async {
 void _roll(MyHomePageState state) {
   Navigator.of(state.context).push(MaterialPageRoute(
       builder: (BuildContext context) => RegisterPage()));
+}
+void _clearUserData(MyHomePageState state){
+  state.userMessage.clear();
+  state.systemInfoList.clear();
+  state.friends.clear();
+  state.searchList.clear();
 }

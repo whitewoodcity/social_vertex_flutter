@@ -13,7 +13,6 @@ const int contacts = 2;
 const int dialog = 3;
 const int searchPage = 4;
 const int systemPage=5;
-
 const String message = "message";
 const String search = "search";
 const String friend = "friend";

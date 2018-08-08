@@ -204,7 +204,7 @@ class MessageListEntry extends State<MessageListItem> {
             child: Padding(
               padding: const EdgeInsets.only(left: 20.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
