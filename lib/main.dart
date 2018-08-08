@@ -22,21 +22,17 @@ class MyApplication extends StatelessWidget {
       );
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatefulWidget{
   @override
   MyHomePageState createState() => MyHomePageState();
 }
 
 class MyHomePageState extends State<MyHomePage> {
   var context;
-
-  @override
-  void initState() {
-    super.initState();
-
-  }
-
+  var controller;
   var currentPage = 100;
+
+  Animation<double> animation;
   int lastPage = 0;
 
   String id;
@@ -53,7 +49,15 @@ class MyHomePageState extends State<MyHomePage> {
   List<SystemInfoModel> systemInfoList = [];
 
   String searchKey;
-  String curChartTarget; //当前聊天对象
+  String curChartTarget;
+
+  @override
+  void dispose() {
+    super.dispose();
+    if(_socket!=null) _socket.close();
+    exit(1);
+  }
+
 
   Widget build(BuildContext context) {
     this.context = context;
@@ -64,7 +68,7 @@ class MyHomePageState extends State<MyHomePage> {
               currentPage == constants.contacts) {
             updateUi(constants.loginPage);
           } else if (currentPage == constants.loginPage) {
-            exit(1);
+            this.dispose();
           } else {
             updateUi(lastPage);
           }
