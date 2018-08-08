@@ -70,7 +70,7 @@ class SystemInfoItem extends State<SystemInfo> {
           ),
         ),
         Text(
-          info,
+          info==null?"???":info,
           textAlign: TextAlign.left,
         ),
         Row(

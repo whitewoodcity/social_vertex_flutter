@@ -209,10 +209,9 @@ class MyHomePageState extends State<MyHomePage> {
 
                   if (backInf[constants.friends].length > 0) {
                     for (var friend in backInf[constants.friends]) {
-                      print(friend.runtimeType);
                       friends.add(Entry(friend[constants.nickname]));
                     }
-                    friends.add(Entry("我的好友", friends));
+                    this.friends.add(Entry("我的好友", friends));
                   }
                   this.updateUi(constants.userPage);
                 } else {
@@ -240,6 +239,8 @@ class MyHomePageState extends State<MyHomePage> {
                 } else {
                   if (backInf[constants.accept]) {
                     _dynamicUpdataFriendList(backInf[constants.from]);
+                  }else{
+                    showMessage(backInf["from"]+"拒绝加你为好友！");
                   }
                 }
                 break;

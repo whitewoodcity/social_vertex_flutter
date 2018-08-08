@@ -3,13 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:social_vertex_flutter/utils/util.dart';
 import 'system_info.dart';
 import 'component/application_menu.dart';
 import 'main.dart';
 import 'config/constants.dart' as constants;
 
+bool isObtainLeft = false;
+
 Widget showUser(MyHomePageState state) {
-  _obtainLeftMessage(state);
+  if (!isObtainLeft) _obtainLeftMessage(state);
 
   int _curPage = 0;
   return Scaffold(
@@ -68,32 +71,61 @@ Widget showUser(MyHomePageState state) {
 void _obtainLeftMessage(MyHomePageState state) {
   var req = {
     constants.id: state.id,
-    constants.password: state.password,
+    constants.password: md5(state.password),
     constants.version: constants.currentVersion
   };
   var httpClient = HttpClient();
   httpClient
-      .open("PUT", constants.server, constants.httpPort, "/${constants.user}/${constants.offline}")
+      .open("PUT", constants.server, constants.httpPort,
+          "/${constants.user}/${constants.offline}")
       .then((request) {
     request.write(json.encode(req) + constants.end);
     return request.close();
   }).then((response) {
     response.transform(utf8.decoder).listen((data) {
       var result = json.decode(data);
+      print(result.toString());
       var friends = result[constants.friends];
       var messages = result[constants.messages];
       if (friends != null && friends.length > 0) {
+        var isExist = false;
         for (var friend in friends) {
-          state.systemInfoList.add(SystemInfoModel(
-              type: "好友请求", info: friend[constants.id], to: friend[constants.nickname]));
+          for (var item in state.systemInfoList) {
+            if (item.info == friend[constants.message]) {
+              isExist = true;
+              break;
+            }
+          }
+          if (!isExist) {
+            state.systemInfoList.add(SystemInfoModel(
+                type: "好友请求",
+                info: friend[constants.message],
+                to: friend[constants.nickname]));
+          }
         }
+        state.userMessage.add(
+            MessageListModel(name: "系统消息", type: "inform", message: "好友请求"));
       }
       if (messages != null && messages.length > 0) {
+        var isExist = false;
         for (var message in messages) {
-          state.userMessage
-              .add(MessageListModel(name: message[constants.id], type: constants.message));
+          if (state.userMessage.length > 0) {
+            for (var item in state.userMessage) {
+              if (item._name == message["from"]) {
+                isExist = true;
+                break;
+              }
+            }
+          }
+          if (!isExist) {
+            state.userMessage.add(MessageListModel(
+                name: message["from"],
+                type: message["type"],
+                message: message["body"]));
+          }
         }
       }
+      isObtainLeft = true;
     });
   });
 }
@@ -149,25 +181,31 @@ class MessageListEntry extends State<MessageListItem> {
     return GestureDetector(
       child: Row(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              icon: InputDecorator(
-                decoration: InputDecoration(
-                  icon: Icon(
-                    _type == constants.message ? Icons.message : Icons.notifications,
-                    size: 40.0,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton(
+                icon: InputDecorator(
+                  decoration: InputDecoration(
+                    icon: Icon(
+                      _type == constants.message
+                          ? Icons.message
+                          : Icons.notifications,
+                      size: 40.0,
+                    ),
                   ),
                 ),
+                onPressed: () {},
               ),
-              onPressed: () {},
             ),
+            flex: 1,
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(left: 20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
                     _name,
@@ -175,7 +213,7 @@ class MessageListEntry extends State<MessageListItem> {
                     style: TextStyle(fontSize: 18.0),
                   ),
                   Text(
-                    _message,
+                    _message == null ? "???" : _message,
                     textAlign: TextAlign.start,
                   ),
                 ],
@@ -190,7 +228,7 @@ class MessageListEntry extends State<MessageListItem> {
           homePageState.friendName = _name;
           homePageState.updateUi(3);
         } else {
-          homePageState.updateUi(6);
+          homePageState.updateUi(5);
         }
       },
     );
