@@ -28,7 +28,7 @@ Widget showUser(MyHomePageState state) {
       ],
     ),
     drawer: Drawer(
-      child: showAppMenu(state.userName),
+      child: showAppMenu(state.nickname),
     ),
     body: ListView.builder(
       itemBuilder: (BuildContext context, int index) => MessageListItem(
@@ -67,8 +67,8 @@ Widget showUser(MyHomePageState state) {
 
 void _obtainLeftMessage(MyHomePageState state) {
   var req = {
-    constants.id: "${state.id}",
-    constants.password: "${state.password}",
+    constants.id: state.id,
+    constants.password: state.password,
     constants.version: constants.currentVersion
   };
   var httpClient = HttpClient();

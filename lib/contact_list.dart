@@ -27,7 +27,7 @@ Widget showContacts(MyHomePageState state) {
       ],
     ),
     drawer: Drawer(
-      child: showAppMenu(state.userName),
+      child: showAppMenu(state.nickname),
     ),
     body: Column(
       children: <Widget>[
@@ -56,8 +56,8 @@ Widget showContacts(MyHomePageState state) {
         Expanded(
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) =>
-                ContactItem(_homeState.list[index]),
-            itemCount: _homeState.list.length,
+                ContactItem(_homeState.friends[index]),
+            itemCount: _homeState.friends.length,
           ),
         ),
       ],

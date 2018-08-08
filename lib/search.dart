@@ -144,7 +144,7 @@ class SearchItemState extends State<SearchItem> {
                   constants.type: constants.friend,
                   constants.subtype: constants.request,
                   constants.to: result,
-                  constants.message: "请添加我为你的好友，我是${state.userName}",
+                  constants.message: "请添加我为你的好友，我是${state.nickname}",
                   constants.version: constants.currentVersion
                 };
                 Scaffold.of(context).showSnackBar(SnackBar(content: Text("请求已经发送！")));

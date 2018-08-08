@@ -35,9 +35,10 @@ class MyHomePageState extends State<MyHomePage> {
   String password;
   Socket _socket;
 
+  String nickname; //昵称
+
   String friendName;
-  List<Entry> list = []; //好友列表
-  String userName; //用户名
+  List<Entry> friends = []; //好友列表
   List<MessageEntry> messageList = []; //聊天消息列表
   List<SearchItem> searchList = []; //搜索好友列表
   List<MessageListModel> userMessage = []; //消息列表
@@ -189,7 +190,7 @@ class MyHomePageState extends State<MyHomePage> {
       _socket = await Socket.connect(constants.server, constants.tcpPort);
       _socket.forEach(
         (package) {
-          message.addAll(package);//粘包
+          message.addAll(package); //粘包
           if (utf8.decode(message).endsWith(constants.end)) {
             var backInf = json.decode(utf8.decode(message).trim());
             message.clear();
@@ -201,7 +202,9 @@ class MyHomePageState extends State<MyHomePage> {
               case constants.user: //登录
                 bool loginStatus = backInf[constants.login];
                 if (loginStatus) {
-                  userName = backInf[constants.id];
+                  nickname = backInf[constants.nickname] == null
+                      ? backInf[constants.id]
+                      : backInf[constants.nickname];
                   List<Entry> friends = List();
 
                   if (backInf[constants.friends].length > 0) {
@@ -209,9 +212,9 @@ class MyHomePageState extends State<MyHomePage> {
                       print(friend.runtimeType);
                       friends.add(Entry(friend[constants.nickname]));
                     }
-                    list.add(Entry("我的好友", friends));
+                    friends.add(Entry("我的好友", friends));
                   }
-                  this.updateUi(1);
+                  this.updateUi(constants.userPage);
                 } else {
                   this.showMessage(backInf[constants.info] == null
                       ? "登陆失败"
@@ -253,16 +256,16 @@ class MyHomePageState extends State<MyHomePage> {
 
   void _dynamicUpdataFriendList(String nickName) {
     //更新好友列表
-    list = List.from(list);
-    if (list.length > 0) {
-      list.first.list.add(Entry(nickName));
+    friends = List.from(friends);
+    if (friends.length > 0) {
+      friends.first.list.add(Entry(nickName));
     } else {
       List<Entry> friend = List();
       friend.add(Entry(nickName));
-      list.add(Entry("我的好友", friend));
+      friends.add(Entry("我的好友", friend));
     }
     setState(() {
-      this.list = list;
+      this.friends = friends;
     });
   }
 
