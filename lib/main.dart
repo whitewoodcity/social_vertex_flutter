@@ -192,59 +192,11 @@ class MyHomePageState extends State<MyHomePage> {
         (package) {
           message.addAll(package); //粘包
           if (utf8.decode(message).endsWith(constants.end)) {
-            var backInf = json.decode(utf8.decode(message).trim());
-            message.clear();
-
-            print(backInf);
-            var type = backInf[constants.type];
-            print("返回消息：$backInf");
-            switch (type) {
-              case constants.user: //登录
-                bool loginStatus = backInf[constants.login];
-                if (loginStatus) {
-                  nickname = backInf[constants.nickname] == null
-                      ? backInf[constants.id]
-                      : backInf[constants.nickname];
-                  List<Entry> friends = List();
-
-                  if (backInf[constants.friends].length > 0) {
-                    for (var friend in backInf[constants.friends]) {
-                      friends.add(Entry(friend[constants.nickname]));
-                    }
-                    this.friends.add(Entry("我的好友", friends));
-                  }
-                  this.updateUi(constants.userPage);
-                } else {
-                  this.showMessage(backInf[constants.info] == null
-                      ? "登陆失败"
-                      : backInf[constants.info]);
-                }
-                break;
-              case constants.message: //获取消息
-                if (curChartTarget == backInf[constants.from]) {
-                  updateChartList(backInf[constants.body]);
-                } else {
-                  userMessage.add(MessageListModel(
-                      name: backInf[constants.from],
-                      type: backInf[constants.type],
-                      message: backInf[constants.body]));
-                }
-
-                break;
-              case constants.friend: //添加好友请求和回复
-                var subtype = backInf[constants.subtype];
-                if (subtype == constants.request) {
-                  _showRequest(
-                      backInf[constants.message], backInf[constants.from]);
-                } else {
-                  if (backInf[constants.accept]) {
-                    _dynamicUpdataFriendList(backInf[constants.from]);
-                  }else{
-                    showMessage(backInf["from"]+"拒绝加你为好友！");
-                  }
-                }
-                break;
+            List<String> msgs = utf8.decode(message).trim().split(constants.end);
+            for(String msg in msgs){
+              processMessage(msg);
             }
+            message.clear();
           }
         },
       );
@@ -252,6 +204,59 @@ class MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       message.clear();
       showMessage("网络异常!");
+    }
+  }
+
+  void processMessage(String message){
+    var backInf = json.decode(message);
+    var type = backInf[constants.type];
+    print("返回消息：$backInf");
+    switch (type) {
+      case constants.user: //登录
+        bool loginStatus = backInf[constants.login];
+        if (loginStatus) {
+          nickname = backInf[constants.nickname] == null
+              ? backInf[constants.id]
+              : backInf[constants.nickname];
+          List<Entry> friends = List();
+
+          if (backInf[constants.friends].length > 0) {
+            for (var friend in backInf[constants.friends]) {
+              friends.add(Entry(friend[constants.nickname]));
+            }
+            this.friends.add(Entry("我的好友", friends));
+          }
+          this.updateUi(constants.userPage);
+        } else {
+          this.showMessage(backInf[constants.info] == null
+              ? "登陆失败"
+              : backInf[constants.info]);
+        }
+        break;
+      case constants.message: //获取消息
+        if (curChartTarget == backInf[constants.from]) {
+          updateChartList(backInf[constants.body]);
+        } else {
+          userMessage.add(MessageListModel(
+              name: backInf[constants.from],
+              type: backInf[constants.type],
+              message: backInf[constants.body]));
+        }
+
+        break;
+      case constants.friend: //添加好友请求和回复
+        var subtype = backInf[constants.subtype];
+        if (subtype == constants.request) {
+          _showRequest(
+              backInf[constants.message], backInf[constants.from]);
+        } else {
+          if (backInf[constants.accept]) {
+            _dynamicUpdataFriendList(backInf[constants.from]);
+          }else{
+            showMessage(backInf[constants.from]+"拒绝加你为好友！");
+          }
+        }
+        break;
     }
   }
 
