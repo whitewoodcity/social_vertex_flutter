@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 
 const double currentVersion = 0.2;
 
-const String server = "119.23.22.230";
+const String server = "localhost";
 const int httpPort = 7575;
 const int tcpPort = 7373;
 final ThemeData applicationTheme = ThemeData.light();
 
 const int loginPage = 0;
 const int userPage = 1;
+const int messagePage = -1;
 const int contacts = 2;
 const int dialog = 3;
 const int searchPage = 4;
@@ -41,7 +42,7 @@ const String text = "text";
 const String tcp_port = "tcp-port";
 const String http_port = "http-port";
 const String keyword = "keyword";
-const String offline = "offiline";
+const String offline = "offline";
 
 const String end = "\r\n";
 
