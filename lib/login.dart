@@ -76,7 +76,7 @@ void _login(MyHomePageState state) async {
     password: md5(state.password)
   };
   await state.initConnect();
-  state.sendMessage(json.encode(userInfo) + end);
+  state.sendMessage(json.encode(userInfo));
 }
 
 void _roll(MyHomePageState state) {
@@ -84,7 +84,7 @@ void _roll(MyHomePageState state) {
       builder: (BuildContext context) => RegisterPage()));
 }
 void _clearUserData(MyHomePageState state){
-  state.userMessage.clear();
+//  state.userMessage.clear();
   state.systemInfoList.clear();
   state.friends.clear();
   state.searchList.clear();

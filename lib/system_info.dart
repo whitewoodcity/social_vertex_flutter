@@ -86,7 +86,7 @@ class SystemInfoItem extends State<SystemInfo> {
                   constants.accept: true,
                   constants.version: "0.2"
                 };
-                homePageState.sendMessage(json.encode(agree) + "\r\n");
+                homePageState.sendMessage(json.encode(agree));
               },
             ),
             SizedBox(
@@ -102,7 +102,7 @@ class SystemInfoItem extends State<SystemInfo> {
                   constants.accept: false,
                   constants.version: constants.currentVersion
                 };
-                homePageState.sendMessage(json.encode(refuse) + constants.end);
+                homePageState.sendMessage(json.encode(refuse));
               },
             )
           ],

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:social_vertex_flutter/utils/util.dart';
 import 'system_info.dart';
 import 'component/message_item.dart';
 import 'search.dart';
@@ -22,7 +23,7 @@ class MyApplication extends StatelessWidget {
       );
 }
 
-class MyHomePage extends StatefulWidget{
+class MyHomePage extends StatefulWidget {
   @override
   MyHomePageState createState() => MyHomePageState();
 }
@@ -38,14 +39,15 @@ class MyHomePageState extends State<MyHomePage> {
   String id;
   String password;
   Socket _socket;
-
   String nickname; //昵称
+
+  List offlineRequests = [];
 
   String friendName;
   List<Entry> friends = []; //好友列表
   List<MessageEntry> messageList = []; //聊天消息列表
   List<SearchItem> searchList = []; //搜索好友列表
-  List<MessageListModel> userMessage = []; //消息列表
+//  List<MessageListModel> userMessage = []; //消息列表
   List<SystemInfoModel> systemInfoList = [];
 
   String searchKey;
@@ -54,14 +56,13 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     super.dispose();
-    if(_socket!=null) _socket.close();
+    if (_socket != null) _socket.close();
     exit(1);
   }
 
-
   Widget build(BuildContext context) {
     this.context = context;
-    return WillPopScope(
+    var widget = WillPopScope(
         child: _changePage(),
         onWillPop: () {
           if (currentPage == constants.userPage ||
@@ -73,11 +74,13 @@ class MyHomePageState extends State<MyHomePage> {
             updateUi(lastPage);
           }
         });
+    return widget;
   }
 
   Widget _changePage() {
     switch (currentPage) {
       case constants.userPage:
+      case constants.messagePage:
         return showUser(this);
       case constants.contacts:
         return showContacts(this);
@@ -106,84 +109,91 @@ class MyHomePageState extends State<MyHomePage> {
             ));
   }
 
-  void _showRequest(String message, String to) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) => SimpleDialog(
-            title: Text("好友请求"),
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Container(
-                        height: 100.0,
-                        alignment: Alignment.center,
-                        child: Text(
-                          message,
-                          style: TextStyle(fontSize: 18.0),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10.0,
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      RaisedButton(
-                        onPressed: () {
-                          var agree = {
-                            constants.type: constants.friend,
-                            constants.subtype: constants.response,
-                            constants.to: to,
-                            constants.accept: true,
-                            constants.version: constants.currentVersion
-                          };
-                          sendMessage(json.encode(agree) + constants.end);
-                          _dynamicUpdataFriendList(to);
-                          Navigator.pop(context);
-                        },
-                        child: Text("接受"),
-                      ),
-                      SizedBox(
-                        width: 10.0,
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          var refuse = {
-                            constants.type: constants.friend,
-                            constants.subtype: constants.response,
-                            constants.to: "$to",
-                            constants.accept: false,
-                            constants.version: constants.currentVersion
-                          };
-                          sendMessage(json.encode(refuse) + constants.end);
-                          Navigator.pop(context);
-                        },
-                        child: Text("拒绝"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-    );
-  }
+//  void _showRequest(String message, String to) {
+//    showDialog(
+//      context: context,
+//      barrierDismissible: false,
+//      builder: (BuildContext context) => SimpleDialog(
+//            title: Text("好友请求"),
+//            children: <Widget>[
+//              Column(
+//                children: <Widget>[
+//                  Row(
+//                    children: <Widget>[
+//                      Container(
+//                        height: 100.0,
+//                        alignment: Alignment.center,
+//                        child: Text(
+//                          message,
+//                          style: TextStyle(fontSize: 18.0),
+//                          overflow: TextOverflow.ellipsis,
+//                        ),
+//                      ),
+//                    ],
+//                  ),
+//                  Row(
+//                    children: <Widget>[
+//                      SizedBox(
+//                        height: 10.0,
+//                      )
+//                    ],
+//                  ),
+//                  Row(
+//                    mainAxisAlignment: MainAxisAlignment.center,
+//                    children: <Widget>[
+//                      RaisedButton(
+//                        onPressed: () {
+//                          var agree = {
+//                            constants.type: constants.friend,
+//                            constants.subtype: constants.response,
+//                            constants.to: to,
+//                            constants.accept: true,
+//                            constants.version: constants.currentVersion
+//                          };
+//                          sendMessage(json.encode(agree) + constants.end);
+//                          _dynamicUpdataFriendList(to);
+//                          Navigator.pop(context);
+//                        },
+//                        child: Text("接受"),
+//                      ),
+//                      SizedBox(
+//                        width: 10.0,
+//                      ),
+//                      RaisedButton(
+//                        onPressed: () {
+//                          var refuse = {
+//                            constants.type: constants.friend,
+//                            constants.subtype: constants.response,
+//                            constants.to: "$to",
+//                            constants.accept: false,
+//                            constants.version: constants.currentVersion
+//                          };
+//                          sendMessage(json.encode(refuse) + constants.end);
+//                          Navigator.pop(context);
+//                        },
+//                        child: Text("拒绝"),
+//                      ),
+//                    ],
+//                  ),
+//                ],
+//              ),
+//            ],
+//          ),
+//    );
+//  }
 
   void updateUi(int index) {
     //切换页面
     lastPage = currentPage;
     setState(() {
       currentPage = index;
+    });
+  }
+
+  void updateCurrentUI() {
+    //切换页面
+    setState(() {
+
     });
   }
 
@@ -228,7 +238,7 @@ class MyHomePageState extends State<MyHomePage> {
           }
         },
       );
-        _socket.done;
+      _socket.done;
     } catch (e) {
       message.clear();
       showMessage("网络异常!");
@@ -255,6 +265,8 @@ class MyHomePageState extends State<MyHomePage> {
             this.friends.add(Entry("我的好友", friends));
           }
           this.updateUi(constants.userPage);
+
+          _obtainOfflineMessages();
         } else {
           this.showMessage(backInf[constants.info] == null
               ? "登陆失败"
@@ -265,17 +277,17 @@ class MyHomePageState extends State<MyHomePage> {
         if (curChartTarget == backInf[constants.from]) {
           updateChartList(backInf[constants.body]);
         } else {
-          userMessage.add(MessageListModel(
-              name: backInf[constants.from],
-              type: backInf[constants.type],
-              message: backInf[constants.body]));
+//          userMessage.add(MessageListModel(
+//              name: backInf[constants.from],
+//              type: backInf[constants.type],
+//              message: backInf[constants.body]));
         }
 
         break;
       case constants.friend: //添加好友请求和回复
         var subtype = backInf[constants.subtype];
         if (subtype == constants.request) {
-          _showRequest(backInf[constants.message], backInf[constants.from]);
+//          _showRequest(backInf[constants.message], backInf[constants.from]);
         } else {
           if (backInf[constants.accept]) {
             _dynamicUpdataFriendList(backInf[constants.from]);
@@ -305,7 +317,7 @@ class MyHomePageState extends State<MyHomePage> {
   void sendMessage(String message) {
     //向服务器发送数据
     print(message);
-    _socket.write(message);
+    _socket.write(message+constants.end);
   }
 
   void updateChartList(String message) {
@@ -321,6 +333,33 @@ class MyHomePageState extends State<MyHomePage> {
     setState(() {
       searchList = List.from(searchList);
       searchList.add(SearchItem(result, this));
+    });
+  }
+
+  void _obtainOfflineMessages() {
+    var req = {
+      constants.id: id,
+      constants.password: md5(password),
+      constants.version: constants.currentVersion
+    };
+    var httpClient = HttpClient();
+    httpClient
+        .put(constants.server, constants.httpPort,
+            "/${constants.user}/${constants.offline}")
+        .then((request) {
+      request.write(json.encode(req) + constants.end);
+      return request.close();
+    }).then((response) {
+      response.transform(utf8.decoder).listen((data) {
+        var result = json.decode(data);
+        print(result.toString());
+        offlineRequests.clear();
+        if(result[constants.friends]!=null)
+          offlineRequests = result[constants.friends];
+        var messages = result[constants.messages];
+
+        updateCurrentUI();
+      });
     });
   }
 }

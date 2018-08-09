@@ -56,7 +56,7 @@ Widget showChatDialog(
                     constants.version: constants.currentVersion
                   };
                   state.updateChartList(_message);
-                  state.sendMessage(json.encode(message)+"\r\n");
+                  state.sendMessage(json.encode(message));
                 },
               ),
             ],

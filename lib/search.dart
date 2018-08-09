@@ -148,7 +148,7 @@ class SearchItemState extends State<SearchItem> {
                   constants.version: constants.currentVersion
                 };
                 Scaffold.of(context).showSnackBar(SnackBar(content: Text("请求已经发送！")));
-                state.sendMessage(json.encode(message) + constants.end);
+                state.sendMessage(json.encode(message));
               },
             ),
           ),
