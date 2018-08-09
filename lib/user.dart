@@ -145,7 +145,7 @@ Widget showUser(MyHomePageState state) {
             decoration: InputDecoration(icon: Icon(Icons.add)),
           ),
           onPressed: () {
-            state.updateUI(4);
+            state.updateUI(constants.searchPage);
           },
         ),
       ],
@@ -157,19 +157,13 @@ Widget showUser(MyHomePageState state) {
     bottomNavigationBar: BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
-            icon: Image.asset(
-              "assets/images/message.png",
-              width: 30.0,
-              height: 30.0,
-            ),
-            title: Text("消息")),
+            icon: Icon(Icons.notifications_active),
+            title: Text("消息"),
+        ),
         BottomNavigationBarItem(
-            icon: Image.asset(
-              "assets/images/contacts.png",
-              width: 30.0,
-              height: 30.0,
-            ),
-            title: Text("联系人")),
+            icon: Icon(Icons.account_box),
+            title: Text("好友")
+        ),
       ],
       onTap: (index) {
         if (index == 1) {

@@ -67,7 +67,7 @@ class MyHomePageState extends State<MyHomePage> {
         child: _changePage(),
         onWillPop: () {
           if (currentPage == constants.userPage ||
-              currentPage == constants.contacts) {
+              currentPage == constants.messagePage) {
             updateUI(constants.loginPage);
           } else if (currentPage == constants.loginPage) {
             this.dispose();
@@ -83,8 +83,6 @@ class MyHomePageState extends State<MyHomePage> {
       case constants.userPage:
       case constants.messagePage:
         return showUser(this);
-      case constants.contacts:
-        return showContacts(this);
       case constants.dialog:
         return showChatDialog(friendName, this);
       case constants.searchPage:
@@ -260,14 +258,6 @@ class MyHomePageState extends State<MyHomePage> {
           if(backInf[constants.friends]!=null){
             friendList = backInf[constants.friends];
           }
-//          List<Entry> friends = List();
-//
-//          if (backInf[constants.friends].length > 0) {
-//            for (var friend in backInf[constants.friends]) {
-//              friends.add(Entry(friend[constants.nickname]));
-//            }
-//            this.friends.add(Entry("我的好友", friends));
-//          }
           this.updateUI(constants.userPage);
 
           _obtainOfflineMessages();
