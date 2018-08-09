@@ -7,7 +7,6 @@ import 'system_info.dart';
 import 'component/message_item.dart';
 import 'search.dart';
 import 'dialog.dart';
-import 'contact_list.dart';
 import 'user.dart';
 import 'login.dart';
 import 'config/constants.dart' as constants;
@@ -42,13 +41,11 @@ class MyHomePageState extends State<MyHomePage> {
   String nickname; //昵称
 
   List offlineRequests = [];//离线好友请求列表
-  List friendList = [];
+  List friends = [];//好友列表
 
   String friendName;
-  List<Entry> friends = []; //好友列表
   List<MessageEntry> messageList = []; //聊天消息列表
   List<SearchItem> searchList = []; //搜索好友列表
-//  List<MessageListModel> userMessage = []; //消息列表
   List<SystemInfoModel> systemInfoList = [];
 
   String searchKey;
@@ -107,79 +104,6 @@ class MyHomePageState extends State<MyHomePage> {
               ],
             ));
   }
-
-//  void _showRequest(String message, String to) {
-//    showDialog(
-//      context: context,
-//      barrierDismissible: false,
-//      builder: (BuildContext context) => SimpleDialog(
-//            title: Text("好友请求"),
-//            children: <Widget>[
-//              Column(
-//                children: <Widget>[
-//                  Row(
-//                    children: <Widget>[
-//                      Container(
-//                        height: 100.0,
-//                        alignment: Alignment.center,
-//                        child: Text(
-//                          message,
-//                          style: TextStyle(fontSize: 18.0),
-//                          overflow: TextOverflow.ellipsis,
-//                        ),
-//                      ),
-//                    ],
-//                  ),
-//                  Row(
-//                    children: <Widget>[
-//                      SizedBox(
-//                        height: 10.0,
-//                      )
-//                    ],
-//                  ),
-//                  Row(
-//                    mainAxisAlignment: MainAxisAlignment.center,
-//                    children: <Widget>[
-//                      RaisedButton(
-//                        onPressed: () {
-//                          var agree = {
-//                            constants.type: constants.friend,
-//                            constants.subtype: constants.response,
-//                            constants.to: to,
-//                            constants.accept: true,
-//                            constants.version: constants.currentVersion
-//                          };
-//                          sendMessage(json.encode(agree) + constants.end);
-//                          _dynamicUpdataFriendList(to);
-//                          Navigator.pop(context);
-//                        },
-//                        child: Text("接受"),
-//                      ),
-//                      SizedBox(
-//                        width: 10.0,
-//                      ),
-//                      RaisedButton(
-//                        onPressed: () {
-//                          var refuse = {
-//                            constants.type: constants.friend,
-//                            constants.subtype: constants.response,
-//                            constants.to: "$to",
-//                            constants.accept: false,
-//                            constants.version: constants.currentVersion
-//                          };
-//                          sendMessage(json.encode(refuse) + constants.end);
-//                          Navigator.pop(context);
-//                        },
-//                        child: Text("拒绝"),
-//                      ),
-//                    ],
-//                  ),
-//                ],
-//              ),
-//            ],
-//          ),
-//    );
-//  }
 
   void updateUI(int index) {
     //切换页面
@@ -256,7 +180,7 @@ class MyHomePageState extends State<MyHomePage> {
               ? backInf[constants.id]
               : backInf[constants.nickname];
           if(backInf[constants.friends]!=null){
-            friendList = backInf[constants.friends];
+            friends = backInf[constants.friends];
           }
           this.updateUI(constants.userPage);
 
@@ -295,17 +219,17 @@ class MyHomePageState extends State<MyHomePage> {
 
   void _dynamicUpdataFriendList(String nickName) {
     //更新好友列表
-    friends = List.from(friends);
-    if (friends.length > 0) {
-      friends.first.list.add(Entry(nickName));
-    } else {
-      List<Entry> friend = List();
-      friend.add(Entry(nickName));
-      friends.add(Entry("我的好友", friend));
-    }
-    setState(() {
-      this.friends = friends;
-    });
+//    friends = List.from(friends);
+//    if (friends.length > 0) {
+//      friends.first.list.add(Entry(nickName));
+//    } else {
+//      List<Entry> friend = List();
+//      friend.add(Entry(nickName));
+//      friends.add(Entry("我的好友", friend));
+//    }
+//    setState(() {
+//      this.friends = friends;
+//    });
   }
 
   void sendMessage(String message) {

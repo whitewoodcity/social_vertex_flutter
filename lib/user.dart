@@ -26,8 +26,8 @@ Widget showUser(MyHomePageState state) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(state.friendList[index][constants.id] +
-                        "(${state.friendList[index][constants.nickname]})"),
+                    Text(state.friends[index][constants.id] +
+                        "(${state.friends[index][constants.nickname]})"),
                     Text("无消息")
                   ],
                 ),
@@ -57,7 +57,7 @@ Widget showUser(MyHomePageState state) {
 
         return widget;
       },
-      itemCount: state.friendList.length,
+      itemCount: state.friends.length,
     );
   }else {
     title = "消息列表";
@@ -99,7 +99,7 @@ Widget showUser(MyHomePageState state) {
                     };
                     state.sendMessage(json.encode(response));
 
-                    state.friendList.add({
+                    state.friends.add({
                       constants.id: state.offlineRequests[index][constants.from]
                     });
 
