@@ -17,7 +17,7 @@ Widget showUser(MyHomePageState state) {
     content = ListView.builder(
       padding: EdgeInsets.all(10.0),
       itemBuilder: (BuildContext context, int index) {
-        var widget = Row(
+        var row = Row(
           children: <Widget>[
             Icon(Icons.message),
             Expanded(
@@ -36,7 +36,7 @@ Widget showUser(MyHomePageState state) {
           ],
         );
 
-        widget.children.add(
+        row.children.add(
           Container(
               padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
@@ -47,6 +47,14 @@ Widget showUser(MyHomePageState state) {
               child: Text("99+",
                   style: TextStyle(color: Colors.white, fontSize: 15.0))),
         );
+
+        var widget = GestureDetector(
+          onTap: () {
+            print("onTap called.");
+          },
+          child: row,
+        );
+
         return widget;
       },
       itemCount: state.friendList.length,
@@ -85,13 +93,18 @@ Widget showUser(MyHomePageState state) {
                     var response = {
                       constants.type: constants.friend,
                       constants.subtype: constants.response,
-                      constants.to: state.offlineRequests[index]
-                      [constants.from],
+                      constants.to: state.offlineRequests[index][constants.from],
                       constants.accept: true,
                       constants.version: constants.currentVersion
                     };
                     state.sendMessage(json.encode(response));
+
+                    state.friendList.add({
+                      constants.id: state.offlineRequests[index][constants.from]
+                    });
+
                     state.offlineRequests.removeAt(index);
+
                     state.updateCurrentUI();
                   },
                   child: Text("接受"),
