@@ -21,7 +21,7 @@ Widget showContacts(MyHomePageState state) {
             decoration: InputDecoration(icon: Icon(Icons.add)),
           ),
           onPressed: () {
-            _homeState.updateUi(4);
+            _homeState.updateUI(4);
           },
         ),
       ],
@@ -83,7 +83,7 @@ Widget showContacts(MyHomePageState state) {
       ],
       onTap: (index) {
         if (index == 0) {
-          state.updateUi(1);
+          state.updateUI(1);
         }
       },
       currentIndex: _curPage,

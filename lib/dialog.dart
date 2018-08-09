@@ -19,7 +19,7 @@ Widget showChatDialog(
             decoration: InputDecoration(icon: Icon(Icons.arrow_back)),
           ),
           onPressed: () {
-            state.updateUi(2);
+            state.updateUI(2);
           }),
     ),
     body: Column(

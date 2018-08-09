@@ -8,27 +8,52 @@ import 'config/constants.dart' as constants;
 
 Widget showUser(MyHomePageState state) {
 
-  int currentPage = state.currentPage == constants.userPage ? 1:0;
+  var i = state.currentPage == constants.userPage ? 1:0;
 
-  return Scaffold(
-    appBar: AppBar(
-      title: Text("消息"),
-      centerTitle: true,
-      actions: <Widget>[
-        IconButton(
-          icon: InputDecorator(
-            decoration: InputDecoration(icon: Icon(Icons.add)),
-          ),
-          onPressed: () {
-            state.updateUi(4);
-          },
-        ),
-      ],
-    ),
-    drawer: Drawer(
-      child: showAppMenu(state.nickname),
-    ),
-    body: ListView.builder(
+  var title, content;
+
+  if (i == 1){
+    title = "好友列表";
+    content = ListView.builder(
+      padding: EdgeInsets.all(10.0),
+      itemBuilder: (BuildContext context, int index) {
+        var widget = Row(
+          children: <Widget>[
+            Icon(Icons.message),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(state.friendList[index][constants.id] +
+                        "(${state.friendList[index][constants.nickname]})"),
+                    Text("无消息")
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+
+        widget.children.add(
+          Container(
+              padding: const EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(20.0),
+                color: Colors.red,
+              ),
+              child: Text("99+",
+                  style: TextStyle(color: Colors.white, fontSize: 15.0))),
+        );
+        return widget;
+      },
+      itemCount: state.friendList.length,
+    );
+  }else {
+    title = "消息列表";
+    content = ListView.builder(
       padding: EdgeInsets.all(10.0),
       itemBuilder: (BuildContext context, int index) {
         return Column(
@@ -60,7 +85,8 @@ Widget showUser(MyHomePageState state) {
                     var response = {
                       constants.type: constants.friend,
                       constants.subtype: constants.response,
-                      constants.to: state.offlineRequests[index][constants.from],
+                      constants.to: state.offlineRequests[index]
+                      [constants.from],
                       constants.accept: true,
                       constants.version: constants.currentVersion
                     };
@@ -76,7 +102,8 @@ Widget showUser(MyHomePageState state) {
                     var response = {
                       constants.type: constants.friend,
                       constants.subtype: constants.response,
-                      constants.to: state.offlineRequests[index][constants.from],
+                      constants.to: state.offlineRequests[index]
+                      [constants.from],
                       constants.accept: false,
                       constants.version: constants.currentVersion
                     };
@@ -92,7 +119,28 @@ Widget showUser(MyHomePageState state) {
         );
       },
       itemCount: state.offlineRequests.length,
+    );
+  }
+
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(title),
+      centerTitle: true,
+      actions: <Widget>[
+        IconButton(
+          icon: InputDecorator(
+            decoration: InputDecoration(icon: Icon(Icons.add)),
+          ),
+          onPressed: () {
+            state.updateUI(4);
+          },
+        ),
+      ],
     ),
+    drawer: Drawer(
+      child: showAppMenu(state.nickname),
+    ),
+    body: content,
     bottomNavigationBar: BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
@@ -112,12 +160,12 @@ Widget showUser(MyHomePageState state) {
       ],
       onTap: (index) {
         if (index == 1) {
-          state.updateUi(constants.userPage);
-        }else{
-          state.updateUi(constants.messagePage);
+          state.updateUI(constants.userPage);
+        } else {
+          state.updateUI(constants.messagePage);
         }
       },
-      currentIndex: currentPage,
+      currentIndex: i,
     ),
   );
 }

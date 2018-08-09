@@ -21,7 +21,7 @@ Widget showSearchDialog(MyHomePageState state) {
           ),
         ),
         onPressed: () {
-          state.updateUi(2);
+          state.updateUI(2);
         },
       ),
     ),

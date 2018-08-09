@@ -15,7 +15,7 @@ Widget showSystemInfo(
       leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            homePage.updateUi(1);
+            homePage.updateUI(1);
           }),
       title: Text("系统消息"),
       centerTitle: true,

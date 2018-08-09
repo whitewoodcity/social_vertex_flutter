@@ -41,7 +41,8 @@ class MyHomePageState extends State<MyHomePage> {
   Socket _socket;
   String nickname; //昵称
 
-  List offlineRequests = [];
+  List offlineRequests = [];//离线好友请求列表
+  List friendList = [];
 
   String friendName;
   List<Entry> friends = []; //好友列表
@@ -67,11 +68,11 @@ class MyHomePageState extends State<MyHomePage> {
         onWillPop: () {
           if (currentPage == constants.userPage ||
               currentPage == constants.contacts) {
-            updateUi(constants.loginPage);
+            updateUI(constants.loginPage);
           } else if (currentPage == constants.loginPage) {
             this.dispose();
           } else {
-            updateUi(lastPage);
+            updateUI(lastPage);
           }
         });
     return widget;
@@ -182,7 +183,7 @@ class MyHomePageState extends State<MyHomePage> {
 //    );
 //  }
 
-  void updateUi(int index) {
+  void updateUI(int index) {
     //切换页面
     lastPage = currentPage;
     setState(() {
@@ -256,15 +257,18 @@ class MyHomePageState extends State<MyHomePage> {
           nickname = backInf[constants.nickname] == null
               ? backInf[constants.id]
               : backInf[constants.nickname];
-          List<Entry> friends = List();
-
-          if (backInf[constants.friends].length > 0) {
-            for (var friend in backInf[constants.friends]) {
-              friends.add(Entry(friend[constants.nickname]));
-            }
-            this.friends.add(Entry("我的好友", friends));
+          if(backInf[constants.friends]!=null){
+            friendList = backInf[constants.friends];
           }
-          this.updateUi(constants.userPage);
+//          List<Entry> friends = List();
+//
+//          if (backInf[constants.friends].length > 0) {
+//            for (var friend in backInf[constants.friends]) {
+//              friends.add(Entry(friend[constants.nickname]));
+//            }
+//            this.friends.add(Entry("我的好友", friends));
+//          }
+          this.updateUI(constants.userPage);
 
           _obtainOfflineMessages();
         } else {
