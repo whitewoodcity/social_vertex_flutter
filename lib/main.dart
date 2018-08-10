@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:social_vertex_flutter/utils/util.dart';
 import 'system_info.dart';
-import 'component/message_item.dart';
 import 'search.dart';
 import 'dialog.dart';
 import 'user.dart';
@@ -47,7 +46,6 @@ class MyHomePageState extends State<MyHomePage> {
   String friendNickname = "";
   Map<String, List> messages = {};
 
-  List<MessageEntry> messageList = []; //聊天消息列表
   List<SearchItem> searchList = []; //搜索好友列表
   List<SystemInfoModel> systemInfoList = [];
 
@@ -221,33 +219,10 @@ class MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _dynamicUpdataFriendList(String nickName) {
-    //更新好友列表
-//    friends = List.from(friends);
-//    if (friends.length > 0) {
-//      friends.first.list.add(Entry(nickName));
-//    } else {
-//      List<Entry> friend = List();
-//      friend.add(Entry(nickName));
-//      friends.add(Entry("我的好友", friend));
-//    }
-//    setState(() {
-//      this.friends = friends;
-//    });
-  }
-
   void sendMessage(String message) {
     //向服务器发送数据
     print(message);
     _socket.write(message+constants.end);
-  }
-
-  void updateChartList(String message) {
-    //实时更新聊天信息
-    setState(() {
-      messageList = List.from(messageList);
-      messageList.add(MessageEntry(message));
-    });
   }
 
   void updateSearchList(String result) {

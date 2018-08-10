@@ -120,8 +120,7 @@ Widget showUser(MyHomePageState state) {
                     var response = {
                       constants.type: constants.friend,
                       constants.subtype: constants.response,
-                      constants.to: state.offlineRequests[index]
-                      [constants.from],
+                      constants.to: state.offlineRequests[index][constants.from],
                       constants.accept: false,
                       constants.version: constants.currentVersion
                     };
