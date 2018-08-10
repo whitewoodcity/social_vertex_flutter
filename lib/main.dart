@@ -43,7 +43,9 @@ class MyHomePageState extends State<MyHomePage> {
   List offlineRequests = [];//离线好友请求列表
   List friends = [];//好友列表
 
-  String friendName;
+  String friendId = "";
+  String friendNickname = "";
+
   List<MessageEntry> messageList = []; //聊天消息列表
   List<SearchItem> searchList = []; //搜索好友列表
   List<SystemInfoModel> systemInfoList = [];
@@ -81,7 +83,7 @@ class MyHomePageState extends State<MyHomePage> {
       case constants.messagePage:
         return showUser(this);
       case constants.dialog:
-        return showChatDialog(friendName, this);
+        return showChatDialog(this);
       case constants.searchPage:
         return showSearchDialog(this);
       case constants.systemPage:
@@ -120,13 +122,13 @@ class MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void showChat(String name) {
-    //显示聊天对框
-    setState(() {
-      currentPage = 3;
-      friendName = name;
-    });
-  }
+//  void showChat(String name) {
+//    //显示聊天对框
+//    setState(() {
+//      currentPage = 3;
+//      friendName = name;
+//    });
+//  }
 
   void showUserInfo(int status, String keyWord) {
     //显示search界面

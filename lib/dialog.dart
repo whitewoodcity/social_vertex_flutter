@@ -5,21 +5,20 @@ import 'package:flutter/material.dart';
 import 'config/constants.dart' as constants;
 import 'main.dart';
 
-Widget showChatDialog(
-    String name, MyHomePageState state,[String message]) {
+Widget showChatDialog(MyHomePageState state,[String message]) {
   var _message = "";
-  if(state.curChartTarget!=name) state.messageList.removeRange(0, state.messageList.length);
-  state.curChartTarget = name;
+//  if(state.curChartTarget!=name) state.messageList.removeRange(0, state.messageList.length);
+//  state.curChartTarget = name;
   return Scaffold(
     appBar: AppBar(
-      title: Text(name == null ? "未知好友" : name.trim()),
+      title: Text(state.friendNickname == null ? state.friendId : state.friendNickname.trim()),
       centerTitle: true,
       leading: IconButton(
           icon: InputDecorator(
             decoration: InputDecoration(icon: Icon(Icons.arrow_back)),
           ),
           onPressed: () {
-            state.updateUI(2);
+            state.updateUI(constants.userPage);
           }),
     ),
     body: Column(
@@ -51,7 +50,7 @@ Widget showChatDialog(
                   var message = {
                     constants.type: constants.message,
                     constants.subtype: constants.text,
-                    constants.to: "$name",
+                    constants.to: state.friendId,
                     constants.body: "$_message",
                     constants.version: constants.currentVersion
                   };

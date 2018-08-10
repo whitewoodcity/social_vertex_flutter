@@ -50,7 +50,9 @@ Widget showUser(MyHomePageState state) {
 
         var widget = GestureDetector(
           onTap: () {
-            print("onTap called.");
+            state.friendId = state.friends[index][constants.id];
+            state.friendNickname = state.friends[index][constants.nickname];
+            state.updateUI(constants.dialog);
           },
           child: row,
         );
