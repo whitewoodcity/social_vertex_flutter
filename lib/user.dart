@@ -17,6 +17,7 @@ Widget showUser(MyHomePageState state) {
     content = ListView.builder(
       padding: EdgeInsets.all(10.0),
       itemBuilder: (BuildContext context, int index) {
+        String id = state.friends[index][constants.id];
         var row = Row(
           children: <Widget>[
             Icon(Icons.message),
@@ -26,7 +27,7 @@ Widget showUser(MyHomePageState state) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(state.friends[index][constants.id] +
+                    Text(id +
                         "(${state.friends[index][constants.nickname]})"),
                     Text("无消息")
                   ],
@@ -36,17 +37,19 @@ Widget showUser(MyHomePageState state) {
           ],
         );
 
-        row.children.add(
-          Container(
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(20.0),
-                color: Colors.red,
-              ),
-              child: Text("99+",
-                  style: TextStyle(color: Colors.white, fontSize: 15.0))),
-        );
+        if(state.messages.containsKey(id)&&state.messages[id].length>0){
+          row.children.add(
+            Container(
+                padding: const EdgeInsets.all(5.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Colors.red,
+                ),
+                child: Text("${state.messages[id].length}",
+                    style: TextStyle(color: Colors.white, fontSize: 15.0))),
+          );
+        }
 
         var widget = GestureDetector(
           onTap: () {

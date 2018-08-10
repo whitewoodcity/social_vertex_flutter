@@ -45,6 +45,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   String friendId = "";
   String friendNickname = "";
+  Map<String, List> messages = {};
 
   List<MessageEntry> messageList = []; //聊天消息列表
   List<SearchItem> searchList = []; //搜索好友列表
@@ -276,7 +277,14 @@ class MyHomePageState extends State<MyHomePage> {
         offlineRequests.clear();
         if(result[constants.friends]!=null)
           offlineRequests = result[constants.friends];
-        var messages = result[constants.messages];
+
+        for(Map message in result[constants.messages]){
+          var sender = message[constants.from];
+          if(!messages.containsKey(sender)){
+            messages[sender] = [];
+          }
+          messages[sender].add(message);
+        }
 
         updateCurrentUI();
       });
