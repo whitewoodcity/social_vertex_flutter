@@ -272,20 +272,21 @@ class MyHomePageState extends State<MyHomePage> {
       return request.close();
     }).then((response) {
       response.transform(utf8.decoder).listen((data) {
-        var result = json.decode(data);
+        Map result = json.decode(data);
         print(result.toString());
         offlineRequests.clear();
         if(result[constants.friends]!=null)
           offlineRequests = result[constants.friends];
 
-        for(Map message in result[constants.messages]){
-          var sender = message[constants.from];
-          if(!messages.containsKey(sender)){
-            messages[sender] = [];
+        if(result.containsKey(constants.messages)){
+          for(Map message in result[constants.messages]){
+            var sender = message[constants.from];
+            if(!messages.containsKey(sender)){
+              messages[sender] = [];
+            }
+            messages[sender].add(message);
           }
-          messages[sender].add(message);
         }
-
         updateCurrentUI();
       });
     });

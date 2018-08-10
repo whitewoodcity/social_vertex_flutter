@@ -28,7 +28,7 @@ class MessageItem extends State<MessageEntry>{
                 IconButton(
                     icon: InputDecorator(
                       decoration:
-                      InputDecoration(icon: Icon(Icons.person_outline)),
+                      InputDecoration(icon: Icon(Icons.account_box)),
                     ),
                     onPressed: null)
               ],

@@ -20,7 +20,7 @@ Widget showUser(MyHomePageState state) {
         String id = state.friends[index][constants.id];
         var row = Row(
           children: <Widget>[
-            Icon(Icons.message),
+            Icon(Icons.account_box),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.all(10.0),

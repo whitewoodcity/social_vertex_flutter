@@ -7,8 +7,45 @@ import 'main.dart';
 
 Widget showChatDialog(MyHomePageState state,[String message]) {
   var _message = "";
-//  if(state.curChartTarget!=name) state.messageList.removeRange(0, state.messageList.length);
-//  state.curChartTarget = name;
+
+  if(!state.messages.containsKey(state.friendId)){
+    state.messages[state.friendId] = [];
+  }
+
+  var messages = state.messages[state.friendId];
+
+  var content = ListView.builder(
+    padding: EdgeInsets.all(10.0),
+    itemBuilder: (BuildContext context, int index) {
+      Map item = messages[index];
+
+      var textAlign = TextAlign.start;
+      if(item[constants.from] == state.id){
+        textAlign = TextAlign.end;
+      }
+
+      var row = Row(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text("${item[constants.from]}:\n${item[constants.body]}", textAlign: textAlign,),
+            ),
+          ),
+        ],
+      );
+
+      if(item[constants.from] == state.id){
+        row.children.add(Icon(Icons.message));
+      }else{
+        row.children.insert(0, Icon(Icons.message));
+      }
+
+      return row;
+    },
+    itemCount: messages.length,
+  );
+
   return Scaffold(
     appBar: AppBar(
       title: Text(state.friendNickname == null ? state.friendId : state.friendNickname.trim()),
@@ -25,9 +62,7 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Expanded(
-          child: ListView(
-            children: state.messageList,
-          ),
+          child: content,
         ),
         Container(
           color: Colors.white,
@@ -50,11 +85,13 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
                   var message = {
                     constants.type: constants.message,
                     constants.subtype: constants.text,
+                    constants.from: state.id,
                     constants.to: state.friendId,
-                    constants.body: "$_message",
+                    constants.body: _message,
                     constants.version: constants.currentVersion
                   };
-                  state.updateChartList(_message);
+                  state.messages[state.friendId].add(message);
+                  state.updateCurrentUI();
                   state.sendMessage(json.encode(message));
                 },
               ),
