@@ -9,8 +9,7 @@ final ThemeData applicationTheme = ThemeData.light();
 
 const int loginPage = 0;
 const int userPage = 1;
-const int messagePage = -1;
-const int contacts = 2;
+const int messagePage = 2;
 const int dialog = 3;
 const int searchPage = 4;
 const int systemPage=5;

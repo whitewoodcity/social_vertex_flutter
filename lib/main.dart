@@ -195,24 +195,25 @@ class MyHomePageState extends State<MyHomePage> {
         }
         break;
       case constants.message: //获取消息
-        if (curChartTarget == backInf[constants.from]) {
-          updateChartList(backInf[constants.body]);
-        } else {
-//          userMessage.add(MessageListModel(
-//              name: backInf[constants.from],
-//              type: backInf[constants.type],
-//              message: backInf[constants.body]));
+        var sender = backInf[constants.from];
+        if(!messages.containsKey(sender)){
+          messages[sender] = [];
         }
-
+        messages[sender].add(backInf);
+        updateCurrentUI();
         break;
       case constants.friend: //添加好友请求和回复
         var subtype = backInf[constants.subtype];
         if (subtype == constants.request) {
-//          _showRequest(backInf[constants.message], backInf[constants.from]);
-        } else {
-          if (backInf[constants.accept]) {
-            _dynamicUpdataFriendList(backInf[constants.from]);
-          } else {
+          offlineRequests.add(backInf);
+          updateCurrentUI();
+        } else if(subtype == constants.response){
+          if(backInf[constants.accept]){
+            friends.add({
+              constants.id: backInf[constants.from],
+            });
+            updateCurrentUI();
+          }else{
             showMessage(backInf[constants.from] + "拒绝加你为好友！");
           }
         }

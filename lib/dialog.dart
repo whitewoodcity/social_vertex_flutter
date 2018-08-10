@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'config/constants.dart' as constants;
 import 'main.dart';
 
+var _message = "";
+
 Widget showChatDialog(MyHomePageState state,[String message]) {
-  var _message = "";
 
   if(!state.messages.containsKey(state.friendId)){
     state.messages[state.friendId] = [];
@@ -17,7 +18,7 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
   var content = ListView.builder(
     padding: EdgeInsets.all(10.0),
     itemBuilder: (BuildContext context, int index) {
-      Map item = messages[index];
+      Map item = messages[messages.length - 1 - index];
 
       var textAlign = TextAlign.start;
       if(item[constants.from] == state.id){
@@ -75,7 +76,7 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
                     _message = value;
                   },
                   controller: TextEditingController(
-                    text: "",
+                    text: _message,
                   ),
                 ),
               ),
@@ -93,6 +94,7 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
                   state.messages[state.friendId].add(message);
                   state.updateCurrentUI();
                   state.sendMessage(json.encode(message));
+                  _message = "";
                 },
               ),
             ],
