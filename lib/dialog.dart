@@ -15,8 +15,24 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
 
   var messages = state.messages[state.friendId];
 
-  var content = ListView.builder(
+  var _scrollController = new ScrollController();
+
+  _scrollController.addListener(
+          () {
+        double maxScroll = _scrollController.position.maxScrollExtent;
+        double currentScroll = _scrollController.position.pixels;
+        double delta = 100.0; // or something else..
+        if ( currentScroll - maxScroll >= delta) { // whatever you determine here
+          //.. load more
+          print('用户申请更多数据啦');
+          //todo retrieve more chat log from the server
+        }
+      }
+  );
+
+  ListView content = ListView.builder(
     padding: EdgeInsets.all(10.0),
+    controller: _scrollController,
     itemBuilder: (BuildContext context, int index) {
       Map item = messages[messages.length - 1 - index];
 
