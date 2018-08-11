@@ -10,13 +10,37 @@ String _keyword;
 var _result = {};
 
 Widget showSearchDialog(MyHomePageState state) {
-
   List<Widget> itemList = [];
-  
-  if(_result.containsKey(constants.user)){
-    var userItem = UserItem(_result[constants.user][constants.id],state);
+
+  if (_result.containsKey(constants.user)) {
+    var userItem = UserItem(_result[constants.user][constants.id], state);
     itemList.add(userItem);
   }
+
+  var searchRow = Row(
+    children: <Widget>[
+      Expanded(
+        child: TextField(
+          onChanged: (value) {
+            _keyword = value;
+          },
+          controller: TextEditingController(
+            text: _keyword,
+          ),
+        ),
+        flex: 8,
+      ),
+      Expanded(
+        child: RaisedButton(
+          onPressed: () {
+            _search(state);
+          },
+          child: Text("搜索"),
+        ),
+        flex: 2,
+      )
+    ],
+  );
 
   return Scaffold(
     appBar: AppBar(
@@ -29,39 +53,20 @@ Widget showSearchDialog(MyHomePageState state) {
           ),
         ),
         onPressed: () {
-          _keyword = "";
           _result = {};
           state.updateUI(constants.userPage);
         },
       ),
     ),
-    body: Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: <Widget>[
-            Expanded(
-              child: TextField(
-                onChanged: (value) {
-                  _keyword = value;
-                },
-              ),
-              flex: 8,
-            ),
-            Expanded(
-              child: RaisedButton(
-                onPressed: (){_search(state);},
-                child: Text("搜索"),
-              ),
-              flex: 2,
-            )
-          ],
-        ),
-        backgroundColor: Colors.white70,
-      ),
-      body: ListView(
-        children: itemList,
-      ),
+    body: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Expanded(child: ListView(children: itemList)), //itemList
+        Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(10.0),
+            child: searchRow),
+      ],
     ),
   );
 }
@@ -77,7 +82,10 @@ void _search(MyHomePageState state) {
       constants.version: constants.currentVersion
     };
     var httpClient = HttpClient();
-    httpClient.put(constants.server, constants.httpPort, "/${constants.search}/${constants.info}").then((request) {
+    httpClient
+        .put(constants.server, constants.httpPort,
+            "/${constants.search}/${constants.info}")
+        .then((request) {
       request.write(json.encode(message) + constants.end);
       return request.close();
     }).then((response) {
@@ -85,7 +93,7 @@ void _search(MyHomePageState state) {
         try {
           _result = json.decode(data);
           state.updateCurrentUI();
-        }catch(e){
+        } catch (e) {
           state.showMessage(e);
         }
       });
@@ -153,7 +161,9 @@ class UserItemState extends State<UserItem> {
                   constants.message: "请添加我为你的好友，我是${state.nickname}",
                   constants.version: constants.currentVersion
                 };
-                Scaffold.of(context).showSnackBar(SnackBar(content: Text("请求已经发送！")));
+                Scaffold
+                    .of(context)
+                    .showSnackBar(SnackBar(content: Text("请求已经发送！")));
                 state.sendMessage(json.encode(message));
               },
             ),
