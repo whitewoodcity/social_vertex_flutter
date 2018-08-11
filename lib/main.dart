@@ -49,7 +49,6 @@ class MyHomePageState extends State<MyHomePage> {
   List<SystemInfoModel> systemInfoList = [];
 
   String searchKey;
-  String curChartTarget;
 
   @override
   void dispose() {
@@ -135,6 +134,8 @@ class MyHomePageState extends State<MyHomePage> {
     }
 
     List<int> message = List<int>();
+
+//    RawSecureSocket rss = await RawSecureSocket.connect("", 1234, onBadCertificate: (cer){return true;});
 
     try {
       _socket = await Socket.connect(constants.server, constants.tcpPort);
