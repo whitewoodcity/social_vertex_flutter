@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'config/constants.dart' as constants;
 
-String _keyword;
+String _keyword="";
 var _result = {};
 
 Widget showSearchDialog(MyHomePageState state) {
