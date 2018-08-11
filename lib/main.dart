@@ -46,7 +46,6 @@ class MyHomePageState extends State<MyHomePage> {
   String friendNickname = "";
   Map<String, List> messages = {};
 
-  List<SearchItem> searchList = []; //搜索好友列表
   List<SystemInfoModel> systemInfoList = [];
 
   String searchKey;
@@ -120,14 +119,6 @@ class MyHomePageState extends State<MyHomePage> {
 
     });
   }
-
-//  void showChat(String name) {
-//    //显示聊天对框
-//    setState(() {
-//      currentPage = 3;
-//      friendName = name;
-//    });
-//  }
 
   void showUserInfo(int status, String keyWord) {
     //显示search界面
@@ -223,14 +214,6 @@ class MyHomePageState extends State<MyHomePage> {
     //向服务器发送数据
     print(message);
     _socket.write(message+constants.end);
-  }
-
-  void updateSearchList(String result) {
-    //更新搜索好友列表
-    setState(() {
-      searchList = List.from(searchList);
-      searchList.add(SearchItem(result, this));
-    });
   }
 
   void _obtainOfflineMessages() {

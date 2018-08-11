@@ -84,8 +84,5 @@ void _roll(MyHomePageState state) {
       builder: (BuildContext context) => RegisterPage()));
 }
 void _clearUserData(MyHomePageState state){
-//  state.userMessage.clear();
-  state.systemInfoList.clear();
   state.friends.clear();
-  state.searchList.clear();
 }

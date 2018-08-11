@@ -6,13 +6,21 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'config/constants.dart' as constants;
 
-String _target;
+String _keyword;
+var _result = {};
 
 Widget showSearchDialog(MyHomePageState state) {
 
+  List<Widget> itemList = [];
+  
+  if(_result.containsKey(constants.user)){
+    var userItem = UserItem(_result[constants.user][constants.id],state);
+    itemList.add(userItem);
+  }
+
   return Scaffold(
     appBar: AppBar(
-      title: Text("添加"),
+      title: Text("搜索"),
       centerTitle: true,
       leading: IconButton(
         icon: InputDecorator(
@@ -21,6 +29,8 @@ Widget showSearchDialog(MyHomePageState state) {
           ),
         ),
         onPressed: () {
+          _keyword = "";
+          _result = {};
           state.updateUI(constants.userPage);
         },
       ),
@@ -33,7 +43,7 @@ Widget showSearchDialog(MyHomePageState state) {
             Expanded(
               child: TextField(
                 onChanged: (value) {
-                  _target = value;
+                  _keyword = value;
                 },
               ),
               flex: 8,
@@ -50,57 +60,57 @@ Widget showSearchDialog(MyHomePageState state) {
         backgroundColor: Colors.white70,
       ),
       body: ListView(
-        children: state.searchList,
+        children: itemList,
       ),
     ),
   );
 }
 
 void _search(MyHomePageState state) {
-  if (_target != null && _target.trim() != "") {
+  if (_keyword != null && _keyword.trim() != "") {
     var message = {
       constants.type: constants.search,
       constants.subtype: constants.info,
       constants.id: state.id,
       constants.password: state.password,
-      constants.keyword: _target,
+      constants.keyword: _keyword,
       constants.version: constants.currentVersion
     };
     var httpClient = HttpClient();
-    var result;
     httpClient.put(constants.server, constants.httpPort, "/${constants.search}/${constants.info}").then((request) {
       request.write(json.encode(message) + constants.end);
       return request.close();
     }).then((response) {
       response.transform(utf8.decoder).listen((data) {
-        result = json.decode(data);
-        if (result[constants.user] != null) {
-          state.updateSearchList(result[constants.user][constants.id]);
-        } else {
-          state.showMessage("对不起,查无该用户！");
+        try {
+          _result = json.decode(data);
+          state.updateCurrentUI();
+        }catch(e){
+          state.showMessage(e);
         }
       });
     });
+    _keyword = "";
   } else {
     state.showMessage("搜索内容不能为空....");
   }
 }
 
-class SearchItem extends StatefulWidget {
-  final String result;
+class UserItem extends StatefulWidget {
+  final String userId;
   MyHomePageState state;
 
-  SearchItem(this.result, this.state);
+  UserItem(this.userId, this.state);
 
   @override
-  SearchItemState createState() => SearchItemState(result, state);
+  UserItemState createState() => UserItemState(userId, state);
 }
 
-class SearchItemState extends State<SearchItem> {
-  final String result;
+class UserItemState extends State<UserItem> {
+  final String userId;
   MyHomePageState state;
 
-  SearchItemState(this.result, this.state);
+  UserItemState(this.userId, this.state);
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +121,7 @@ class SearchItemState extends State<SearchItem> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Image.asset(
-                    "assets/images/person.png",
-                    width: 20.0,
-                    height: 20.0,
-                  ),
+                  Icon(Icons.account_box),
                 ],
               ),
               Column(
@@ -123,7 +129,7 @@ class SearchItemState extends State<SearchItem> {
                   Padding(
                       padding: EdgeInsets.only(left: 5.00),
                       child: Text(
-                        result,
+                        userId,
                         overflow: TextOverflow.ellipsis,
                       )),
                 ],
@@ -143,7 +149,7 @@ class SearchItemState extends State<SearchItem> {
                 var message = {
                   constants.type: constants.friend,
                   constants.subtype: constants.request,
-                  constants.to: result,
+                  constants.to: userId,
                   constants.message: "请添加我为你的好友，我是${state.nickname}",
                   constants.version: constants.currentVersion
                 };
