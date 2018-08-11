@@ -25,6 +25,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+      - assets/images/flutter.png
       - assets/images/loginIcon.png
       - assets/images/userIcon.png
       - assets/images/voice.png

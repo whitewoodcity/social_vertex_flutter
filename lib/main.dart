@@ -34,13 +34,13 @@ class MyHomePageState extends State<MyHomePage> {
   Animation<double> animation;
   int lastPage = 0;
 
-  String id;
-  String password;
+  String id = "";
+  String password = "";
   Socket _socket;
   String nickname; //昵称
 
-  List offlineRequests = [];//离线好友请求列表
-  List friends = [];//好友列表
+  List offlineRequests = []; //离线好友请求列表
+  List friends = []; //好友列表
 
   String friendId = "";
   String friendNickname = "";
@@ -115,9 +115,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   void updateCurrentUI() {
     //切换页面
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void showUserInfo(int status, String keyWord) {
@@ -171,7 +169,7 @@ class MyHomePageState extends State<MyHomePage> {
           nickname = backInf[constants.nickname] == null
               ? backInf[constants.id]
               : backInf[constants.nickname];
-          if(backInf[constants.friends]!=null){
+          if (backInf[constants.friends] != null) {
             friends = backInf[constants.friends];
           }
           this.updateUI(constants.userPage);
@@ -185,7 +183,7 @@ class MyHomePageState extends State<MyHomePage> {
         break;
       case constants.message: //获取消息
         var sender = backInf[constants.from];
-        if(!messages.containsKey(sender)){
+        if (!messages.containsKey(sender)) {
           messages[sender] = [];
         }
         messages[sender].add(backInf);
@@ -196,13 +194,13 @@ class MyHomePageState extends State<MyHomePage> {
         if (subtype == constants.request) {
           offlineRequests.add(backInf);
           updateCurrentUI();
-        } else if(subtype == constants.response){
-          if(backInf[constants.accept]){
+        } else if (subtype == constants.response) {
+          if (backInf[constants.accept]) {
             friends.add({
               constants.id: backInf[constants.from],
             });
             updateCurrentUI();
-          }else{
+          } else {
             showMessage(backInf[constants.from] + "拒绝加你为好友！");
           }
         }
@@ -213,7 +211,7 @@ class MyHomePageState extends State<MyHomePage> {
   void sendMessage(String message) {
     //向服务器发送数据
     print(message);
-    _socket.write(message+constants.end);
+    _socket.write(message + constants.end);
   }
 
   void _obtainOfflineMessages() {
@@ -234,13 +232,13 @@ class MyHomePageState extends State<MyHomePage> {
         Map result = json.decode(data);
         print(result.toString());
         offlineRequests.clear();
-        if(result[constants.friends]!=null)
+        if (result[constants.friends] != null)
           offlineRequests = result[constants.friends];
 
-        if(result.containsKey(constants.messages)){
-          for(Map message in result[constants.messages]){
+        if (result.containsKey(constants.messages)) {
+          for (Map message in result[constants.messages]) {
             var sender = message[constants.from];
-            if(!messages.containsKey(sender)){
+            if (!messages.containsKey(sender)) {
               messages[sender] = [];
             }
             messages[sender].add(message);

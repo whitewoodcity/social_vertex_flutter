@@ -18,13 +18,16 @@ Widget showLogin(MyHomePageState state) {
       child: ListView(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(
+                top: 50.0, left: 20.0, right: 20.0, bottom: 20.0),
             child: Align(
-              child: Image.asset(
-                "assets/images/loginIcon.png",
-                width: 100.00,
-                height: 100.00,
-              ),
+              child: LayoutBuilder(builder: (context, constraint) {
+                return Image.asset(
+                  "assets/images/flutter.png",
+                  width: constraint.biggest.width / 2,
+                  height: constraint.biggest.width / 2,
+                );
+              }),
               alignment: Alignment.center,
             ),
           ),
@@ -80,9 +83,10 @@ void _login(MyHomePageState state) async {
 }
 
 void _roll(MyHomePageState state) {
-  Navigator.of(state.context).push(MaterialPageRoute(
-      builder: (BuildContext context) => RegisterPage()));
+  Navigator.of(state.context).push(
+      MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
 }
-void _clearUserData(MyHomePageState state){
+
+void _clearUserData(MyHomePageState state) {
   state.friends.clear();
 }
