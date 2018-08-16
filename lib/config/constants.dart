@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 const double currentVersion = 0.2;
 
 const String server = "polyglot.net.cn";
-const int httpPort = 7575;
 const int tcpPort = 7373;
 final ThemeData applicationTheme = ThemeData.light();
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:social_vertex_flutter/utils/util.dart';
 import 'system_info.dart';
 import 'search.dart';
@@ -154,6 +155,7 @@ class MyHomePageState extends State<MyHomePage> {
       );
       _socket.done;
     } catch (e) {
+      print(e);
       message.clear();
       showMessage("网络异常!");
     }
@@ -221,9 +223,30 @@ class MyHomePageState extends State<MyHomePage> {
       constants.password: md5(password),
       constants.version: constants.currentVersion
     };
-    var httpClient = HttpClient();
+    put("http://${constants.server}/${constants.user}/${constants.offline}",body:json.encode(req) + constants.end)
+        .then((response){
+          if(response.statusCode==200){
+            var result = json.decode(utf8.decode(response.bodyBytes));
+            offlineRequests.clear();
+            if (result[constants.friends] != null)
+              offlineRequests = result[constants.friends];
+            if (result.containsKey(constants.messages)) {
+              for (Map message in result[constants.messages]) {
+                var sender = message[constants.from];
+                if (!messages.containsKey(sender)) {
+                  messages[sender] = [];
+                }
+                messages[sender].add(message);
+              }
+            }
+            updateCurrentUI();
+          }else{
+            this.showMessage("服务器错误!");
+          }
+    });
+   /* var httpClient = HttpClient();
     httpClient
-        .put(constants.server, constants.httpPort,
+        .put(, constants.httpPort,
             "/${constants.user}/${constants.offline}")
         .then((request) {
       request.write(json.encode(req) + constants.end);
@@ -247,6 +270,6 @@ class MyHomePageState extends State<MyHomePage> {
         }
         updateCurrentUI();
       });
-    });
+    });*/
   }
 }

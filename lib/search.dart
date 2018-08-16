@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'main.dart';
 import 'config/constants.dart' as constants;
 
@@ -81,22 +82,13 @@ void _search(MyHomePageState state) {
       constants.keyword: _keyword,
       constants.version: constants.currentVersion
     };
-    var httpClient = HttpClient();
-    httpClient
-        .put(constants.server, constants.httpPort,
-            "/${constants.search}/${constants.info}")
-        .then((request) {
-      request.write(json.encode(message) + constants.end);
-      return request.close();
-    }).then((response) {
-      response.transform(utf8.decoder).listen((data) {
-        try {
-          _result = json.decode(data);
-          state.updateCurrentUI();
-        } catch (e) {
-          state.showMessage(e);
-        }
-      });
+    put("http://${constants.server}/${constants.search}/${constants.info}",
+        body: json.encode(message) + constants.end)
+        .then((response) {
+      if (response.statusCode == 200) {
+        _result = json.decode(utf8.decode(response.bodyBytes));
+        state.updateCurrentUI();
+      }
     });
     _keyword = "";
   } else {
