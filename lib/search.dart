@@ -87,7 +87,7 @@ void _search(MyHomePageState state) {
         .then((response) {
       if (response.statusCode == 200) {
         var result = json.decode(utf8.decode(response.bodyBytes));
-        if(result["user"]!=null) _result = json.decode(utf8.decode(response.bodyBytes));
+        if(result[constants.user]!=null) _result = json.decode(utf8.decode(response.bodyBytes));
         state.updateCurrentUI();
       }
     });

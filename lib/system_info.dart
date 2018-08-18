@@ -82,9 +82,9 @@ class SystemInfoItem extends State<SystemInfo> {
                 var agree = {
                   constants.type: constants.friend,
                   constants.subtype: constants.response,
-                  constants.to: "$to",
+                  constants.to: to,
                   constants.accept: true,
-                  constants.version: "0.2"
+                  constants.version: constants.currentVersion
                 };
                 homePageState.sendMessage(json.encode(agree));
               },
@@ -98,7 +98,7 @@ class SystemInfoItem extends State<SystemInfo> {
                 var refuse = {
                   constants.type: constants.friend,
                   constants.subtype: constants.response,
-                  constants.to: "$to",
+                  constants.to: to,
                   constants.accept: false,
                   constants.version: constants.currentVersion
                 };
