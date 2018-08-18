@@ -13,7 +13,7 @@ var _result = {};
 Widget showSearchDialog(MyHomePageState state) {
   List<Widget> itemList = [];
 
-  if (_result.containsKey(constants.user)) {
+  if (_result.containsKey(constants.user) &&_result[constants.user]!=null) {
     var userItem = UserItem(_result[constants.user][constants.id], state);
     itemList.add(userItem);
   }
@@ -86,9 +86,13 @@ void _search(MyHomePageState state) {
         body: json.encode(message) + constants.end)
         .then((response) {
       if (response.statusCode == 200) {
-        var result = json.decode(utf8.decode(response.bodyBytes));
-        if(result[constants.user]!=null) _result = json.decode(utf8.decode(response.bodyBytes));
-        state.updateCurrentUI();
+        try{
+          _result = json.decode(utf8.decode(response.bodyBytes));
+          state.updateCurrentUI();
+          if(!_result.containsKey(constants.user)||_result[constants.user]==null) state.showMessage("查无此人");
+        }catch(e){
+          state.showMessage(e.toString());
+        }
       }
     });
     _keyword = "";
