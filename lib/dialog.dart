@@ -34,7 +34,7 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
     padding: EdgeInsets.all(10.0),
     controller: _scrollController,
     itemBuilder: (BuildContext context, int index) {
-      Map item = messages[messages.length - 1 - index];
+      Map item = messages[index];
 
       var textAlign = TextAlign.start;
       if(item[constants.from] == state.id){
@@ -107,7 +107,7 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
                     constants.body: _message,
                     constants.version: constants.currentVersion
                   };
-                  state.messages[state.friendId].add(message);
+                  state.messages[state.friendId].insert(0,message);
                   state.updateCurrentUI();
                   state.sendMessage(json.encode(message));
                   _message = "";
