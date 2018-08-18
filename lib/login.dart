@@ -72,12 +72,11 @@ Widget showLogin(MyHomePageState state) {
 }
 
 void _login(MyHomePageState state) async {
-  state.password = md5(state.password);
   var userInfo = {
     type: user,
     subtype: login,
     id: state.id,
-    password: state.password
+    password: md5(state.password)
   };
   await state.initConnect();
   state.sendMessage(json.encode(userInfo));

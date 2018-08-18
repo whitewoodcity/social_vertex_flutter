@@ -46,6 +46,7 @@ class MyHomePageState extends State<MyHomePage> {
   String friendId = "";
   String friendNickname = "";
   Map<String, List> messages = {};
+  Map<String, int> unreadMsgs = {};
 
   List<SystemInfoModel> systemInfoList = [];
 
@@ -145,7 +146,7 @@ class MyHomePageState extends State<MyHomePage> {
           message.addAll(package); //粘包
           if (utf8.decode(message).endsWith(constants.end)) {
             List<String> msgs =
-                utf8.decode(message).trim().split(constants.end);
+                utf8.decode(message).trim().split(constants.end);//拆包
             for (String msg in msgs) {
               processMessage(msg);
             }
@@ -220,7 +221,7 @@ class MyHomePageState extends State<MyHomePage> {
   void _obtainOfflineMessages() {
     var req = {
       constants.id: id,
-      constants.password: password,
+      constants.password: md5(password),
       constants.version: constants.currentVersion
     };
     put("${constants.protocol}${constants.server}/${constants.user}/${constants.offline}",body:json.encode(req) + constants.end)
@@ -237,6 +238,10 @@ class MyHomePageState extends State<MyHomePage> {
                   messages[sender] = [];
                 }
                 messages[sender].add(message);
+                if (!unreadMsgs.containsKey(sender)){
+                  unreadMsgs[sender] = 0;
+                }
+                unreadMsgs[sender] = unreadMsgs[sender] + 1;
               }
             }
             updateCurrentUI();

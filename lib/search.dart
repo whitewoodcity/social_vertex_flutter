@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'utils/util.dart';
 import 'main.dart';
 import 'config/constants.dart' as constants;
 
@@ -78,7 +79,7 @@ void _search(MyHomePageState state) {
       constants.type: constants.search,
       constants.subtype: constants.info,
       constants.id: state.id,
-      constants.password: state.password,
+      constants.password: md5(state.password),
       constants.keyword: _keyword,
       constants.version: constants.currentVersion
     };

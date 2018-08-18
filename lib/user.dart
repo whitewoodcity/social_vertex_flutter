@@ -7,12 +7,11 @@ import 'main.dart';
 import 'config/constants.dart' as constants;
 
 Widget showUser(MyHomePageState state) {
-
-  var i = state.currentPage == constants.userPage ? 1:0;
+  var i = state.currentPage == constants.userPage ? 1 : 0;
 
   var title, content;
 
-  if (i == 1){
+  if (i == 1) {
     title = "好友列表";
     content = ListView.builder(
       padding: EdgeInsets.all(10.0),
@@ -27,8 +26,7 @@ Widget showUser(MyHomePageState state) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(id +
-                        "(${state.friends[index][constants.nickname]})"),
+                    Text(id + "(${state.friends[index][constants.nickname]})"),
                     Text("无消息")
                   ],
                 ),
@@ -37,7 +35,7 @@ Widget showUser(MyHomePageState state) {
           ],
         );
 
-        if(state.messages.containsKey(id)&&state.messages[id].length>0){
+        if (state.unreadMsgs.containsKey(id) && state.unreadMsgs[id] > 0) {
           row.children.add(
             Container(
                 padding: const EdgeInsets.all(5.0),
@@ -46,7 +44,7 @@ Widget showUser(MyHomePageState state) {
                   borderRadius: BorderRadius.circular(20.0),
                   color: Colors.red,
                 ),
-                child: Text("${state.messages[id].length}",
+                child: Text("${state.unreadMsgs[id]}",
                     style: TextStyle(color: Colors.white, fontSize: 15.0))),
           );
         }
@@ -55,6 +53,7 @@ Widget showUser(MyHomePageState state) {
           onTap: () {
             state.friendId = state.friends[index][constants.id];
             state.friendNickname = state.friends[index][constants.nickname];
+            state.unreadMsgs.remove(id);
             state.updateUI(constants.dialog);
           },
           child: row,
@@ -64,7 +63,7 @@ Widget showUser(MyHomePageState state) {
       },
       itemCount: state.friends.length,
     );
-  }else {
+  } else {
     title = "消息列表";
     content = ListView.builder(
       padding: EdgeInsets.all(10.0),
@@ -98,7 +97,8 @@ Widget showUser(MyHomePageState state) {
                     var response = {
                       constants.type: constants.friend,
                       constants.subtype: constants.response,
-                      constants.to: state.offlineRequests[index][constants.from],
+                      constants.to: state.offlineRequests[index]
+                          [constants.from],
                       constants.accept: true,
                       constants.version: constants.currentVersion
                     };
@@ -120,7 +120,8 @@ Widget showUser(MyHomePageState state) {
                     var response = {
                       constants.type: constants.friend,
                       constants.subtype: constants.response,
-                      constants.to: state.offlineRequests[index][constants.from],
+                      constants.to: state.offlineRequests[index]
+                          [constants.from],
                       constants.accept: false,
                       constants.version: constants.currentVersion
                     };
@@ -161,13 +162,11 @@ Widget showUser(MyHomePageState state) {
     bottomNavigationBar: BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-            title: Text("消息"),
+          icon: Icon(Icons.notifications_active),
+          title: Text("消息"),
         ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.account_box),
-            title: Text("好友")
-        ),
+            icon: Icon(Icons.account_box), title: Text("好友")),
       ],
       onTap: (index) {
         if (index == 1) {
