@@ -220,10 +220,10 @@ class MyHomePageState extends State<MyHomePage> {
   void _obtainOfflineMessages() {
     var req = {
       constants.id: id,
-      constants.password: md5(password),
+      constants.password: password,
       constants.version: constants.currentVersion
     };
-    put("http://${constants.server}/${constants.user}/${constants.offline}",body:json.encode(req) + constants.end)
+    put("${constants.protocol}${constants.server}/${constants.user}/${constants.offline}",body:json.encode(req) + constants.end)
         .then((response){
           if(response.statusCode==200){
             var result = json.decode(utf8.decode(response.bodyBytes));

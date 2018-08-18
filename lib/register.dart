@@ -81,7 +81,7 @@ class RegisterState extends State<RegisterPage> {
       constants.password: "$password",
       constants.version: constants.currentVersion
     };
-    put("http://${constants.server}/${constants.user}/${constants.register}",
+    put("${constants.protocol}${constants.server}/${constants.user}/${constants.register}",
             body: json.encode(info) + constants.end)
         .then((response) {
       if (response.statusCode == 200) {

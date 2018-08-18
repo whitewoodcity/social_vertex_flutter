@@ -82,11 +82,12 @@ void _search(MyHomePageState state) {
       constants.keyword: _keyword,
       constants.version: constants.currentVersion
     };
-    put("http://${constants.server}/${constants.search}/${constants.info}",
+    put("${constants.protocol}${constants.server}/${constants.search}/${constants.info}",
         body: json.encode(message) + constants.end)
         .then((response) {
       if (response.statusCode == 200) {
-        _result = json.decode(utf8.decode(response.bodyBytes));
+        var result = json.decode(utf8.decode(response.bodyBytes));
+        if(result["user"]!=null) _result = json.decode(utf8.decode(response.bodyBytes));
         state.updateCurrentUI();
       }
     });

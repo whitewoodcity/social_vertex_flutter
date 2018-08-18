@@ -41,6 +41,7 @@ const String tcp_port = "tcp-port";
 const String http_port = "http-port";
 const String keyword = "keyword";
 const String offline = "offline";
+const String protocol = "http://";
 
 const String end = "\r\n";
 
