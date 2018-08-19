@@ -155,10 +155,12 @@ class MyHomePageState extends State<MyHomePage> {
         },
       );
       _socket.done;
+      updateUI(constants.loginPage);
     } catch (e) {
       print(e);
       message.clear();
       showMessage("网络异常!");
+      updateUI(constants.loginPage);
     }
   }
 
@@ -215,7 +217,13 @@ class MyHomePageState extends State<MyHomePage> {
   void sendMessage(String message) {
     //向服务器发送数据
     print(message);
-    _socket.write(message + constants.end);
+    try{
+      _socket.write(message + constants.end);
+    }catch(e){
+      print(e);
+      showMessage("网络异常!");
+      updateUI(constants.loginPage);
+    }
   }
 
   void _obtainOfflineMessages() {

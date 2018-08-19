@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dialog.dart';
 import 'component/application_menu.dart';
 import 'main.dart';
 import 'config/constants.dart' as constants;
@@ -54,7 +55,8 @@ Widget showUser(MyHomePageState state) {
             state.friendId = state.friends[index][constants.id];
             state.friendNickname = state.friends[index][constants.nickname];
             state.unreadMsgs.remove(id);
-            state.updateUI(constants.dialog);
+//            state.updateUI(constants.dialog);
+            initChatDialog(state);
           },
           child: row,
         );

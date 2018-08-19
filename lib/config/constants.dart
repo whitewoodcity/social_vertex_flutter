@@ -18,6 +18,7 @@ const String friend = "friend";
 const String messages = "messages";
 const String friends = "friends";
 const String user = "user";
+const String history = "history";
 const String request = "request";
 const String response = "response";
 const String delete = "delete";
@@ -41,6 +42,9 @@ const String tcp_port = "tcp-port";
 const String http_port = "http-port";
 const String keyword = "keyword";
 const String offline = "offline";
+const String date = "date";
+const String time = "time";
+const String uuid = "uuid";
 const String protocol = "http://";
 
 const String end = "\r\n";

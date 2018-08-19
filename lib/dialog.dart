@@ -2,10 +2,72 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'utils/util.dart';
 import 'config/constants.dart' as constants;
 import 'main.dart';
 
 var _message = "";
+
+void initChatDialog(MyHomePageState state){
+  state.updateUI(constants.dialog);
+  var friend = state.friendId;
+  var message = {
+    constants.id:state.id,
+    constants.password:md5(state.password),
+    constants.friend:friend
+  };
+
+  if(state.messages.containsKey(friend)){
+    List messages = state.messages[friend];
+    if(messages.length>0){
+      for(int i =messages.length - 1;i>=0;i--){
+        Map msg = messages[i];
+        if(msg.containsKey(constants.date)){
+          message[constants.date] = msg[constants.date];
+          break;
+        }
+      }
+    }
+  }
+
+  put("${constants.protocol}${constants.server}/${constants.user}/${constants.history}",
+      body: json.encode(message) + constants.end)
+      .then((response) {
+    if (response.statusCode == 200) {
+      Map resultMap = json.decode(utf8.decode(response.bodyBytes));
+      List msgs = resultMap[constants.messages];
+      if(!state.messages.containsKey(friend)){
+        state.messages[friend] = [];
+      }
+      int i = msgs.length - 1;
+      loop: for(;i>=0;i--){
+        Map msg = msgs[i];
+        if(msg.containsKey(constants.uuid)){
+          //去重
+          String uuid = msg[constants.uuid];
+
+          bool msgExisted = false;
+
+          for(Map m in state.messages[friend]){
+            if(m.containsKey(constants.uuid) && m[constants.uuid] == uuid){
+              msgExisted = true;
+              break;
+            }
+          }
+
+          if(!msgExisted){
+            break loop;
+          }
+        }
+      }
+      state.messages[friend].addAll(msgs.sublist(0,i+1).reversed.toList());
+//      msgs.reversed.toList();
+      print(state.messages[friend].length);
+      state.updateCurrentUI();
+    }
+  });
+}
 
 Widget showChatDialog(MyHomePageState state,[String message]) {
 
@@ -105,7 +167,8 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
                     constants.from: state.id,
                     constants.to: state.friendId,
                     constants.body: _message,
-                    constants.version: constants.currentVersion
+                    constants.uuid: uuid(),
+                    constants.version: constants.currentVersion,
                   };
                   state.messages[state.friendId].insert(0,message);
                   state.updateCurrentUI();

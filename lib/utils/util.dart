@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart' as crypto;
+import 'package:uuid/uuid.dart';
 
 String md5(String data) {
   var content = Utf8Encoder().convert(data);
@@ -10,3 +11,6 @@ String md5(String data) {
   return password;
 }
 
+String uuid(){
+  return Uuid().v1().toString().replaceAll("-", "");
+}

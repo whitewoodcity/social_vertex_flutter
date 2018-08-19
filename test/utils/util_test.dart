@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:social_vertex_flutter/utils/util.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   test('test md5 encoding function', () {
@@ -7,11 +8,12 @@ void main() {
     expect(result, "e10adc3949ba59abbe56e057f20f883e");
   });
 
-  test('test map equals', () {
-    var m1 = {"1":"2"};
-    var m2 = {"1":"2"};
-    List list = [m1,m2].toSet().toList();
-    print(list);
-    expect(m1, m2);
+  test('test uuid', () {
+
+    var uuid = new Uuid();
+    print(uuid.v1().toString().replaceAll("-", ""));
+
+    List<String> colors = ['red', 'green', 'blue', 'orange', 'pink'];
+    print(colors.sublist(0,0).length);
   });
 }
