@@ -54,7 +54,6 @@ Widget showUser(MyHomePageState state) {
           onTap: () {
             state.friendId = state.friends[index][constants.id];
             state.friendNickname = state.friends[index][constants.nickname];
-            state.unreadMsgs.remove(id);
 //            state.updateUI(constants.dialog);
             initChatDialog(state);
           },

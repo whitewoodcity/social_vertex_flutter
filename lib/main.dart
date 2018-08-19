@@ -193,6 +193,10 @@ class MyHomePageState extends State<MyHomePage> {
           messages[sender] = [];
         }
         messages[sender].add(backInf);
+        if (!unreadMsgs.containsKey(sender)){
+          unreadMsgs[sender] = 0;
+        }
+        unreadMsgs[sender] = unreadMsgs[sender] + 1;
         updateCurrentUI();
         break;
       case constants.friend: //添加好友请求和回复

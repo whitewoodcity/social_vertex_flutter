@@ -8,9 +8,18 @@ import 'config/constants.dart' as constants;
 import 'main.dart';
 
 var _message = "";
+bool loadingHistory = false;
 
-void initChatDialog(MyHomePageState state){
+initChatDialog(MyHomePageState state){
+  state.unreadMsgs.remove(state.friendId);
   state.updateUI(constants.dialog);
+  loadHistoricalMessages(state);
+}
+
+loadHistoricalMessages(MyHomePageState state){
+  if(loadingHistory) return;
+  loadingHistory = true;
+
   var friend = state.friendId;
   var message = {
     constants.id:state.id,
@@ -35,6 +44,7 @@ void initChatDialog(MyHomePageState state){
       body: json.encode(message) + constants.end)
       .then((response) {
     if (response.statusCode == 200) {
+      loadingHistory = false;
       Map resultMap = json.decode(utf8.decode(response.bodyBytes));
       List msgs = resultMap[constants.messages];
       if(!state.messages.containsKey(friend)){
@@ -62,11 +72,10 @@ void initChatDialog(MyHomePageState state){
         }
       }
       state.messages[friend].addAll(msgs.sublist(0,i+1).reversed.toList());
-//      msgs.reversed.toList();
-      print(state.messages[friend].length);
       state.updateCurrentUI();
     }
   });
+
 }
 
 Widget showChatDialog(MyHomePageState state,[String message]) {
@@ -85,9 +94,7 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
         double currentScroll = _scrollController.position.pixels;
         double delta = 100.0; // or something else..
         if ( currentScroll - maxScroll >= delta) { // whatever you determine here
-          //.. load more
-          print('用户申请更多数据啦');
-          //todo retrieve more chat log from the server
+          loadHistoricalMessages(state);
         }
       }
   );
