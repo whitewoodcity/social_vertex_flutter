@@ -236,7 +236,7 @@ class MyHomePageState extends State<MyHomePage> {
       constants.password: md5(password),
       constants.version: constants.currentVersion
     };
-    var _httpClient = new HttpClient();
+    var _httpClient = HttpClient();
     _httpClient.badCertificateCallback =
         (X509Certificate cert, String host, int port) => true;
     _httpClient
