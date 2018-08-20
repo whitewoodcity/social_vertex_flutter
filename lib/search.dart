@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ Widget showSearchDialog(MyHomePageState state) {
   List<Widget> itemList = [];
 
   if (_result.containsKey(constants.user) &&_result[constants.user]!=null) {
-    var userItem = UserItem(_result[constants.user][constants.id], state);
+    var userItem = UserItem(state);
     itemList.add(userItem);
   }
 
@@ -103,20 +102,18 @@ void _search(MyHomePageState state) {
 }
 
 class UserItem extends StatefulWidget {
-  final String userId;
   MyHomePageState state;
 
-  UserItem(this.userId, this.state);
+  UserItem(this.state);
 
   @override
-  UserItemState createState() => UserItemState(userId, state);
+  UserItemState createState() => UserItemState(state);
 }
 
 class UserItemState extends State<UserItem> {
-  final String userId;
   MyHomePageState state;
 
-  UserItemState(this.userId, this.state);
+  UserItemState(this.state);
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +132,7 @@ class UserItemState extends State<UserItem> {
                   Padding(
                       padding: EdgeInsets.only(left: 5.00),
                       child: Text(
-                        userId,
+                        _result[constants.user][constants.id],
                         overflow: TextOverflow.ellipsis,
                       )),
                 ],
@@ -155,7 +152,7 @@ class UserItemState extends State<UserItem> {
                 var message = {
                   constants.type: constants.friend,
                   constants.subtype: constants.request,
-                  constants.to: userId,
+                  constants.to: _result[constants.user][constants.id],
                   constants.message: "请添加我为你的好友，我是${state.nickname}",
                   constants.version: constants.currentVersion
                 };

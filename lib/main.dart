@@ -154,7 +154,12 @@ class MyHomePageState extends State<MyHomePage> {
           }
         },
       );
-      _socket.done;
+      _socket.done.catchError((error) {
+        print(error);
+        message.clear();
+        showMessage("网络异常!");
+        updateUI(constants.loginPage);
+      });
       updateUI(constants.loginPage);
     } catch (e) {
       print(e);
