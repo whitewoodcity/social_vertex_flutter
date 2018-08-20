@@ -146,7 +146,7 @@ class MyHomePageState extends State<MyHomePage> {
           message.addAll(package); //粘包
           if (utf8.decode(message).endsWith(constants.end)) {
             List<String> msgs =
-                utf8.decode(message).trim().split(constants.end);//拆包
+                utf8.decode(message).trim().split(constants.end); //拆包
             for (String msg in msgs) {
               processMessage(msg);
             }
@@ -192,8 +192,8 @@ class MyHomePageState extends State<MyHomePage> {
         if (!messages.containsKey(sender)) {
           messages[sender] = [];
         }
-        messages[sender].insert(0,backInf);
-        if (!unreadMsgs.containsKey(sender)){
+        messages[sender].insert(0, backInf);
+        if (!unreadMsgs.containsKey(sender)) {
           unreadMsgs[sender] = 0;
         }
         unreadMsgs[sender] = unreadMsgs[sender] + 1;
@@ -221,9 +221,9 @@ class MyHomePageState extends State<MyHomePage> {
   void sendMessage(String message) {
     //向服务器发送数据
     print(message);
-    try{
+    try {
       _socket.write(message + constants.end);
-    }catch(e){
+    } catch (e) {
       print(e);
       showMessage("网络异常!");
       updateUI(constants.loginPage);
@@ -236,57 +236,39 @@ class MyHomePageState extends State<MyHomePage> {
       constants.password: md5(password),
       constants.version: constants.currentVersion
     };
-    put("${constants.protocol}${constants.server}/${constants.user}/${constants.offline}",body:json.encode(req) + constants.end)
-        .then((response){
-          if(response.statusCode==200){
-            var result = json.decode(utf8.decode(response.bodyBytes));
-            offlineRequests.clear();
-            if (result[constants.friends] != null)
-              offlineRequests = result[constants.friends];
-            if (result.containsKey(constants.messages)) {
-              for (Map message in result[constants.messages]) {
-                var sender = message[constants.from];
-                if (!messages.containsKey(sender)) {
-                  messages[sender] = [];
-                }
-                messages[sender].insert(0,message);
-                if (!unreadMsgs.containsKey(sender)){
-                  unreadMsgs[sender] = 0;
-                }
-                unreadMsgs[sender] = unreadMsgs[sender] + 1;
-              }
-            }
-            updateCurrentUI();
-          }else{
-            this.showMessage("服务器错误!");
-          }
-    });
-   /* var httpClient = HttpClient();
-    httpClient
-        .put(, constants.httpPort,
-            "/${constants.user}/${constants.offline}")
+    var _httpClient = new HttpClient();
+    _httpClient.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
+    _httpClient
+        .putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.user}/${constants.offline}"))
         .then((request) {
       request.write(json.encode(req) + constants.end);
       return request.close();
     }).then((response) {
-      response.transform(utf8.decoder).listen((data) {
-        Map result = json.decode(data);
-        print(result.toString());
-        offlineRequests.clear();
-        if (result[constants.friends] != null)
-          offlineRequests = result[constants.friends];
-
-        if (result.containsKey(constants.messages)) {
-          for (Map message in result[constants.messages]) {
-            var sender = message[constants.from];
-            if (!messages.containsKey(sender)) {
-              messages[sender] = [];
+      if (response.statusCode == 200) {
+        response.transform(utf8.decoder).listen((data) {
+          var result = json.decode(data);
+          offlineRequests.clear();
+          if (result[constants.friends] != null)
+            offlineRequests = result[constants.friends];
+          if (result.containsKey(constants.messages)) {
+            for (Map message in result[constants.messages]) {
+              var sender = message[constants.from];
+              if (!messages.containsKey(sender)) {
+                messages[sender] = [];
+              }
+              messages[sender].insert(0, message);
+              if (!unreadMsgs.containsKey(sender)) {
+                unreadMsgs[sender] = 0;
+              }
+              unreadMsgs[sender] = unreadMsgs[sender] + 1;
             }
-            messages[sender].add(message);
           }
-        }
-        updateCurrentUI();
-      });
-    });*/
+          updateCurrentUI();
+        });
+      } else {
+        this.showMessage("服务器错误!");
+      }
+    });
   }
 }
