@@ -43,8 +43,8 @@ loadHistoricalMessages(MyHomePageState state){
   put("${constants.protocol}${constants.server}/${constants.user}/${constants.history}",
       body: json.encode(message) + constants.end)
       .then((response) {
+    loadingHistory = false;
     if (response.statusCode == 200) {
-      loadingHistory = false;
       Map resultMap = json.decode(utf8.decode(response.bodyBytes));
       List msgs = resultMap[constants.messages];
       if(!state.messages.containsKey(friend)){
@@ -110,12 +110,18 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
         textAlign = TextAlign.end;
       }
 
+      var text = "";
+      if(item[constants.date]!=null && item[constants.time]!=null){
+        text += "${item[constants.date]} ${item[constants.time]}\n";
+      }
+      text += "${item[constants.from]}:\n${item[constants.body]}";
+
       var row = Row(
         children: <Widget>[
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(10.0),
-              child: Text("${item[constants.from]}:\n${item[constants.body]}", textAlign: textAlign,),
+              child: Text("${text}", textAlign: textAlign,),
             ),
           ),
         ],
