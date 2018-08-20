@@ -192,7 +192,7 @@ class MyHomePageState extends State<MyHomePage> {
         if (!messages.containsKey(sender)) {
           messages[sender] = [];
         }
-        messages[sender].add(backInf);
+        messages[sender].insert(0,backInf);
         if (!unreadMsgs.containsKey(sender)){
           unreadMsgs[sender] = 0;
         }
