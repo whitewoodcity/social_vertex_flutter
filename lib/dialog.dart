@@ -111,9 +111,9 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
       }
 
       var text = "";
-      if(item[constants.date]!=null && item[constants.time]!=null){
-        text += "${item[constants.date]} ${item[constants.time]}\n";
-      }
+//      if(item[constants.date]!=null && item[constants.time]!=null){
+//        text += "${item[constants.date]} ${item[constants.time]}\n";
+//      }
       text += "${item[constants.from]}:\n${item[constants.body]}";
 
       var row = Row(

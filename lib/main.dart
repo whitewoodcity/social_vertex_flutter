@@ -154,13 +154,13 @@ class MyHomePageState extends State<MyHomePage> {
           }
         },
       );
-//      _socket.done.catchError((error) {
-//        print(error);
-//        message.clear();
-//        showMessage("网络异常!");
-//        updateUI(constants.loginPage);
-//      });
-      await _socket.done;//有待测试
+      _socket.done.catchError((error) {
+        print(error);
+        message.clear();
+        showMessage("网络异常!");
+        updateUI(constants.loginPage);
+      });
+//      await _socket.done;//不能await，否则该函数会被blocked
       updateUI(constants.loginPage);
     } catch (e) {
       print(e);

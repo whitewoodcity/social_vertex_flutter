@@ -79,6 +79,7 @@ void _login(MyHomePageState state) async {
     password: md5(state.password)
   };
   await state.initConnect();
+  print(userInfo);
   state.sendMessage(json.encode(userInfo));
 }
 
