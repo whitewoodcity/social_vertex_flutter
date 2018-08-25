@@ -157,7 +157,7 @@ Widget showUser(MyHomePageState state) {
       ],
     ),
     drawer: Drawer(
-      child: showAppMenu(state.nickname),
+      child: showAppMenu(state),
     ),
     body: content,
     bottomNavigationBar: BottomNavigationBar(
