@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../main.dart';
 
-showAppMenu(String userName) {
+showAppMenu(String userName,MyHomePageState state) {
   int curIndex = 0;
   return Scaffold(
     body: ListView(
@@ -9,48 +10,34 @@ showAppMenu(String userName) {
         Container(
           child: Column(
             children: <Widget>[
-              ClipRRect(
-                child: Container(
-                  width: 100.0,
-                  height: 100.0,
-                  child: Image.asset("assets/images/user.png"),
-                ),
-                borderRadius: BorderRadius.all(Radius.circular(90.0)),
-              ),
-              Text(
-                userName,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily: "微软雅黑",
-                ),
+              Container(
+                width: 100.0,
+                height: 100.0,
+                child: Image.asset("assets/images/flutter.png"),
               ),
             ],
           ),
-          color: Colors.lightBlue,
-          height: 150.0,
-        )
+          color: Colors.blue,
+          height: 100.0,
+        ),
+        Text(
+          userName,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20.0,
+            fontFamily: "微软雅黑",
+          ),
+        ),
       ],
     ),
     bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-              icon: Image.asset(
-                "assets/images/setting.png",
-                width: 20.0,
-                height: 20.0,
-              ),
-              title: Text("设置")),
+              icon: Icon(Icons.cloud_upload),
+              title: Text("更新")),
           BottomNavigationBarItem(
-              icon: IconButton(
-                  icon: Image.asset(
-                    "assets/images/dark.png",
-                    width: 20.0,
-                    height: 20.0,
-                  ),
-                  onPressed: () {
-
-                  }),
-              title: Text("夜间"))
+              icon: Icon(Icons.exit_to_app),
+              title: Text("退出"))
         ],
         onTap: (value) {
           print(value);
