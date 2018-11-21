@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:social_vertex_flutter/utils/util.dart';
 import 'system_info.dart';
 import 'search.dart';
@@ -242,10 +241,10 @@ class MyHomePageState extends State<MyHomePage> {
       constants.password: md5(password),
       constants.version: constants.currentVersion
     };
-    var _httpClient = HttpClient();
-    _httpClient.badCertificateCallback =
+    var httpClient = HttpClient();
+    httpClient.badCertificateCallback =
         (X509Certificate cert, String host, int port) => true;
-    _httpClient
+    httpClient
         .putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.user}/${constants.offline}"))
         .then((request) {
       request.write(json.encode(req) + constants.end);
