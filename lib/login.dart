@@ -91,10 +91,14 @@ void _login(MyHomePageState state) async {
 void _roll(MyHomePageState state) {
   Navigator.push(state.context, MaterialPageRoute(builder: (BuildContext context) => RegisterPage()))
     .then((value){
-      Map map = value as Map<String, String>;
-      id.text = map[constants.id];
-      pw.text = map[constants.password];
-      state.updateCurrentUI();
+      if(value is Map){
+        Map map = value as Map<String, String>;
+        if(map.containsKey(constants.id))
+          id.text = map[constants.id];
+        if(map.containsKey(constants.password))
+          pw.text = map[constants.password];
+        state.updateCurrentUI();
+      }
   });
 }
 
