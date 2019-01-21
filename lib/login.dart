@@ -19,7 +19,7 @@ Widget showLogin(MyHomePageState state) {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(
-                top: 50.0, left: 20.0, right: 20.0, bottom: 20.0),
+              top: 50.0, left: 20.0, right: 20.0, bottom: 20.0),
             child: Align(
               child: LayoutBuilder(builder: (context, constraint) {
                 return Image.asset(
@@ -84,8 +84,7 @@ void _login(MyHomePageState state) async {
 }
 
 void _roll(MyHomePageState state) {
-  Navigator.of(state.context).push(
-      MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
+  Navigator.push(state.context, MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
 }
 
 void _clearUserData(MyHomePageState state) {

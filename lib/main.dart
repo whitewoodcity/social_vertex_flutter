@@ -14,11 +14,12 @@ void main() => runApp(MyApplication()); //整个应用的入口
 
 class MyApplication extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: "IM通讯",
-        home: MyHomePage(),
-        theme: constants.applicationTheme,
-      );
+  Widget build(BuildContext context) =>
+    MaterialApp(
+      title: "IM通讯",
+      home: MyHomePage(),
+      theme: constants.applicationTheme,
+    );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -61,17 +62,17 @@ class MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     this.context = context;
     var widget = WillPopScope(
-        child: _changePage(),
-        onWillPop: () {
-          if (currentPage == constants.userPage ||
-              currentPage == constants.messagePage) {
-            updateUI(constants.loginPage);
-          } else if (currentPage == constants.loginPage) {
-            this.dispose();
-          } else {
-            updateUI(lastPage);
-          }
-        });
+      child: _changePage(),
+      onWillPop: () {
+        if (currentPage == constants.userPage ||
+          currentPage == constants.messagePage) {
+          updateUI(constants.loginPage);
+        } else if (currentPage == constants.loginPage) {
+          this.dispose();
+        } else {
+          updateUI(lastPage);
+        }
+      });
     return widget;
   }
 
@@ -94,15 +95,16 @@ class MyHomePageState extends State<MyHomePage> {
   void showMessage(String message) {
     //显示系统消息
     showDialog(
-        context: context,
-        builder: (BuildContext context) => SimpleDialog(
+      context: context,
+      builder: (BuildContext context) =>
+        SimpleDialog(
 //              title: Text("消息"),
-              children: <Widget>[
-                Center(
-                  child: Text(message),
-                )
-              ],
-            ));
+          children: <Widget>[
+            Center(
+              child: Text(message),
+            )
+          ],
+        ));
   }
 
   void updateUI(int index) {
@@ -141,11 +143,11 @@ class MyHomePageState extends State<MyHomePage> {
     try {
       _socket = await Socket.connect(constants.server, constants.tcpPort);
       _socket.forEach(
-        (package) {
+          (package) {
           message.addAll(package); //粘包
           if (utf8.decode(message).endsWith(constants.end)) {
             List<String> msgs =
-                utf8.decode(message).trim().split(constants.end); //拆包
+            utf8.decode(message).trim().split(constants.end); //拆包
             for (String msg in msgs) {
               processMessage(msg);
             }
@@ -178,8 +180,8 @@ class MyHomePageState extends State<MyHomePage> {
         bool loginStatus = backInf[constants.login];
         if (loginStatus) {
           nickname = backInf[constants.nickname] == null
-              ? backInf[constants.id]
-              : backInf[constants.nickname];
+            ? backInf[constants.id]
+            : backInf[constants.nickname];
           if (backInf[constants.friends] != null) {
             friends = backInf[constants.friends];
           }
@@ -188,8 +190,8 @@ class MyHomePageState extends State<MyHomePage> {
           _obtainOfflineMessages();
         } else {
           this.showMessage(backInf[constants.info] == null
-              ? "登陆失败"
-              : backInf[constants.info]);
+            ? "登陆失败"
+            : backInf[constants.info]);
         }
         break;
       case constants.message: //获取消息
@@ -243,10 +245,10 @@ class MyHomePageState extends State<MyHomePage> {
     };
     var httpClient = HttpClient();
     httpClient.badCertificateCallback =
-        (X509Certificate cert, String host, int port) => true;
+      (X509Certificate cert, String host, int port) => true;
     httpClient
-        .putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.user}/${constants.offline}"))
-        .then((request) {
+      .putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.user}/${constants.offline}"))
+      .then((request) {
       request.write(json.encode(req) + constants.end);
       return request.close();
     }).then((response) {

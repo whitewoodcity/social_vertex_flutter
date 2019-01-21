@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +12,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterState extends State<RegisterPage> {
-  String _userName = "";
-  String _password = "";
-  String _repassword = "";
 
+  String _userName="";
+  String _password="";
+  String _repassword="";
+  String _nickname="";
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +49,13 @@ class RegisterState extends State<RegisterPage> {
             },
             decoration: InputDecoration(labelText: "确认密码"),
           ),
+          TextField(
+            obscureText: true,
+            onChanged: (String value) {
+              _nickname = value;
+            },
+            decoration: InputDecoration(labelText: "昵称"),
+          ),
           SizedBox.fromSize(
             size: Size(0.0, 10.0),
           ),
@@ -56,7 +64,7 @@ class RegisterState extends State<RegisterPage> {
               onPressed: () {
                 if (_userName != "" && _password != "" && _repassword != "") {
                   if (_password == _repassword) {
-                    _register();
+                    _register(context);
                   } else {
                     _registerAlert("两次密码不匹配");
                   }
@@ -72,13 +80,14 @@ class RegisterState extends State<RegisterPage> {
     );
   }
 
-  void _register() async {
+  void _register(BuildContext context) async {
     var password = util.md5(_password);
     var info = {
       constants.type: constants.user,
       constants.subtype: constants.register,
-      constants.id: "$_userName",
+      constants.id: "${_userName}",
       constants.password: "$password",
+      constants.nickname: "${_nickname}",
       constants.version: constants.currentVersion
     };
     put("${constants.protocol}${constants.server}/${constants.user}/${constants.register}",
