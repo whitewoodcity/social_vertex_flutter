@@ -50,7 +50,6 @@ class RegisterState extends State<RegisterPage> {
             decoration: InputDecoration(labelText: "确认密码"),
           ),
           TextField(
-            obscureText: true,
             onChanged: (String value) {
               _nickname = value;
             },
@@ -95,8 +94,9 @@ class RegisterState extends State<RegisterPage> {
         .then((response) {
       if (response.statusCode == 200) {
         var result = json.decode(utf8.decode(response.bodyBytes));
-        if (result["register"]) {
-          _registerAlert("注册成功!");
+        if (result[constants.register]) {
+//          _registerAlert("注册成功!");
+          Navigator.pop(context,{constants.id:_userName, constants.password: _password});
         } else {
           _registerAlert(result["info"]);
         }

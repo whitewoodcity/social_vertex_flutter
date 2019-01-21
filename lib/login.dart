@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 import 'register.dart';
 import 'utils/util.dart';
-import 'config/constants.dart';
+import 'config/constants.dart' as constants;
+
+TextEditingController id = TextEditingController();
+TextEditingController pw = TextEditingController();
 
 Widget showLogin(MyHomePageState state) {
   _clearUserData(state);
   return Scaffold(
-    key: Key(login),
+    key: Key(constants.login),
     appBar: AppBar(
       title: Text("登录"),
     ),
@@ -34,14 +37,16 @@ Widget showLogin(MyHomePageState state) {
           Form(
             child: Column(
               children: <Widget>[
-                TextField(
+                TextFormField(
                   textAlign: TextAlign.start,
-                  onChanged: (value) => (state.id = value),
+//                  onChanged: (value) => (state.id = value),
+                  controller: id,
                   decoration: InputDecoration(labelText: "用户名："),
                 ),
-                TextField(
+                TextFormField(
                   textAlign: TextAlign.start,
-                  onChanged: (value) => (state.password = value),
+//                  onChanged: (value) => (state.password = value),
+                  controller: pw,
                   obscureText: true,
                   decoration: InputDecoration(labelText: "密码："),
                 ),
@@ -50,7 +55,7 @@ Widget showLogin(MyHomePageState state) {
                 ),
                 RaisedButton(
                   onPressed: () {
-                    if (state.id != "" && state.password != "") {
+                    if (id.text.trim() != "" && pw.text.trim() != "") {
                       _login(state);
                     } else {
                       state.showMessage("用户名/密码不能为空！");
@@ -73,10 +78,10 @@ Widget showLogin(MyHomePageState state) {
 
 void _login(MyHomePageState state) async {
   var userInfo = {
-    type: user,
-    subtype: login,
-    id: state.id,
-    password: md5(state.password)
+    constants.type: constants.user,
+    constants.subtype: constants.login,
+    constants.id: id.text.trim(),//state.id,
+    constants.password: md5(pw.text.trim())//md5(state.password)
   };
   await state.initConnect();
   print(userInfo);
@@ -84,7 +89,13 @@ void _login(MyHomePageState state) async {
 }
 
 void _roll(MyHomePageState state) {
-  Navigator.push(state.context, MaterialPageRoute(builder: (BuildContext context) => RegisterPage()));
+  Navigator.push(state.context, MaterialPageRoute(builder: (BuildContext context) => RegisterPage()))
+    .then((value){
+      Map map = value as Map<String, String>;
+      id.text = map[constants.id];
+      pw.text = map[constants.password];
+      state.updateCurrentUI();
+  });
 }
 
 void _clearUserData(MyHomePageState state) {
