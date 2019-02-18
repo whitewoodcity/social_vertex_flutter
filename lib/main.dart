@@ -179,9 +179,7 @@ class MyHomePageState extends State<MyHomePage> {
       case constants.user: //登录
         bool loginStatus = backInf[constants.login];
         if (loginStatus) {
-          nickname = backInf[constants.nickname] == null
-            ? backInf[constants.id]
-            : backInf[constants.nickname];
+          nickname = backInf[constants.nickname] == null ? backInf[constants.id] : backInf[constants.nickname];
           if (backInf[constants.friends] != null) {
             friends = backInf[constants.friends];
           }

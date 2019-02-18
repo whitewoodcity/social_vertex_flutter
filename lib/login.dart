@@ -77,11 +77,13 @@ Widget showLogin(MyHomePageState state) {
 }
 
 void _login(MyHomePageState state) async {
+  state.id = id.text.trim();//获取离线消息时需要用到该状态
+  state.password = pw.text.trim();
   var userInfo = {
     constants.type: constants.user,
     constants.subtype: constants.login,
-    constants.id: id.text.trim(),//state.id,
-    constants.password: md5(pw.text.trim())//md5(state.password)
+    constants.id: state.id,
+    constants.password: md5(state.password)
   };
   await state.initConnect();
   print(userInfo);
