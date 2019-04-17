@@ -33,6 +33,7 @@ const String info = "info";
 const String nickname = "nickname";
 const String id = "id";
 const String password = "password";
+const String password2 = "password2";
 const String dir = "dir";
 const String host = "host";
 const String body = "body";

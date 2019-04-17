@@ -2,15 +2,147 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:social_vertex_flutter/utils/util.dart';
 import 'system_info.dart';
 import 'search.dart';
 import 'dialog.dart';
 import 'user.dart';
-import 'login.dart';
+
+//import 'login.dart';
+import 'register.dart';
 import 'config/constants.dart' as constants;
 
-void main() => runApp(MyApplication()); //整个应用的入口
+void main() => runApp(Application()); //整个应用的入口
+
+class Application extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) =>
+    MaterialApp(
+      title: "IM通讯",
+      home: HomePage(),
+      theme: constants.applicationTheme,
+    );
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  HomePageState createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+
+  TextEditingController id = TextEditingController();
+  TextEditingController pw = TextEditingController();
+
+  Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    return Scaffold(
+      key: Key(constants.login),
+      appBar: AppBar(
+        title: Text("登录"),
+      ),
+      body: Center(
+        child: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 50.0, left: 20.0, right: 20.0, bottom: 20.0),
+              child: Align(
+                child: LayoutBuilder(builder: (context, constraint) {
+                  return Image.asset(
+                    "assets/images/flutter.png",
+                    width: constraint.biggest.width / 2,
+                    height: constraint.biggest.width / 2,
+                  );
+                }),
+                alignment: Alignment.center,
+              ),
+            ),
+            Form(
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    textAlign: TextAlign.start,
+//                  onChanged: (value) => (state.id = value),
+                    controller: id,
+                    decoration: InputDecoration(labelText: "用户名："),
+                  ),
+                  TextFormField(
+                    textAlign: TextAlign.start,
+//                  onChanged: (value) => (state.password = value),
+                    controller: pw,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: "密码："),
+                  ),
+                  SizedBox.fromSize(
+                    size: Size(0.00, 10.0),
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      if (id.text.trim() != "" && pw.text.trim() != "") {
+                        var userInfo = {
+                          constants.type: constants.user,
+                          constants.subtype: constants.login,
+                          constants.id: id.text.trim(),
+                          constants.password: md5(pw.text.trim())
+                        };
+//                        await state.initConnect();
+                        print(userInfo);
+//                        sendMessage(json.encode(userInfo));
+                      } else {
+                        showMessage("用户名/密码不能为空！");
+                      }
+                    },
+                    child: Text("登录"),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () =>
+        (Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => RegisterPage()))
+          .then((value) {
+          if (value is Map) {
+            Map map = value as Map<String, String>;
+            if (map.containsKey(constants.id))
+              id.text = map[constants.id];
+            if (map.containsKey(constants.password))
+              pw.text = map[constants.password];
+          }
+        })),
+        child: Text("注册"),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    id.dispose();
+    pw.dispose();
+  }
+
+  void showMessage(String message) {
+    //显示系统消息
+    showDialog(
+      context: context,
+      builder: (BuildContext context) =>
+        SimpleDialog(
+//              title: Text("消息"),
+          children: <Widget>[
+            Center(
+              child: Text(message),
+            )
+          ],
+        ));
+  }
+}
 
 class MyApplication extends StatelessWidget {
   @override
@@ -87,8 +219,8 @@ class MyHomePageState extends State<MyHomePage> {
         return showSearchDialog(this);
       case constants.systemPage:
         return showSystemInfo(this);
-      default:
-        return showLogin(this);
+//      default:
+//        return showLogin(this);
     }
   }
 

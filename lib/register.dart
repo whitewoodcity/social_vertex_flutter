@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import "config/constants.dart" as constants;
@@ -80,22 +79,23 @@ class RegisterState extends State<RegisterPage> {
   }
 
   void _register(BuildContext context) async {
-    var password = util.md5(_password);
     var info = {
       constants.type: constants.user,
       constants.subtype: constants.register,
-      constants.id: "${_userName}",
-      constants.password: "$password",
-      constants.nickname: "${_nickname}",
+      constants.id: "$_userName",
+      constants.password: "${util.md5(_password)}",
+      constants.password2: "${util.md5(_repassword)}",
+      constants.nickname: "$_nickname",
       constants.version: constants.currentVersion
     };
-    put("${constants.protocol}${constants.server}/${constants.user}/${constants.register}",
+
+    put("${constants.protocol}${constants.server}/",
+            headers: {"Content-Type":"application/json"},
             body: json.encode(info) + constants.end)
         .then((response) {
       if (response.statusCode == 200) {
         var result = json.decode(utf8.decode(response.bodyBytes));
         if (result[constants.register]) {
-//          _registerAlert("注册成功!");
           Navigator.pop(context,{constants.id:_userName, constants.password: _password});
         } else {
           _registerAlert(result["info"]);
@@ -103,7 +103,7 @@ class RegisterState extends State<RegisterPage> {
       } else {
         _registerAlert("服务器异常,请重试!");
       }
-    });
+    }).catchError((error)=> print(error));
   }
 
   void _registerAlert(String info) {
