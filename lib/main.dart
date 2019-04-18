@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:social_vertex_flutter/utils/util.dart';
+import 'user_interface.dart';
+import 'utils/util.dart';
 import 'system_info.dart';
 import 'search.dart';
 import 'dialog.dart';
 import 'user.dart';
 
-//import 'login.dart';
 import 'register.dart';
 import 'config/constants.dart' as constants;
 
@@ -22,6 +22,12 @@ class Application extends StatelessWidget {
       title: "IM通讯",
       home: HomePage(),
       theme: constants.applicationTheme,
+      initialRoute: "/main",
+      routes: {
+        "/main": (BuildContext context) => HomePage(),
+        "/register": (BuildContext context) => RegisterPage(),
+        "/login": (BuildContext context) => UserInterface(),
+      },
     );
 }
 
@@ -89,9 +95,7 @@ class HomePageState extends State<HomePage> {
                           constants.id: id.text.trim(),
                           constants.password: md5(pw.text.trim())
                         };
-//                        await state.initConnect();
-                        print(userInfo);
-//                        sendMessage(json.encode(userInfo));
+                        Navigator.pushNamed(context, "/login", arguments: id.text.trim()+" "+md5(pw.text.trim()));
                       } else {
                         showMessage("用户名/密码不能为空！");
                       }
@@ -106,7 +110,7 @@ class HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () =>
-        (Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => RegisterPage()))
+        (Navigator.pushNamed(context, "/register")
           .then((value) {
           if (value is Map) {
             Map map = value as Map<String, String>;

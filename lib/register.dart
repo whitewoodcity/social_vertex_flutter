@@ -96,7 +96,9 @@ class RegisterState extends State<RegisterPage> {
       if (response.statusCode == 200) {
         var result = json.decode(utf8.decode(response.bodyBytes));
         if (result[constants.register]) {
-          Navigator.pop(context,{constants.id:_userName, constants.password: _password});
+          Navigator.popAndPushNamed(context, "/login",
+            result:{constants.id:_userName, constants.password: _password},
+            arguments: "${_userName} ${util.md5(_password)}");
         } else {
           _registerAlert(result["info"]);
         }
