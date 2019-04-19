@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'config/constants.dart' as constants;
 
 class UserInterface extends StatefulWidget {
   @override
@@ -9,19 +10,20 @@ class UserInterfaceState extends State<UserInterface> {
 
   TextEditingController id = TextEditingController();
   TextEditingController pw = TextEditingController();
+  TextEditingController nickname = TextEditingController();
 
   int index = -1;
 
   @override
   Widget build(BuildContext context) {
     if(index<0){
-      final String arguments = ModalRoute.of(context).settings.arguments;
-      List<String> params = arguments.split(" ");
-      id.text = params[0];
-      pw.text = params[1];
+      final Map arguments = ModalRoute.of(context).settings.arguments;
+      id.text = arguments[constants.id];
+      pw.text = arguments[constants.password];
+      nickname.text = arguments[constants.nickname];
       index = 0;
     }
-    print(id.text);
+    print(nickname.text);
     print(index);
 
     return Scaffold(
@@ -40,7 +42,7 @@ class UserInterfaceState extends State<UserInterface> {
         ],
       ),
       drawer: Drawer(
-        child: showAppMenu(this),
+        child: showDrawer(),
       ),
       body: null,
       bottomNavigationBar: BottomNavigationBar(
@@ -63,9 +65,10 @@ class UserInterfaceState extends State<UserInterface> {
     super.dispose();
     id.dispose();
     pw.dispose();
+    nickname.dispose();
   }
 
-  showAppMenu(UserInterfaceState state) {
+  showDrawer() {
     return Scaffold(
       body: ListView(
         children: <Widget>[
@@ -83,7 +86,7 @@ class UserInterfaceState extends State<UserInterface> {
             height: 100.0,
           ),
           Text(
-            "昵称",
+            nickname.text,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20.0,

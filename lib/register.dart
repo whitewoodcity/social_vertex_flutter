@@ -98,7 +98,7 @@ class RegisterState extends State<RegisterPage> {
         if (result[constants.register]) {
           Navigator.popAndPushNamed(context, "/login",
             result:{constants.id:_userName, constants.password: _password},
-            arguments: "${_userName} ${util.md5(_password)}");
+            arguments: {constants.id:_userName, constants.password: util.md5(_password), constants.nickname: _nickname});
         } else {
           _registerAlert(result["info"]);
         }

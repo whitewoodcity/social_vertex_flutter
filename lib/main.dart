@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'user_interface.dart';
 import 'utils/util.dart';
 import 'system_info.dart';
@@ -89,13 +90,28 @@ class HomePageState extends State<HomePage> {
                   RaisedButton(
                     onPressed: () {
                       if (id.text.trim() != "" && pw.text.trim() != "") {
-                        var userInfo = {
+                        var reqJson = {
                           constants.type: constants.user,
                           constants.subtype: constants.login,
                           constants.id: id.text.trim(),
                           constants.password: md5(pw.text.trim())
                         };
-                        Navigator.pushNamed(context, "/login", arguments: id.text.trim()+" "+md5(pw.text.trim()));
+                        put("${constants.protocol}${constants.server}/",
+                          headers: {"Content-Type": "application/json"},
+                          body: json.encode(reqJson)).then((response) {
+                          if (response.statusCode == 200) {
+                            var result = json.decode(utf8.decode(response.bodyBytes));
+                            result[constants.password] = md5(pw.text.trim());
+                            print(result);
+                            if (result[constants.login]) {
+                              Navigator.pushNamed(context, "/login", arguments: result);
+                            } else {
+                              showMessage(result["info"]);
+                            }
+                          } else {
+                            showMessage("服务器异常,请重试!");
+                          }
+                        });
                       } else {
                         showMessage("用户名/密码不能为空！");
                       }
