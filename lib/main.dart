@@ -20,12 +20,9 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
     MaterialApp(
-      title: "IM通讯",
-      home: HomePage(),
-      theme: constants.applicationTheme,
-      initialRoute: "/main",
+      initialRoute: "/",
       routes: {
-        "/main": (BuildContext context) => HomePage(),
+        "/": (BuildContext context) => HomePage(),
         "/register": (BuildContext context) => RegisterPage(),
         "/login": (BuildContext context) => UserInterface(),
       },
@@ -208,6 +205,7 @@ class MyHomePageState extends State<MyHomePage> {
   void dispose() {
     super.dispose();
     if (_socket != null) _socket.close();
+
     exit(1);
   }
 

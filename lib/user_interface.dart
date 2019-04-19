@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'config/constants.dart' as constants;
 
@@ -11,8 +13,11 @@ class UserInterfaceState extends State<UserInterface> {
   TextEditingController id = TextEditingController();
   TextEditingController pw = TextEditingController();
   TextEditingController nickname = TextEditingController();
+  List friends = [];
 
   int index = -1;
+
+  Socket socket;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,15 @@ class UserInterfaceState extends State<UserInterface> {
       id.text = arguments[constants.id];
       pw.text = arguments[constants.password];
       nickname.text = arguments[constants.nickname];
+      friends = arguments[constants.friends];
       index = 0;
+
+      Future<Socket> future = Socket.connect(constants.server, constants.tcpPort);
+      future.then((socket){
+        this.socket = socket;
+        socket.forEach((packet) => print(packet));
+        socket.done.then((_)=> Navigator.popUntil(context, ModalRoute.withName('/')));
+      });
     }
     print(nickname.text);
     print(index);
@@ -44,7 +57,7 @@ class UserInterfaceState extends State<UserInterface> {
       drawer: Drawer(
         child: showDrawer(),
       ),
-      body: null,
+      body: showFriendList(friends),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
@@ -66,6 +79,9 @@ class UserInterfaceState extends State<UserInterface> {
     id.dispose();
     pw.dispose();
     nickname.dispose();
+    if(this.socket!=null){
+      socket.destroy();
+    }
   }
 
   showDrawer() {
@@ -105,7 +121,7 @@ class UserInterfaceState extends State<UserInterface> {
         onTap: (value) {
           print(value);
           if(value == 1){
-            Navigator.popUntil(context, ModalRoute.withName('/main'));
+            Navigator.popUntil(context, ModalRoute.withName('/'));
           }
         },
         currentIndex: 1,
@@ -113,5 +129,56 @@ class UserInterfaceState extends State<UserInterface> {
     );
   }
 
+  Widget showFriendList(List friends){
+    return ListView.builder(
+      padding: EdgeInsets.all(10.0),
+      itemBuilder: (BuildContext context, int index) {
+        String id = friends[index][constants.id];
+        var row = Row(
+          children: <Widget>[
+            Icon(Icons.account_box),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(id + "(${friends[index][constants.nickname]})"),
+                    Text("无消息")
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
 
+        if (false) {//state.unreadMsgs.containsKey(id) && state.unreadMsgs[id] > 0
+          row.children.add(
+            Container(
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(20.0),
+                color: Colors.red,
+              ),
+              child: Text(" ",
+                style: TextStyle(color: Colors.white, fontSize: 15.0))),
+          );
+        }
+
+        var widget = GestureDetector(
+          onTap: () {
+//            state.friendId = state.friends[index][constants.id];
+//            state.friendNickname = state.friends[index][constants.nickname];
+////            state.updateUI(constants.dialog);
+//            initChatDialog(state);
+          },
+          child: row,
+        );
+
+        return widget;
+      },
+      itemCount: friends.length,
+    );
+  }
 }
