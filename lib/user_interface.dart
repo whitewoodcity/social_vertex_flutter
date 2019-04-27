@@ -14,6 +14,7 @@ class UserInterfaceState extends State<UserInterface> {
   TextEditingController pw = TextEditingController();
   TextEditingController nickname = TextEditingController();
   List friends = [];
+  List notifications = [];
 
   int index = -1;
 
@@ -27,12 +28,13 @@ class UserInterfaceState extends State<UserInterface> {
       pw.text = arguments[constants.password];
       nickname.text = arguments[constants.nickname];
       friends = arguments[constants.friends];
+      notifications = arguments[constants.notifications];
       index = 0;
 
       Future<Socket> future = Socket.connect(constants.server, constants.tcpPort);
       future.then((socket){
         this.socket = socket;
-        socket.forEach((packet) => print(packet));
+        socket.forEach((packet){ print(packet);});
         socket.done.then((_)=> Navigator.popUntil(context, ModalRoute.withName('/')));
       });
     }
@@ -49,7 +51,7 @@ class UserInterfaceState extends State<UserInterface> {
               decoration: InputDecoration(icon: Icon(Icons.add)),
             ),
             onPressed: () {
-
+              Navigator.pushNamed(context, "/search", arguments: "test");
             },
           ),
         ],
@@ -179,6 +181,82 @@ class UserInterfaceState extends State<UserInterface> {
         return widget;
       },
       itemCount: friends.length,
+    );
+  }
+
+  Widget showNotificationList(List notifications){
+    ListView.builder(
+      padding: EdgeInsets.all(10.0),
+      itemBuilder: (BuildContext context, int index) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(Icons.notifications_active),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(notifications[index][constants.from]),
+                        Text(notifications[index][constants.message])
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                RaisedButton(
+                  padding: EdgeInsets.all(10.0),
+                  onPressed: () {
+                    var response = {
+                      constants.type: constants.friend,
+                      constants.subtype: constants.response,
+                      constants.to: notifications[index]
+                      [constants.from],
+                      constants.accept: true,
+                      constants.version: constants.currentVersion
+                    };
+//                    state.sendMessage(json.encode(response));
+
+                    friends.add({
+                      constants.id: notifications[index][constants.from]
+                    });
+
+                    notifications.removeAt(index);
+
+//                    state.updateCurrentUI();
+                  },
+                  child: Text("接受"),
+                ),
+                RaisedButton(
+                  padding: EdgeInsets.all(10.0),
+                  onPressed: () {
+                    var response = {
+                      constants.type: constants.friend,
+                      constants.subtype: constants.response,
+                      constants.to: notifications[index]
+                      [constants.from],
+                      constants.accept: false,
+                      constants.version: constants.currentVersion
+                    };
+//                    state.sendMessage(json.encode(response));
+//                    state.offlineRequests.removeAt(index);
+//                    state.updateCurrentUI();
+                  },
+                  child: Text("拒绝"),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+      itemCount: notifications.length,
     );
   }
 }

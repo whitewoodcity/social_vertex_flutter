@@ -17,6 +17,7 @@ const String search = "search";
 const String friend = "friend";
 const String messages = "messages";
 const String friends = "friends";
+const String notifications = "notifications";
 const String user = "user";
 const String history = "history";
 const String request = "request";

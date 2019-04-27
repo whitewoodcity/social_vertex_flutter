@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'search_interface.dart';
 import 'user_interface.dart';
 import 'utils/util.dart';
 import 'system_info.dart';
@@ -22,9 +23,10 @@ class Application extends StatelessWidget {
     MaterialApp(
       initialRoute: "/",
       routes: {
-        "/": (BuildContext context) => HomePage(),
-        "/register": (BuildContext context) => RegisterPage(),
-        "/login": (BuildContext context) => UserInterface(),
+        "/": (_) => HomePage(),
+        "/register": (_) => RegisterPage(),
+        "/login": (_) => UserInterface(),
+        "/search": (_) => SearchInterface(),
       },
     );
 }
