@@ -11,7 +11,8 @@ void main() {
   test('test uuid', () {
 
     var uuid = new Uuid();
-    print(uuid.v1().toString().replaceAll("-", ""));
+
+    print(uuid.v4().toString().replaceAll("-", ""));
 
     List<String> colors = ['red', 'green', 'blue', 'orange', 'pink'];
     print(colors.sublist(0,0).length);

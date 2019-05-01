@@ -12,5 +12,5 @@ String md5(String data) {
 }
 
 String uuid(){
-  return Uuid().v1().toString().replaceAll("-", "");
+  return Uuid().v4().toString().replaceAll("-", "");
 }

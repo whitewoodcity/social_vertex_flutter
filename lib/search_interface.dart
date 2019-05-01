@@ -57,7 +57,7 @@ class SearchInterfaceState extends State<SearchInterface> {
           Expanded(child: ListView(children: itemList)),
         ],
       ),
-    );;
+    );
   }
 
   @override
