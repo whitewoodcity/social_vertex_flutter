@@ -14,7 +14,7 @@ void main() {
 
     print(uuid.v4().toString().replaceAll("-", ""));
 
-    List<String> colors = ['red', 'green', 'blue', 'orange', 'pink'];
-    print(colors.sublist(0,0).length);
+    List<String> colors = ['red', 'green', 'blue', 'orange', 'pink', ...["test"]];
+    print(colors);
   });
 }
