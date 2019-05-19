@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class SearchInterface extends StatefulWidget {
 class SearchInterfaceState extends State<SearchInterface> {
 
   TextEditingController keyword = TextEditingController();
+  var httpClient = HttpClient();
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +47,24 @@ class SearchInterfaceState extends State<SearchInterface> {
                 ),
                 Expanded(
                   child: RaisedButton(
-                    onPressed: () {
-
+                    onPressed: () async {
+                      var req = {
+                        constants.type: constants.search,
+                        constants.keyword: keyword.text.trim(),
+                        constants.version: constants.currentVersion
+                      };
+                      httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+                      var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+                      request.write(json.encode(req) + constants.end);
+                      var response = await request.close();
+                      if (response.statusCode == 200) {
+                        response.transform(utf8.decoder).listen((data) {
+                          var result = json.decode(data);
+                          print(result);
+                        });
+                      } else {
+                        this.showMessage("服务器错误!");
+                      }
                     },
                     child: Text("搜索"),
                   ),
@@ -62,6 +80,23 @@ class SearchInterfaceState extends State<SearchInterface> {
 
   @override
   void dispose() {
+    super.dispose();
+    httpClient.close(force: true);
     keyword.dispose();
+  }
+
+  void showMessage(String message) {
+    //显示系统消息
+    showDialog(
+      context: context,
+      builder: (BuildContext context) =>
+        SimpleDialog(
+//              title: Text("消息"),
+          children: <Widget>[
+            Center(
+              child: Text(message),
+            )
+          ],
+        ));
   }
 }

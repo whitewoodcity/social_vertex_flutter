@@ -38,8 +38,6 @@ class UserInterfaceState extends State<UserInterface> {
         socket.done.then((_)=> Navigator.popUntil(context, ModalRoute.withName('/')));
       });
     }
-    print(nickname.text);
-    print(index);
 
     return Scaffold(
       appBar: AppBar(
