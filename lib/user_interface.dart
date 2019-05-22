@@ -10,11 +10,11 @@ class UserInterface extends StatefulWidget {
 
 class UserInterfaceState extends State<UserInterface> {
 
-  TextEditingController id = TextEditingController();
-  TextEditingController pw = TextEditingController();
-  TextEditingController nickname = TextEditingController();
-  List friends = [];
-  List notifications = [];
+  var id = TextEditingController();
+  var pw = TextEditingController();
+  var nickname = TextEditingController();
+  var friends = [];
+  var notifications = [];
 
   int index = -1;
 
@@ -46,10 +46,10 @@ class UserInterfaceState extends State<UserInterface> {
         actions: <Widget>[
           IconButton(
             icon: InputDecorator(
-              decoration: InputDecoration(icon: Icon(Icons.add)),
+              decoration: InputDecoration(icon: Icon(Icons.search)),
             ),
             onPressed: () {
-              Navigator.pushNamed(context, "/search", arguments: "test");
+              Navigator.pushNamed(context, "/search", arguments: {constants.id:id.text.trim(),constants.password:pw.text.trim()});
             },
           ),
         ],
