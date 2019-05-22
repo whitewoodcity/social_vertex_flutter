@@ -20,16 +20,17 @@ class SearchInterfaceState extends State<SearchInterface> {
 
   @override
   Widget build(BuildContext context) {
-    final Map arguments = ModalRoute.of(context).settings.arguments;
+    final Map arguments = ModalRoute
+      .of(context)
+      .settings
+      .arguments;
     id.text = arguments[constants.id];
     pw.text = arguments[constants.password];
 
     List<Widget> itemList = [];
 
-    if(friendId!=null && friendNickname!=null){
+    if (friendId != null && friendNickname != null) {
       itemList.add(buildUserItem(context, friendId, friendNickname));
-      friendId=null;
-      friendNickname=null;
     }
 
     return Scaffold(
@@ -50,7 +51,7 @@ class SearchInterfaceState extends State<SearchInterface> {
         children: <Widget>[ //itemList
           Container(
             color: Colors.white,
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -73,13 +74,14 @@ class SearchInterfaceState extends State<SearchInterface> {
                       var response = await request.close();
                       if (response.statusCode == 200) {
                         response.transform(utf8.decoder).listen((data) {
-                          var result = json.decode(data);
+                          Map result = json.decode(data);
 //                          print(result);
-
-                          setState(() {
-                            this.friendId = result[constants.user][constants.id];
-                            this.friendNickname = result[constants.user][constants.nickname];
-                          });
+                          if (result.containsKey(constants.user)) {
+                            setState(() {
+                              this.friendId = result[constants.user][constants.id];
+                              this.friendNickname = result[constants.user][constants.nickname];
+                            });
+                          }
                         });
                       } else {
                         this.showMessage("服务器错误!");
@@ -90,8 +92,9 @@ class SearchInterfaceState extends State<SearchInterface> {
                   flex: 2,
                 )
               ],
-            )),
-          Expanded(child: ListView(children: itemList)),
+            ),
+          ),
+          ...itemList,
         ],
       ),
     );
@@ -122,58 +125,62 @@ class SearchInterfaceState extends State<SearchInterface> {
   }
 
   Widget buildUserItem(BuildContext context, String id, String nickname) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Row(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Icon(Icons.account_box),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 5.00),
-                    child: Text(
-                      "$id($nickname)",
-                      overflow: TextOverflow.ellipsis,
-                    )),
-                ],
-              ),
-            ],
-          ),
-          flex: 8,
-        ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-              icon: InputDecorator(
-                decoration: InputDecoration(icon: Icon(Icons.add)),
-              ),
-              onPressed: () {
-                var message = {
-                  constants.type: constants.friend,
-                  constants.subtype: constants.request,
-                  constants.id: this.id.text.trim(),
-                  constants.password: md5(this.pw.text.trim()),
-                  constants.to: id,
-                  constants.message: "请添加我为你的好友，我是${this.id.text.trim()}",
-                  constants.version: constants.currentVersion
-                };
-                Scaffold
-                  .of(context)
-                  .showSnackBar(SnackBar(content: Text("请求已经发送！")));
-//                state.sendMessage(json.encode(message));
-              },
+    return Container(
+//      color: Colors.white,
+      padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Icon(Icons.account_box),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(left: 5.00),
+                      child: Text(
+                        "$id($nickname)",
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                  ],
+                ),
+              ],
             ),
+            flex: 8,
           ),
-          flex: 2,
-        ),
-      ],
-    );
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: InputDecorator(
+                  decoration: InputDecoration(icon: Icon(Icons.add)),
+                ),
+                onPressed: () {
+                  var message = {
+                    constants.type: constants.friend,
+                    constants.subtype: constants.request,
+                    constants.id: this.id.text.trim(),
+                    constants.password: md5(this.pw.text.trim()),
+                    constants.to: id,
+                    constants.message: "请添加我为你的好友，我是${this.id.text.trim()}",
+                    constants.version: constants.currentVersion
+                  };
+                  Scaffold
+                    .of(context)
+                    .showSnackBar(SnackBar(content: Text("请求已经发送！")));
+//                state.sendMessage(json.encode(message));
+                },
+              ),
+            ),
+            flex: 2,
+          ),
+        ],
+      ),)
+    ;
   }
 }
 
