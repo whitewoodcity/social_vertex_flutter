@@ -178,7 +178,7 @@ class UserInterfaceState extends State<UserInterface> {
 
         return widget;
       },
-      itemCount: friends.length,
+      itemCount: friends == null ? 0 : friends.length,
     );
   }
 

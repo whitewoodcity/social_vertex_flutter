@@ -63,14 +63,15 @@ class SearchInterfaceState extends State<SearchInterface> {
                 Expanded(
                   child: RaisedButton(
                     onPressed: () async {
-                      var req = {
+                      var message = {
                         constants.type: constants.search,
                         constants.keyword: keyword.text.trim(),
                         constants.version: constants.currentVersion
                       };
                       httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
                       var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
-                      request.write(json.encode(req) + constants.end);
+                      request.headers.add("content-type", "application/json;charset=utf-8");
+                      request.write(json.encode(message));
                       var response = await request.close();
                       if (response.statusCode == 200) {
                         response.transform(utf8.decoder).listen((data) {
@@ -159,7 +160,7 @@ class SearchInterfaceState extends State<SearchInterface> {
                 icon: InputDecorator(
                   decoration: InputDecoration(icon: Icon(Icons.add)),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   var message = {
                     constants.type: constants.friend,
                     constants.subtype: constants.request,
@@ -169,10 +170,20 @@ class SearchInterfaceState extends State<SearchInterface> {
                     constants.message: "请添加我为你的好友，我是${this.id.text.trim()}",
                     constants.version: constants.currentVersion
                   };
-                  Scaffold
-                    .of(context)
-                    .showSnackBar(SnackBar(content: Text("请求已经发送！")));
-//                state.sendMessage(json.encode(message));
+                  httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+                  var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+                  request.headers.add("content-type", "application/json;charset=utf-8");
+                  request.write(json.encode(message));
+                  var response = await request.close();
+                  if (response.statusCode == 200) {
+                    this.showMessage("请求已经发送！");
+                    setState(() {
+                      this.friendId = null;
+                      this.friendNickname = null;
+                    });
+                  } else {
+                    this.showMessage("服务器错误!");
+                  }
                 },
               ),
             ),
