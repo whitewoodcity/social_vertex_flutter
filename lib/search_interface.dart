@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'config/constants.dart' as constants;
-import 'utils/util.dart';
 
 class SearchInterface extends StatefulWidget {
   @override
@@ -165,7 +164,7 @@ class SearchInterfaceState extends State<SearchInterface> {
                     constants.type: constants.friend,
                     constants.subtype: constants.request,
                     constants.id: this.id.text.trim(),
-                    constants.password: md5(this.pw.text.trim()),
+                    constants.password: this.pw.text.trim(),
                     constants.to: id,
                     constants.message: "请添加我为你的好友，我是${this.id.text.trim()}",
                     constants.version: constants.currentVersion
