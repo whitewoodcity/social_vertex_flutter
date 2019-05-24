@@ -57,6 +57,7 @@ class UserInterfaceState extends State<UserInterface> {
           }
         });
         var ctx = Navigator.of(context);
+        socket.handleError(() => ctx.popUntil(ModalRoute.withName('/')));
         socket.done.then((_) => ctx.popUntil(ModalRoute.withName('/')));
       });
     }
