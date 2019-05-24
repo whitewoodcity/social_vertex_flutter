@@ -57,7 +57,7 @@ class UserInterfaceState extends State<UserInterface> {
       drawer: Drawer(
         child: showDrawer(),
       ),
-      body: showFriendList(friends),
+      body: friendsList(friends??=[]),//showFriendList(friends),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
@@ -88,18 +88,15 @@ class UserInterfaceState extends State<UserInterface> {
     return Scaffold(
       body: ListView(
         children: <Widget>[
-          Container(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  width: 100.0,
-                  height: 100.0,
-                  child: Image.asset("assets/images/flutter.png"),
-                ),
-              ],
-            ),
-            color: Colors.blue,
-            height: 100.0,
+          Row(
+            children: <Widget>[
+              Container(
+                width: 100.0,
+                height: 100.0,
+                child: Image.asset("assets/images/flutter.png"),
+              ),
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
           Text(
             nickname.text,
@@ -119,9 +116,12 @@ class UserInterfaceState extends State<UserInterface> {
             icon: Icon(Icons.exit_to_app), title: Text("退出"))
         ],
         onTap: (value) {
-          print(value);
           if(value == 1){
             Navigator.popUntil(context, ModalRoute.withName('/'));
+          }else{
+            setState(() {
+
+            });
           }
         },
         currentIndex: 1,
@@ -129,132 +129,94 @@ class UserInterfaceState extends State<UserInterface> {
     );
   }
 
-  Widget showFriendList(List friends){
-    return ListView.builder(
-      padding: EdgeInsets.all(10.0),
-      itemBuilder: (BuildContext context, int index) {
-        String id = friends[index][constants.id];
-        var row = Row(
-          children: <Widget>[
-            Icon(Icons.account_box),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(id + "(${friends[index][constants.nickname]})"),
-                    Text("无消息")
-                  ],
-                ),
+  Column friendsList(List friends) {
+    List<Widget> list = [];
+
+    for (int i = 0; i < friends.length; i++) {
+      String id = friends[i][constants.id];
+
+      var row = Row(
+        children: <Widget>[
+          Icon(Icons.account_box),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(id + "(${friends[i][constants.nickname]})"),
+                  Text("无消息")
+                ],
               ),
             ),
-          ],
-        );
+          ),
+        ],
+      );
 
-        if (false) {//state.unreadMsgs.containsKey(id) && state.unreadMsgs[id] > 0
-          row.children.add(
-            Container(
-              padding: const EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(20.0),
-                color: Colors.red,
-              ),
-              child: Text(" ",
-                style: TextStyle(color: Colors.white, fontSize: 15.0))),
-          );
-        }
+//      Row(
+//        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//        children: <Widget>[
+//          RaisedButton(
+//            padding: EdgeInsets.all(10.0),
+//            onPressed: () {
+//              var response = {
+//                constants.type: constants.friend,
+//                constants.subtype: constants.response,
+//                constants.to: notifications[index]
+//                [constants.from],
+//                constants.accept: true,
+//                constants.version: constants.currentVersion
+//              };
+////                    state.sendMessage(json.encode(response));
+//
+//              friends.add({
+//                constants.id: notifications[index][constants.from]
+//              });
+//
+//              notifications.removeAt(index);
+//
+////                    state.updateCurrentUI();
+//            },
+//            child: Text("接受"),
+//          ),
+//          RaisedButton(
+//            padding: EdgeInsets.all(10.0),
+//            onPressed: () {
+//              var response = {
+//                constants.type: constants.friend,
+//                constants.subtype: constants.response,
+//                constants.to: notifications[index]
+//                [constants.from],
+//                constants.accept: false,
+//                constants.version: constants.currentVersion
+//              };
+////                    state.sendMessage(json.encode(response));
+////                    state.offlineRequests.removeAt(index);
+////                    state.updateCurrentUI();
+//            },
+//            child: Text("拒绝"),
+//          ),
+//        ],
+//      ),
 
-        var widget = GestureDetector(
-          onTap: () {
-//            state.friendId = state.friends[index][constants.id];
-//            state.friendNickname = state.friends[index][constants.nickname];
-////            state.updateUI(constants.dialog);
-//            initChatDialog(state);
-          },
-          child: row,
-        );
+      var container = Container(
+        padding: EdgeInsets.all(10.0),
+        child: row,
+      );
 
-        return widget;
-      },
-      itemCount: friends == null ? 0 : friends.length,
-    );
-  }
+      var gestureDetector = GestureDetector(
+        onTap: () {
+          print('test');
+        },
+        child: container,
+      );
 
-  Widget showNotificationList(List notifications){
-    ListView.builder(
-      padding: EdgeInsets.all(10.0),
-      itemBuilder: (BuildContext context, int index) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Icon(Icons.notifications_active),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(notifications[index][constants.from]),
-                        Text(notifications[index][constants.message])
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                RaisedButton(
-                  padding: EdgeInsets.all(10.0),
-                  onPressed: () {
-                    var response = {
-                      constants.type: constants.friend,
-                      constants.subtype: constants.response,
-                      constants.to: notifications[index]
-                      [constants.from],
-                      constants.accept: true,
-                      constants.version: constants.currentVersion
-                    };
-//                    state.sendMessage(json.encode(response));
+      list.add(gestureDetector);
+    }
 
-                    friends.add({
-                      constants.id: notifications[index][constants.from]
-                    });
-
-                    notifications.removeAt(index);
-
-//                    state.updateCurrentUI();
-                  },
-                  child: Text("接受"),
-                ),
-                RaisedButton(
-                  padding: EdgeInsets.all(10.0),
-                  onPressed: () {
-                    var response = {
-                      constants.type: constants.friend,
-                      constants.subtype: constants.response,
-                      constants.to: notifications[index]
-                      [constants.from],
-                      constants.accept: false,
-                      constants.version: constants.currentVersion
-                    };
-//                    state.sendMessage(json.encode(response));
-//                    state.offlineRequests.removeAt(index);
-//                    state.updateCurrentUI();
-                  },
-                  child: Text("拒绝"),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-      itemCount: notifications.length,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: list,
     );
   }
 }
