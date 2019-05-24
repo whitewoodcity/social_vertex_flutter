@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class UserInterfaceState extends State<UserInterface> {
   var nickname = TextEditingController();
   var friends = [];
   var notifications = [];
+  var message = List<int>();
 
   int index = -1;
 
@@ -37,10 +39,25 @@ class UserInterfaceState extends State<UserInterface> {
       Future<Socket> future = Socket.connect(constants.server, constants.tcpPort);
       future.then((socket) {
         this.socket = socket;
+        var msg = {
+          constants.type: constants.login,
+          constants.id: id.text.trim(),
+          constants.password: pw.text.trim(),
+          constants.version: constants.currentVersion,
+        };
+        socket.write(json.encode(msg)+constants.end);
         socket.forEach((packet) {
-          print(packet);
+          message.addAll(packet); //粘包
+          if (utf8.decode(message).endsWith(constants.end)) {
+            List<String> msgs = utf8.decode(message).trim().split(constants.end); //拆包
+            for (String msg in msgs) {
+              processMesssage(msg);
+            }
+            message.clear();
+          }
         });
-        socket.done.then((_) => Navigator.popUntil(context, ModalRoute.withName('/')));
+        var ctx = Navigator.of(context);
+        socket.done.then((_) => ctx.popUntil(ModalRoute.withName('/')));
       });
     }
 
@@ -60,17 +77,16 @@ class UserInterfaceState extends State<UserInterface> {
         ],
       ),
       drawer: Drawer(
-        child: showDrawer(),
+        child: getDrawer(),
       ),
       body: getBody(friends ??= [], notifications ??= []),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-            title: Text("消息"),
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.account_box), title: Text("好友")),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_active), title: Text("消息"),
+          ),
         ],
         onTap: (index) => setState(() => this.index = index),
         currentIndex: index,
@@ -89,7 +105,11 @@ class UserInterfaceState extends State<UserInterface> {
     }
   }
 
-  showDrawer() {
+  processMesssage(String msg){
+    print(msg);
+  }
+
+  getDrawer() {
     return Scaffold(
       body: ListView(
         children: <Widget>[
@@ -138,11 +158,11 @@ class UserInterfaceState extends State<UserInterface> {
     List<Widget> list = [];
 
     for (int i = 0; i < (index == 0 ? friends.length : notifications.length); i++) {
-      var row;
+      var widget;
       if (index == 0) {
         String id = friends[i][constants.id];
 
-        row = Row(
+        var row = Row(
           children: <Widget>[
             Icon(Icons.account_box),
             Expanded(
@@ -159,21 +179,53 @@ class UserInterfaceState extends State<UserInterface> {
             ),
           ],
         );
+
+        var container = Container(
+          padding: EdgeInsets.all(10.0),
+          child: row,
+        );
+
+        widget = GestureDetector(
+          onTap: () {
+            print('test');
+          },
+          child: container,
+        );
+
       } else {
-        row = Row(
+
+        var upperRow = Row(
+          children: <Widget>[
+            Icon(Icons.notifications_active),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(notifications[i][constants.id]),
+                    Text(notifications[i][constants.message])
+                  ],
+                ),
+              ),
+            )
+          ],
+        );
+
+        var lowerRow = Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             RaisedButton(
               padding: EdgeInsets.all(10.0),
               onPressed: () {
-                var message = {
+                var msg = {
                   constants.type: constants.friend,
                   constants.subtype: constants.response,
                   constants.to: notifications[i][constants.from],
                   constants.accept: true,
                   constants.version: constants.currentVersion
                 };
-                //todo send message to server
+                //todo send msg to server
                 setState(() {
                   notifications.removeAt(i);
                 });
@@ -183,14 +235,14 @@ class UserInterfaceState extends State<UserInterface> {
             RaisedButton(
               padding: EdgeInsets.all(10.0),
               onPressed: () {
-                var message = {
+                var msg = {
                   constants.type: constants.friend,
                   constants.subtype: constants.response,
                   constants.to: notifications[i][constants.from],
                   constants.accept: false,
                   constants.version: constants.currentVersion
                 };
-                //todo send message to server
+                //todo send msg to server
                 setState(() {
                   notifications.removeAt(i);
                 });
@@ -199,21 +251,18 @@ class UserInterfaceState extends State<UserInterface> {
             ),
           ],
         );
+
+        var col = Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[upperRow, lowerRow]);
+
+        widget = Container(
+          padding: EdgeInsets.all(10.0),
+          child: col,
+        );
       }
 
-      var container = Container(
-        padding: EdgeInsets.all(10.0),
-        child: row,
-      );
-
-      var gestureDetector = GestureDetector(
-        onTap: () {
-          print('test');
-        },
-        child: container,
-      );
-
-      list.add(gestureDetector);
+      list.add(widget);
     }
 
     return Column(
