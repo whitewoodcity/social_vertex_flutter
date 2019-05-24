@@ -22,8 +22,11 @@ class UserInterfaceState extends State<UserInterface> {
 
   @override
   Widget build(BuildContext context) {
-    if(index<0){
-      final Map arguments = ModalRoute.of(context).settings.arguments;
+    if (index < 0) {
+      final Map arguments = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
       id.text = arguments[constants.id];
       pw.text = arguments[constants.password];
       nickname.text = arguments[constants.nickname];
@@ -32,10 +35,12 @@ class UserInterfaceState extends State<UserInterface> {
       index = 0;
 
       Future<Socket> future = Socket.connect(constants.server, constants.tcpPort);
-      future.then((socket){
+      future.then((socket) {
         this.socket = socket;
-        socket.forEach((packet){ print(packet);});
-        socket.done.then((_)=> Navigator.popUntil(context, ModalRoute.withName('/')));
+        socket.forEach((packet) {
+          print(packet);
+        });
+        socket.done.then((_) => Navigator.popUntil(context, ModalRoute.withName('/')));
       });
     }
 
@@ -49,7 +54,7 @@ class UserInterfaceState extends State<UserInterface> {
               decoration: InputDecoration(icon: Icon(Icons.search)),
             ),
             onPressed: () {
-              Navigator.pushNamed(context, "/search", arguments: {constants.id:id.text.trim(),constants.password:pw.text.trim()});
+              Navigator.pushNamed(context, "/search", arguments: {constants.id: id.text.trim(), constants.password: pw.text.trim()});
             },
           ),
         ],
@@ -57,7 +62,7 @@ class UserInterfaceState extends State<UserInterface> {
       drawer: Drawer(
         child: showDrawer(),
       ),
-      body: friendsList(friends??=[]),//showFriendList(friends),
+      body: getBody(friends ??= [], notifications ??= []),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
@@ -79,7 +84,7 @@ class UserInterfaceState extends State<UserInterface> {
     id.dispose();
     pw.dispose();
     nickname.dispose();
-    if(this.socket!=null){
+    if (this.socket != null) {
       socket.destroy();
     }
   }
@@ -116,9 +121,9 @@ class UserInterfaceState extends State<UserInterface> {
             icon: Icon(Icons.exit_to_app), title: Text("退出"))
         ],
         onTap: (value) {
-          if(value == 1){
+          if (value == 1) {
             Navigator.popUntil(context, ModalRoute.withName('/'));
-          }else{
+          } else {
             setState(() {
 
             });
@@ -129,75 +134,72 @@ class UserInterfaceState extends State<UserInterface> {
     );
   }
 
-  Column friendsList(List friends) {
+  Column getBody(List friends, List notifications) {
     List<Widget> list = [];
 
-    for (int i = 0; i < friends.length; i++) {
-      String id = friends[i][constants.id];
+    for (int i = 0; i < (index == 0 ? friends.length : notifications.length); i++) {
+      var row;
+      if (index == 0) {
+        String id = friends[i][constants.id];
 
-      var row = Row(
-        children: <Widget>[
-          Icon(Icons.account_box),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(id + "(${friends[i][constants.nickname]})"),
-                  Text("无消息")
-                ],
+        row = Row(
+          children: <Widget>[
+            Icon(Icons.account_box),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(id + "(${friends[i][constants.nickname]})"),
+                    Text("无消息")
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      );
-
-//      Row(
-//        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//        children: <Widget>[
-//          RaisedButton(
-//            padding: EdgeInsets.all(10.0),
-//            onPressed: () {
-//              var response = {
-//                constants.type: constants.friend,
-//                constants.subtype: constants.response,
-//                constants.to: notifications[index]
-//                [constants.from],
-//                constants.accept: true,
-//                constants.version: constants.currentVersion
-//              };
-////                    state.sendMessage(json.encode(response));
-//
-//              friends.add({
-//                constants.id: notifications[index][constants.from]
-//              });
-//
-//              notifications.removeAt(index);
-//
-////                    state.updateCurrentUI();
-//            },
-//            child: Text("接受"),
-//          ),
-//          RaisedButton(
-//            padding: EdgeInsets.all(10.0),
-//            onPressed: () {
-//              var response = {
-//                constants.type: constants.friend,
-//                constants.subtype: constants.response,
-//                constants.to: notifications[index]
-//                [constants.from],
-//                constants.accept: false,
-//                constants.version: constants.currentVersion
-//              };
-////                    state.sendMessage(json.encode(response));
-////                    state.offlineRequests.removeAt(index);
-////                    state.updateCurrentUI();
-//            },
-//            child: Text("拒绝"),
-//          ),
-//        ],
-//      ),
+          ],
+        );
+      } else {
+        row = Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            RaisedButton(
+              padding: EdgeInsets.all(10.0),
+              onPressed: () {
+                var message = {
+                  constants.type: constants.friend,
+                  constants.subtype: constants.response,
+                  constants.to: notifications[i][constants.from],
+                  constants.accept: true,
+                  constants.version: constants.currentVersion
+                };
+                //todo send message to server
+                setState(() {
+                  notifications.removeAt(i);
+                });
+              },
+              child: Text("接受"),
+            ),
+            RaisedButton(
+              padding: EdgeInsets.all(10.0),
+              onPressed: () {
+                var message = {
+                  constants.type: constants.friend,
+                  constants.subtype: constants.response,
+                  constants.to: notifications[i][constants.from],
+                  constants.accept: false,
+                  constants.version: constants.currentVersion
+                };
+                //todo send message to server
+                setState(() {
+                  notifications.removeAt(i);
+                });
+              },
+              child: Text("拒绝"),
+            ),
+          ],
+        );
+      }
 
       var container = Container(
         padding: EdgeInsets.all(10.0),
