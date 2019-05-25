@@ -105,7 +105,7 @@ class HomePageState extends State<HomePage> {
                             if (result[constants.login]) {
                               Navigator.pushNamed(context, "/login", arguments: result);
                             } else {
-                              showMessage(result["info"]);
+                              showMessage("登录失败");
                             }
                           } else {
                             showMessage("服务器异常,请重试!");
