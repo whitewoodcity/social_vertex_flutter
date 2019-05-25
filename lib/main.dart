@@ -110,7 +110,7 @@ class HomePageState extends State<HomePage> {
                           } else {
                             showMessage("服务器异常,请重试!");
                           }
-                        });
+                        },onError: (error)=>showMessage("服务器异常,请重试!"));
                       } else {
                         showMessage("用户名/密码不能为空！");
                       }

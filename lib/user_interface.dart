@@ -21,6 +21,7 @@ class UserInterfaceState extends State<UserInterface> {
   int index = -1;
 
   Socket socket;
+  var httpClient = HttpClient();
 
   @override
   Widget build(BuildContext context) {
@@ -104,9 +105,20 @@ class UserInterfaceState extends State<UserInterface> {
     if (this.socket != null) {
       socket.destroy();
     }
+    httpClient.close(force: true);
   }
 
   processMesssage(String msg){
+    var map = json.decode(msg);
+    switch(map[constants.type]){
+      case constants.friend:
+        notifications.removeWhere((e) => e[constants.id] == map[constants.id]);
+        setState(() {
+          notifications.add(map);
+        });
+        break;
+      default:
+    }
     print(msg);
   }
 
@@ -213,41 +225,31 @@ class UserInterfaceState extends State<UserInterface> {
           ],
         );
 
+        void _pressed(bool result) async {//define a function, used below
+          var msg = {
+            constants.type: constants.friend,
+            constants.subtype: constants.response,
+            constants.to: notifications[i][constants.to],
+            constants.accept: result,
+            constants.version: constants.currentVersion
+          };
+          //todo send msg to server
+          setState(() {
+            notifications.removeAt(i);
+          });
+        }
+
         var lowerRow = Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             RaisedButton(
               padding: EdgeInsets.all(10.0),
-              onPressed: () {
-                var msg = {
-                  constants.type: constants.friend,
-                  constants.subtype: constants.response,
-                  constants.to: notifications[i][constants.from],
-                  constants.accept: true,
-                  constants.version: constants.currentVersion
-                };
-                //todo send msg to server
-                setState(() {
-                  notifications.removeAt(i);
-                });
-              },
+              onPressed: () => _pressed(true),
               child: Text("接受"),
             ),
             RaisedButton(
               padding: EdgeInsets.all(10.0),
-              onPressed: () {
-                var msg = {
-                  constants.type: constants.friend,
-                  constants.subtype: constants.response,
-                  constants.to: notifications[i][constants.from],
-                  constants.accept: false,
-                  constants.version: constants.currentVersion
-                };
-                //todo send msg to server
-                setState(() {
-                  notifications.removeAt(i);
-                });
-              },
+              onPressed: () => _pressed(false),
               child: Text("拒绝"),
             ),
           ],
