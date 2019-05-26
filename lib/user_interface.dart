@@ -109,13 +109,27 @@ class UserInterfaceState extends State<UserInterface> {
   }
 
   processMesssage(String msg){
-    var map = json.decode(msg);
+    Map map = json.decode(msg);
     switch(map[constants.type]){
       case constants.friend:
-        notifications.removeWhere((e) => e[constants.id] == map[constants.id]);
-        setState(() {
-          notifications.add(map);
-        });
+        switch(map[constants.subtype]){
+          case constants.request:
+            notifications.removeWhere((e) => e[constants.id] == map[constants.id]);
+            setState(() {
+              notifications.insert(0,map);
+            });
+            break;
+          case constants.response:
+            if(map.containsKey(constants.accept)&&map[constants.accept]){
+              setState((){
+                friends.removeWhere((e) => e[constants.id] == map[constants.id]);
+                friends.insert(0,{constants.id:map[constants.id], constants.nickname:map[constants.nickname]});
+              });
+            }else{
+              this.showMessage("${map[constants.id]}拒绝了您的好友请求");
+            }
+            break;
+        }
         break;
       default:
     }
@@ -225,18 +239,34 @@ class UserInterfaceState extends State<UserInterface> {
           ],
         );
 
-        void _pressed(bool result) async {//define a function, used below
+        void _pressed(bool accept) async {//define a function, used below
+          var id = notifications[i][constants.id];
           var msg = {
             constants.type: constants.friend,
             constants.subtype: constants.response,
-            constants.to: notifications[i][constants.to],
-            constants.accept: result,
+            constants.id: this.id.text.trim(),
+            constants.password: this.pw.text.trim(),
+            constants.nickname: this.nickname.text.trim(),
+            constants.to: id,
+            constants.accept: accept,
             constants.version: constants.currentVersion
           };
-          //todo send msg to server
-          setState(() {
-            notifications.removeAt(i);
-          });
+          httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+          var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+          request.headers.add("content-type", "application/json;charset=utf-8");
+          request.write(json.encode(msg));
+          var response = await request.close();
+          if (response.statusCode == 200) {
+            if(accept){
+              friends.removeWhere((e) => e[constants.id] == id);
+              friends.insert(0,{constants.id:id, constants.nickname:this.nickname.text.trim()});
+            }
+            setState(() {
+              notifications.removeWhere((e) => e[constants.id] == id);
+            });
+          } else {
+            this.showMessage("服务器错误!");
+          }
         }
 
         var lowerRow = Row(
@@ -272,5 +302,20 @@ class UserInterfaceState extends State<UserInterface> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: list,
     );
+  }
+
+  void showMessage(String message) {
+    //显示系统消息
+    showDialog(
+      context: context,
+      builder: (BuildContext context) =>
+        SimpleDialog(
+//              title: Text("消息"),
+          children: <Widget>[
+            Center(
+              child: Text(message),
+            )
+          ],
+        ));
   }
 }

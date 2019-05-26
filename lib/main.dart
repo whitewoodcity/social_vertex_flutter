@@ -101,7 +101,6 @@ class HomePageState extends State<HomePage> {
                           if (response.statusCode == 200) {
                             var result = json.decode(utf8.decode(response.bodyBytes));
                             result[constants.password] = md5(pw.text.trim());
-                            print(result);
                             if (result[constants.login]) {
                               Navigator.pushNamed(context, "/login", arguments: result);
                             } else {
