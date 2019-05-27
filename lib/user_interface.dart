@@ -9,6 +9,10 @@ class UserInterface extends StatefulWidget {
   UserInterfaceState createState() => UserInterfaceState();
 }
 
+enum UserRoute{
+  init, friends, notifications, dialog,
+}
+
 class UserInterfaceState extends State<UserInterface> {
 
   var id = TextEditingController();
@@ -18,14 +22,14 @@ class UserInterfaceState extends State<UserInterface> {
   var notifications = [];
   var message = List<int>();
 
-  int index = -1;
+  var userRoute = UserRoute.init;
 
   Socket socket;
   var httpClient = HttpClient();
 
   @override
   Widget build(BuildContext context) {
-    if (index < 0) {
+    if (userRoute == UserRoute.init) {
       final Map arguments = ModalRoute
         .of(context)
         .settings
@@ -35,10 +39,10 @@ class UserInterfaceState extends State<UserInterface> {
       nickname.text = arguments[constants.nickname];
       friends = arguments[constants.friends];
       notifications = arguments[constants.notifications];
-      index = 0;
+      userRoute = UserRoute.friends;
 
-      Future<Socket> future = Socket.connect(constants.server, constants.tcpPort);
-      future.then((socket) {
+      Socket.connect(constants.server, constants.tcpPort)
+        .then((socket) {
         this.socket = socket;
         var msg = {
           constants.type: constants.login,
@@ -46,7 +50,7 @@ class UserInterfaceState extends State<UserInterface> {
           constants.password: pw.text.trim(),
           constants.version: constants.currentVersion,
         };
-        socket.write(json.encode(msg)+constants.end);
+        socket.write(json.encode(msg) + constants.end);
         socket.forEach((packet) {
           message.addAll(packet); //粘包
           if (utf8.decode(message).endsWith(constants.end)) {
@@ -63,37 +67,89 @@ class UserInterfaceState extends State<UserInterface> {
       });
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("好友列表"),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
+    if(userRoute==UserRoute.dialog){
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(""),
+          centerTitle: true,
+          leading: IconButton(
             icon: InputDecorator(
-              decoration: InputDecoration(icon: Icon(Icons.search)),
+              decoration: InputDecoration(icon: Icon(Icons.arrow_back)),
             ),
-            onPressed: () {
-              Navigator.pushNamed(context, "/search", arguments: {constants.id: id.text.trim(), constants.password: pw.text.trim()});
-            },
+            onPressed: () => setState(()=>userRoute=UserRoute.friends),
           ),
-        ],
-      ),
-      drawer: Drawer(
-        child: getDrawer(),
-      ),
-      body: getBody(friends ??= [], notifications ??= []),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_box), title: Text("好友")),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active), title: Text("消息"),
-          ),
-        ],
-        onTap: (index) => setState(() => this.index = index),
-        currentIndex: index,
-      ),
-    );
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: Text(""),
+            ),
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(10.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      onChanged: (value) {
+
+                      },
+                      controller: TextEditingController(
+                        text: "",
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    child: Text("发送"),
+                    onPressed: () {
+                      var message = {
+                        constants.type: constants.message,
+                        constants.subtype: constants.text,
+
+                      };
+
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("好友列表"),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: InputDecorator(
+                decoration: InputDecoration(icon: Icon(Icons.search)),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, "/search", arguments: {constants.id: id.text.trim(), constants.password: pw.text.trim()});
+              },
+            ),
+          ],
+        ),
+        drawer: Drawer(
+          child: getDrawer(),
+        ),
+        body: getBody(friends ??= [], notifications ??= []),
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_box), title: Text("好友")),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_active), title: Text("消息"),
+            ),
+          ],
+          onTap: (index) => setState(() => userRoute = index==0?UserRoute.friends:UserRoute.notifications),
+          currentIndex: userRoute==UserRoute.friends?0:1,
+        ),
+      );
+    }
   }
 
   @override
@@ -108,24 +164,24 @@ class UserInterfaceState extends State<UserInterface> {
     httpClient.close(force: true);
   }
 
-  processMesssage(String msg){
+  processMesssage(String msg) {
     Map map = json.decode(msg);
-    switch(map[constants.type]){
+    switch (map[constants.type]) {
       case constants.friend:
-        switch(map[constants.subtype]){
+        switch (map[constants.subtype]) {
           case constants.request:
-            notifications.removeWhere((e) => e[constants.id] == map[constants.id]);
             setState(() {
-              notifications.insert(0,map);
+              notifications.removeWhere((e) => e[constants.id] == map[constants.id]);
+              notifications.insert(0, map);
             });
             break;
           case constants.response:
-            if(map.containsKey(constants.accept)&&map[constants.accept]){
-              setState((){
+            if (map.containsKey(constants.accept) && map[constants.accept]) {
+              setState(() {
                 friends.removeWhere((e) => e[constants.id] == map[constants.id]);
-                friends.insert(0,{constants.id:map[constants.id], constants.nickname:map[constants.nickname]});
+                friends.insert(0, {constants.id: map[constants.id], constants.nickname: map[constants.nickname]});
               });
-            }else{
+            } else {
               this.showMessage("${map[constants.id]}拒绝了您的好友请求");
             }
             break;
@@ -184,9 +240,9 @@ class UserInterfaceState extends State<UserInterface> {
   Column getBody(List friends, List notifications) {
     List<Widget> list = [];
 
-    for (int i = 0; i < (index == 0 ? friends.length : notifications.length); i++) {
+    for (int i = 0; i < (userRoute == UserRoute.friends ? friends.length : notifications.length); i++) {
       var widget;
-      if (index == 0) {
+      if (userRoute == UserRoute.friends) {
         String id = friends[i][constants.id];
 
         var row = Row(
@@ -214,13 +270,11 @@ class UserInterfaceState extends State<UserInterface> {
 
         widget = GestureDetector(
           onTap: () {
-            print('test');
+            setState(() => userRoute = UserRoute.dialog);
           },
           child: container,
         );
-
       } else {
-
         var upperRow = Row(
           children: <Widget>[
             Icon(Icons.notifications_active),
@@ -239,7 +293,8 @@ class UserInterfaceState extends State<UserInterface> {
           ],
         );
 
-        void _pressed(bool accept) async {//define a function, used below
+        void _pressed(bool accept) async {
+          //define a function, used below
           var id = notifications[i][constants.id];
           var msg = {
             constants.type: constants.friend,
@@ -257,9 +312,9 @@ class UserInterfaceState extends State<UserInterface> {
           request.write(json.encode(msg));
           var response = await request.close();
           if (response.statusCode == 200) {
-            if(accept){
+            if (accept) {
               friends.removeWhere((e) => e[constants.id] == id);
-              friends.insert(0,{constants.id:id, constants.nickname:this.nickname.text.trim()});
+              friends.insert(0, {constants.id: id, constants.nickname: this.nickname.text.trim()});
             }
             setState(() {
               notifications.removeWhere((e) => e[constants.id] == id);
