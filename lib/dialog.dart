@@ -121,7 +121,7 @@ Widget showChatDialog(MyHomePageState state,[String message]) {
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(10.0),
-              child: Text("${text}", textAlign: textAlign,),
+              child: Text("$text", textAlign: textAlign,),
             ),
           ),
         ],

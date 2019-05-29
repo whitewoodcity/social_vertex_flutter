@@ -99,7 +99,7 @@ Widget showUser(MyHomePageState state) {
                       constants.type: constants.friend,
                       constants.subtype: constants.response,
                       constants.to: state.offlineRequests[index]
-                          [constants.from],
+                      [constants.from],
                       constants.accept: true,
                       constants.version: constants.currentVersion
                     };
@@ -122,7 +122,7 @@ Widget showUser(MyHomePageState state) {
                       constants.type: constants.friend,
                       constants.subtype: constants.response,
                       constants.to: state.offlineRequests[index]
-                          [constants.from],
+                      [constants.from],
                       constants.accept: false,
                       constants.version: constants.currentVersion
                     };

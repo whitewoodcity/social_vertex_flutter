@@ -21,6 +21,8 @@ class UserInterfaceState extends State<UserInterface> {
   var friends = [];
   var notifications = [];
   var message = List<int>();
+  var friendId = "";
+  var friendNickname = "";
 
   var userRoute = UserRoute.init;
 
@@ -237,7 +239,7 @@ class UserInterfaceState extends State<UserInterface> {
     );
   }
 
-  Column getBody(List friends, List notifications) {
+  ListView getBody(List friends, List notifications) {
     List<Widget> list = [];
 
     for (int i = 0; i < (userRoute == UserRoute.friends ? friends.length : notifications.length); i++) {
@@ -353,9 +355,15 @@ class UserInterfaceState extends State<UserInterface> {
       list.add(widget);
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: list,
+//    var col = Column(
+//      crossAxisAlignment: CrossAxisAlignment.stretch,
+//      children: list,
+//    );
+
+    return ListView.builder(
+      padding: EdgeInsets.all(10.0),
+      itemBuilder: (BuildContext context, int index) => list[index],
+      itemCount: list.length,
     );
   }
 
