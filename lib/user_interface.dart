@@ -20,9 +20,11 @@ class UserInterfaceState extends State<UserInterface> {
   var nickname = TextEditingController();
   var friends = [];
   var notifications = [];
-  var message = List<int>();
   var friendId = "";
   var friendNickname = "";
+  var dialogTtileController = TextEditingController();
+  var scrollController = ScrollController();
+  var messages = [];
 
   var userRoute = UserRoute.init;
 
@@ -43,6 +45,17 @@ class UserInterfaceState extends State<UserInterface> {
       notifications = arguments[constants.notifications];
       userRoute = UserRoute.friends;
 
+      scrollController.addListener(
+          () {
+          double maxScroll = scrollController.position.maxScrollExtent;
+          double currentScroll = scrollController.position.pixels;
+          double delta = 100.0; // or something else..
+          if ( currentScroll - maxScroll >= delta) { // whatever you determine here
+            //todo send message history request to the server
+          }
+        }
+      );
+
       Socket.connect(constants.server, constants.tcpPort)
         .then((socket) {
         this.socket = socket;
@@ -53,6 +66,7 @@ class UserInterfaceState extends State<UserInterface> {
           constants.version: constants.currentVersion,
         };
         socket.write(json.encode(msg) + constants.end);
+        var message = List<int>();
         socket.forEach((packet) {
           message.addAll(packet); //粘包
           if (utf8.decode(message).endsWith(constants.end)) {
@@ -70,9 +84,49 @@ class UserInterfaceState extends State<UserInterface> {
     }
 
     if(userRoute==UserRoute.dialog){
+
+      ListView dialog = ListView.builder(
+        padding: EdgeInsets.all(10.0),
+        controller: scrollController,
+        itemBuilder: (BuildContext context, int index) {
+          Map item = messages[index];
+
+          var textAlign = TextAlign.start;
+          if(item[constants.from] == id.text.trim()){
+            textAlign = TextAlign.end;
+          }
+
+          var text = "";
+//      if(item[constants.date]!=null && item[constants.time]!=null){
+//        text += "${item[constants.date]} ${item[constants.time]}\n";
+//      }
+          text += "${item[constants.id]}:\n${item[constants.body]}";
+
+          var row = Row(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text("$text", textAlign: textAlign,),
+                ),
+              ),
+            ],
+          );
+
+          if(item[constants.id] == id.text.trim()){
+            row.children.add(Icon(Icons.message));
+          }else{
+            row.children.insert(0, Icon(Icons.message));
+          }
+
+          return row;
+        },
+        itemCount: messages.length,
+      );
+
       return Scaffold(
         appBar: AppBar(
-          title: Text(""),
+          title: Text("$friendId($friendNickname)"),
           centerTitle: true,
           leading: IconButton(
             icon: InputDecorator(
@@ -85,7 +139,7 @@ class UserInterfaceState extends State<UserInterface> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(
-              child: Text(""),
+              child: dialog,
             ),
             Container(
               color: Colors.white,
@@ -97,9 +151,7 @@ class UserInterfaceState extends State<UserInterface> {
                       onChanged: (value) {
 
                       },
-                      controller: TextEditingController(
-                        text: "",
-                      ),
+                      controller: dialogTtileController,
                     ),
                   ),
                   RaisedButton(
@@ -164,6 +216,8 @@ class UserInterfaceState extends State<UserInterface> {
       socket.destroy();
     }
     httpClient.close(force: true);
+    scrollController.dispose();
+    dialogTtileController.dispose();
   }
 
   processMesssage(String msg) {
@@ -246,6 +300,7 @@ class UserInterfaceState extends State<UserInterface> {
       var widget;
       if (userRoute == UserRoute.friends) {
         String id = friends[i][constants.id];
+        String nickname = friends[i][constants.nickname];
 
         var row = Row(
           children: <Widget>[
@@ -256,7 +311,7 @@ class UserInterfaceState extends State<UserInterface> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(id + "(${friends[i][constants.nickname]})"),
+                    Text(id + "($nickname})"),
                     Text("无消息")
                   ],
                 ),
@@ -272,7 +327,11 @@ class UserInterfaceState extends State<UserInterface> {
 
         widget = GestureDetector(
           onTap: () {
-            setState(() => userRoute = UserRoute.dialog);
+            setState(() {
+              userRoute = UserRoute.dialog;
+              friendId = id;
+              friendNickname = nickname;
+            });
           },
           child: container,
         );
