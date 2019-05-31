@@ -32,181 +32,6 @@ class UserInterfaceState extends State<UserInterface> {
   var httpClient = HttpClient();
 
   @override
-  Widget build(BuildContext context) {
-    if (userRoute == UserRoute.init) {
-      final Map arguments = ModalRoute
-        .of(context)
-        .settings
-        .arguments;
-      id.text = arguments[constants.id];
-      pw.text = arguments[constants.password];
-      nickname.text = arguments[constants.nickname];
-      friends = arguments[constants.friends];
-      notifications = arguments[constants.notifications];
-      userRoute = UserRoute.friends;
-
-      scrollController.addListener(
-          () {
-          double maxScroll = scrollController.position.maxScrollExtent;
-          double currentScroll = scrollController.position.pixels;
-          double delta = 100.0; // or something else..
-          if ( currentScroll - maxScroll >= delta) { // whatever you determine here
-            //todo send message history request to the server
-          }
-        }
-      );
-
-      Socket.connect(constants.server, constants.tcpPort)
-        .then((socket) {
-        this.socket = socket;
-        var msg = {
-          constants.type: constants.login,
-          constants.id: id.text.trim(),
-          constants.password: pw.text.trim(),
-          constants.version: constants.currentVersion,
-        };
-        socket.write(json.encode(msg) + constants.end);
-        var message = List<int>();
-        socket.forEach((packet) {
-          message.addAll(packet); //粘包
-          if (utf8.decode(message).endsWith(constants.end)) {
-            List<String> msgs = utf8.decode(message).trim().split(constants.end); //拆包
-            for (String msg in msgs) {
-              processMesssage(msg);
-            }
-            message.clear();
-          }
-        });
-        var ctx = Navigator.of(context);
-        socket.handleError(() => ctx.popUntil(ModalRoute.withName('/')));
-        socket.done.then((_) => ctx.popUntil(ModalRoute.withName('/')));
-      });
-    }
-
-    if(userRoute==UserRoute.dialog){
-
-      ListView dialog = ListView.builder(
-        padding: EdgeInsets.all(10.0),
-        controller: scrollController,
-        itemBuilder: (BuildContext context, int index) {
-          Map item = messages[index];
-
-          var textAlign = TextAlign.start;
-          if(item[constants.from] == id.text.trim()){
-            textAlign = TextAlign.end;
-          }
-
-          var text = "";
-//      if(item[constants.date]!=null && item[constants.time]!=null){
-//        text += "${item[constants.date]} ${item[constants.time]}\n";
-//      }
-          text += "${item[constants.id]}:\n${item[constants.body]}";
-
-          var row = Row(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text("$text", textAlign: textAlign,),
-                ),
-              ),
-            ],
-          );
-
-          if(item[constants.id] == id.text.trim()){
-            row.children.add(Icon(Icons.message));
-          }else{
-            row.children.insert(0, Icon(Icons.message));
-          }
-
-          return row;
-        },
-        itemCount: messages.length,
-      );
-
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("$friendId($friendNickname)"),
-          centerTitle: true,
-          leading: IconButton(
-            icon: InputDecorator(
-              decoration: InputDecoration(icon: Icon(Icons.arrow_back)),
-            ),
-            onPressed: () => setState(()=>userRoute=UserRoute.friends),
-          ),
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              child: dialog,
-            ),
-            Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(10.0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-
-                      },
-                      controller: dialogTtileController,
-                    ),
-                  ),
-                  RaisedButton(
-                    child: Text("发送"),
-                    onPressed: () {
-                      var message = {
-                        constants.type: constants.message,
-                        constants.subtype: constants.text,
-
-                      };
-
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    }else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("好友列表"),
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: InputDecorator(
-                decoration: InputDecoration(icon: Icon(Icons.search)),
-              ),
-              onPressed: () {
-                Navigator.pushNamed(context, "/search", arguments: {constants.id: id.text.trim(), constants.password: pw.text.trim()});
-              },
-            ),
-          ],
-        ),
-        drawer: Drawer(
-          child: getDrawer(),
-        ),
-        body: getBody(friends ??= [], notifications ??= []),
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_box), title: Text("好友")),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_active), title: Text("消息"),
-            ),
-          ],
-          onTap: (index) => setState(() => userRoute = index==0?UserRoute.friends:UserRoute.notifications),
-          currentIndex: userRoute==UserRoute.friends?0:1,
-        ),
-      );
-    }
-  }
-
-  @override
   void dispose() {
     super.dispose();
     id.dispose();
@@ -311,7 +136,7 @@ class UserInterfaceState extends State<UserInterface> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(id + "($nickname})"),
+                    Text(id + "($nickname)"),
                     Text("无消息")
                   ],
                 ),
@@ -367,7 +192,7 @@ class UserInterfaceState extends State<UserInterface> {
             constants.accept: accept,
             constants.version: constants.currentVersion
           };
-          httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+
           var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
           request.headers.add("content-type", "application/json;charset=utf-8");
           request.write(json.encode(msg));
@@ -439,5 +264,197 @@ class UserInterfaceState extends State<UserInterface> {
             )
           ],
         ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (userRoute == UserRoute.init) {
+      final Map arguments = ModalRoute
+        .of(context)
+        .settings
+        .arguments;
+      id.text = arguments[constants.id];
+      pw.text = arguments[constants.password];
+      nickname.text = arguments[constants.nickname];
+      friends = arguments[constants.friends];
+      notifications = arguments[constants.notifications];
+      userRoute = UserRoute.friends;
+
+      httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+
+      scrollController.addListener(
+          () async {
+          double maxScroll = scrollController.position.maxScrollExtent;
+          double currentScroll = scrollController.position.pixels;
+          double delta = 1.0; // or something else..
+          if ( (currentScroll - maxScroll).abs() <= delta) { // whatever you determine here
+            //todo send message history request to the server
+            var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+            request.headers.add("content-type", "application/json;charset=utf-8");
+            request.write(json.encode({constants.keyword:"test"}));
+            var response = await request.close();
+            if (response.statusCode == 200) {
+              setState(() => messages.add({constants.id:"test",constants.body:"测试一下，需完善"}));
+            } else {
+              this.showMessage("服务器错误!");
+            }
+          }
+        }
+      );
+
+      Socket.connect(constants.server, constants.tcpPort)
+        .then((socket) {
+        this.socket = socket;
+        var msg = {
+          constants.type: constants.login,
+          constants.id: id.text.trim(),
+          constants.password: pw.text.trim(),
+          constants.version: constants.currentVersion,
+        };
+        socket.write(json.encode(msg) + constants.end);
+        var message = List<int>();
+        socket.forEach((packet) {
+          message.addAll(packet); //粘包
+          if (utf8.decode(message).endsWith(constants.end)) {
+            List<String> msgs = utf8.decode(message).trim().split(constants.end); //拆包
+            for (String msg in msgs) {
+              processMesssage(msg);
+            }
+            message.clear();
+          }
+        });
+        var ctx = Navigator.of(context);
+        socket.handleError(() => ctx.popUntil(ModalRoute.withName('/')));
+        socket.done.then((_) => ctx.popUntil(ModalRoute.withName('/')));
+      });
+    }
+
+    if(userRoute==UserRoute.dialog){
+
+      ListView dialog = ListView.builder(
+        padding: EdgeInsets.all(10.0),
+        controller: scrollController,
+        itemBuilder: (BuildContext context, int index) {
+          Map item = messages[index];
+
+          var textAlign = TextAlign.start;
+          if(item[constants.from] == id.text.trim()){
+            textAlign = TextAlign.end;
+          }
+
+          var text = "";
+//      if(item[constants.date]!=null && item[constants.time]!=null){
+//        text += "${item[constants.date]} ${item[constants.time]}\n";
+//      }
+          text += "${item[constants.id]}:\n${item[constants.body]}";
+
+          var row = Row(
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text("$text", textAlign: textAlign,),
+                ),
+              ),
+            ],
+          );
+
+          if(item[constants.id] == id.text.trim()){
+            row.children.add(Icon(Icons.message));
+          }else{
+            row.children.insert(0, Icon(Icons.message));
+          }
+
+          return row;
+        },
+        itemCount: messages.length,
+      );
+
+      var scaffold =  Scaffold(
+        appBar: AppBar(
+          title: Text("$friendId($friendNickname)"),
+          centerTitle: true,
+          leading: IconButton(
+            icon: InputDecorator(
+              decoration: InputDecoration(icon: Icon(Icons.arrow_back)),
+            ),
+            onPressed: () => setState(()=>userRoute=UserRoute.friends),
+          ),
+        ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Expanded(
+              child: dialog,
+            ),
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(10.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      controller: dialogTtileController,
+                    ),
+                  ),
+                  RaisedButton(
+                    child: Text("发送"),
+                    onPressed: () async {
+
+                      if(dialogTtileController.text.isNotEmpty){
+                        var msg = {
+                          constants.id: id.text.trim(),
+                          constants.password: pw.text.trim(),
+                          constants.type: constants.message,
+                          constants.subtype: constants.text,
+                          constants.body: dialogTtileController.text,
+                        };
+                        dialogTtileController.clear();
+                        //todo send msg to the server
+                        setState(() => messages.insert(0,msg));
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+
+      return scaffold;
+    }else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("好友列表"),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: InputDecorator(
+                decoration: InputDecoration(icon: Icon(Icons.search)),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, "/search", arguments: {constants.id: id.text.trim(), constants.password: pw.text.trim()});
+              },
+            ),
+          ],
+        ),
+        drawer: Drawer(
+          child: getDrawer(),
+        ),
+        body: getBody(friends ??= [], notifications ??= []),
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_box), title: Text("好友")),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications_active), title: Text("消息"),
+            ),
+          ],
+          onTap: (index) => setState(() => userRoute = index==0?UserRoute.friends:UserRoute.notifications),
+          currentIndex: userRoute==UserRoute.friends?0:1,
+        ),
+      );
+    }
   }
 }
