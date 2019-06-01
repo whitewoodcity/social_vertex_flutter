@@ -107,8 +107,7 @@ class UserInterfaceState extends State<UserInterface> {
             align = MainAxisAlignment.end;
           }
 
-          var text = "";
-          text += "${item[constants.id]}:\n${item[constants.body]}";
+          var text = "${item[constants.id]}:\n${item[constants.body]}";
 
           var row = Row(
             mainAxisAlignment: align,
