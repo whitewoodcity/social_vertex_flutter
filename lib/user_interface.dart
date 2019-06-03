@@ -381,6 +381,7 @@ class UserInterfaceState extends State<UserInterface> {
         void _pressed(bool accept) async {
           //define a function, used below
           var id = notifications[i][constants.id];
+          var nickname = notifications[i][constants.nickname];
           var msg = {
             constants.type: constants.friend,
             constants.subtype: constants.response,
@@ -399,7 +400,7 @@ class UserInterfaceState extends State<UserInterface> {
           if (response.statusCode == 200) {
             if (accept) {
               friends.removeWhere((e) => e[constants.id] == id);
-              friends.insert(0, {constants.id: id, constants.nickname: this.nickname.text.trim()});
+              friends.insert(0, {constants.id: id, constants.nickname: nickname});
             }
             setState(() {
               notifications.removeWhere((e) => e[constants.id] == id);
