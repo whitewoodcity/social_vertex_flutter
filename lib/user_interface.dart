@@ -199,7 +199,7 @@ class UserInterfaceState extends State<UserInterface> {
                 decoration: InputDecoration(icon: Icon(Icons.search)),
               ),
               onPressed: () {
-                Navigator.pushNamed(context, "/search", arguments: {constants.id: id.text.trim(), constants.password: pw.text.trim()});
+                Navigator.pushNamed(context, "/search", arguments: {constants.id: id.text.trim(), constants.password: pw.text.trim(), constants.nickname: nickname.text.trim()});
               },
             ),
           ],

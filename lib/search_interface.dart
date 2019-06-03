@@ -13,6 +13,7 @@ class SearchInterfaceState extends State<SearchInterface> {
 
   var id = TextEditingController();
   var pw = TextEditingController();
+  var nickname = "";
   var keyword = TextEditingController();
   var httpClient = HttpClient();
   var friendId, friendNickname;
@@ -25,6 +26,7 @@ class SearchInterfaceState extends State<SearchInterface> {
       .arguments;
     id.text = arguments[constants.id];
     pw.text = arguments[constants.password];
+    nickname = arguments[constants.nickname];
 
     List<Widget> itemList = [];
 
@@ -160,11 +162,13 @@ class SearchInterfaceState extends State<SearchInterface> {
                   decoration: InputDecoration(icon: Icon(Icons.add)),
                 ),
                 onPressed: () async {
+
                   var message = {
                     constants.type: constants.friend,
                     constants.subtype: constants.request,
                     constants.id: this.id.text.trim(),
                     constants.password: this.pw.text.trim(),
+                    constants.nickname: this.nickname,
                     constants.to: id,
                     constants.message: "请添加我为你的好友，我是${this.id.text.trim()}",
                     constants.version: constants.currentVersion
