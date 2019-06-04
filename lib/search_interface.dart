@@ -20,10 +20,7 @@ class SearchInterfaceState extends State<SearchInterface> {
 
   @override
   Widget build(BuildContext context) {
-    final Map arguments = ModalRoute
-      .of(context)
-      .settings
-      .arguments;
+    final Map arguments = ModalRoute.of(context).settings.arguments;
     id.text = arguments[constants.id];
     pw.text = arguments[constants.password];
     nickname = arguments[constants.nickname];
@@ -126,7 +123,7 @@ class SearchInterfaceState extends State<SearchInterface> {
         ));
   }
 
-  Widget buildUserItem(BuildContext context, String id, String nickname) {
+  Widget buildUserItem(BuildContext context, String friendId, String friendNickname) {
     return Container(
 //      color: Colors.white,
       padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
@@ -145,7 +142,7 @@ class SearchInterfaceState extends State<SearchInterface> {
                     Padding(
                       padding: EdgeInsets.only(left: 5.00),
                       child: Text(
-                        "$id($nickname)",
+                        "$friendId($friendNickname)",
                         overflow: TextOverflow.ellipsis,
                       )),
                   ],
@@ -169,7 +166,7 @@ class SearchInterfaceState extends State<SearchInterface> {
                     constants.id: this.id.text.trim(),
                     constants.password: this.pw.text.trim(),
                     constants.nickname: this.nickname,
-                    constants.to: id,
+                    constants.to: friendId,
                     constants.message: "请添加我为你的好友，我是${this.id.text.trim()}",
                     constants.version: constants.currentVersion
                   };

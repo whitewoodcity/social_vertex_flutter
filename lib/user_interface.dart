@@ -59,7 +59,7 @@ class UserInterfaceState extends State<UserInterface> {
             request.write(json.encode({constants.keyword:"test"}));
             var response = await request.close();
             if (response.statusCode == 200) {
-              setState(() => messages.add({constants.id:"test",constants.body:"测试一下，需完善"}));
+//              setState(() => messages.add({constants.id:"test",constants.body:"测试一下，需完善"}));
             } else {
               this.showMessage("服务器错误!");
             }
@@ -99,6 +99,7 @@ class UserInterfaceState extends State<UserInterface> {
       ListView dialog = ListView.builder(
         padding: EdgeInsets.all(10.0),
         controller: scrollController,
+        reverse: true,
         itemBuilder: (BuildContext context, int index) {
           Map item = messages[index];
 
@@ -176,6 +177,8 @@ class UserInterfaceState extends State<UserInterface> {
                         var response = await request.close();
                         if (response.statusCode == 200) {
                           setState(() => messages.insert(0,msg));
+//                          if(scrollController.position.maxScrollExtent>0)
+                            scrollController.position.jumpTo(0);
                         } else {
                           this.showMessage("网络错误!");
                         }
@@ -263,8 +266,12 @@ class UserInterfaceState extends State<UserInterface> {
         }
         break;
       case constants.message:
-        if(currentRoute == UserRoute.dialog && friendId == map[constants.id])
-          setState(()=> messages.insert(0,map));
+        if(currentRoute == UserRoute.dialog && friendId == map[constants.id]) {
+          setState(() => messages.insert(0,map));
+//          if(scrollController.position.maxScrollExtent>0){
+            scrollController.position.jumpTo(0);//scrollController.position.maxScrollExtent+50
+//          }
+        }
         break;
       default:
         break;
@@ -350,12 +357,38 @@ class UserInterfaceState extends State<UserInterface> {
         );
 
         widget = GestureDetector(
-          onTap: () {
+          onTap: () async {
             setState(() {
+              messages.clear();
               currentRoute = UserRoute.dialog;
               friendId = id;
               friendNickname = nickname;
             });
+
+            var msg = {
+              constants.type: constants.message,
+              constants.subtype: constants.history,
+              constants.id: this.id.text.trim(),
+              constants.password: this.pw.text.trim(),
+              constants.friend: id,
+              constants.version: constants.currentVersion
+            };
+
+            var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+            request.headers.add("content-type", "application/json;charset=utf-8");
+            request.write(json.encode(msg));
+            var response = await request.close();
+            if (response.statusCode == 200) {
+              var string = await response.transform(utf8.decoder).join();
+              var result = json.decode(string);
+
+              if(currentRoute == UserRoute.dialog){
+                setState(() => messages.addAll((result[constants.history] as List).reversed));
+                scrollController.position.animateTo(0, duration: Duration(seconds: 3), curve: Curves.decelerate);
+              }
+            } else {
+              this.showMessage("服务器错误!");
+            }
           },
           child: container,
         );
