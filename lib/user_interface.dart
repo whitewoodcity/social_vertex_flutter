@@ -25,6 +25,7 @@ class UserInterfaceState extends State<UserInterface> {
   var dialogTtileController = TextEditingController();
   var scrollController = ScrollController();
   var messages = [];
+  var messageDate = "";
 
   var currentRoute = UserRoute.init;
 
@@ -47,25 +48,46 @@ class UserInterfaceState extends State<UserInterface> {
 
       httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
 
-      scrollController.addListener(
-          () async {
-          double maxScroll = scrollController.position.maxScrollExtent;
-          double currentScroll = scrollController.position.pixels;
-          double delta = 1.0; // or something else..
-          if ( (currentScroll - maxScroll).abs() <= delta) { // whatever you determine here
-            //todo send message history request to the server
+      var loading = false;
+      scrollController.addListener(() async {
+        if(loading) return;
+        double maxScroll = scrollController.position.maxScrollExtent;
+        double currentScroll = scrollController.position.pixels;
+        double delta = 1.0; // or something else..
+        if ( (currentScroll - maxScroll).abs() <= delta) { // whatever you determine here
+          loading = true;
+          var msg = {
+            constants.type: constants.message,
+            constants.subtype: constants.history,
+            constants.id: this.id.text.trim(),
+            constants.password: this.pw.text.trim(),
+            constants.friend: friendId,
+            constants.date: messageDate,
+            constants.version: constants.currentVersion
+          };
+
+          try {
             var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
             request.headers.add("content-type", "application/json;charset=utf-8");
-            request.write(json.encode({constants.keyword:"test"}));
+            request.write(json.encode(msg));
             var response = await request.close();
             if (response.statusCode == 200) {
-//              setState(() => messages.add({constants.id:"test",constants.body:"测试一下，需完善"}));
+              var string = await response.transform(utf8.decoder).join();
+              var result = json.decode(string);
+              if (currentRoute == UserRoute.dialog && result[constants.friend] == friendId) {
+                setState(() => messages.addAll((result[constants.history] as List).reversed));
+                messageDate = result[constants.date];
+              }
             } else {
               this.showMessage("服务器错误!");
             }
+          }catch(e){
+            this.showMessage("网络错误!");
           }
+
+          loading = false;
         }
-      );
+      });
 
       Socket.connect(constants.server, constants.tcpPort)
         .then((socket) {
@@ -177,8 +199,7 @@ class UserInterfaceState extends State<UserInterface> {
                         var response = await request.close();
                         if (response.statusCode == 200) {
                           setState(() => messages.insert(0,msg));
-//                          if(scrollController.position.maxScrollExtent>0)
-                            scrollController.position.jumpTo(0);
+                          scrollController.position.jumpTo(0);
                         } else {
                           this.showMessage("网络错误!");
                         }
@@ -268,15 +289,12 @@ class UserInterfaceState extends State<UserInterface> {
       case constants.message:
         if(currentRoute == UserRoute.dialog && friendId == map[constants.id]) {
           setState(() => messages.insert(0,map));
-//          if(scrollController.position.maxScrollExtent>0){
-            scrollController.position.jumpTo(0);//scrollController.position.maxScrollExtent+50
-//          }
+          scrollController.position.jumpTo(0);
         }
         break;
       default:
         break;
     }
-    print(msg);
   }
 
   getDrawer() {
@@ -330,8 +348,8 @@ class UserInterfaceState extends State<UserInterface> {
     for (int i = 0; i < (currentRoute == UserRoute.friends ? friends.length : notifications.length); i++) {
       var widget;
       if (currentRoute == UserRoute.friends) {
-        String id = friends[i][constants.id];
-        String nickname = friends[i][constants.nickname];
+        String fid = friends[i][constants.id];
+        String fnickname = friends[i][constants.nickname];
 
         var row = Row(
           children: <Widget>[
@@ -342,7 +360,7 @@ class UserInterfaceState extends State<UserInterface> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(id + "($nickname)"),
+                    Text(fid + "($fnickname)"),
                     Text("无消息")
                   ],
                 ),
@@ -361,8 +379,9 @@ class UserInterfaceState extends State<UserInterface> {
             setState(() {
               messages.clear();
               currentRoute = UserRoute.dialog;
-              friendId = id;
-              friendNickname = nickname;
+              friendId = fid;
+              friendNickname = fnickname;
+              messageDate = "";
             });
 
             var msg = {
@@ -370,7 +389,7 @@ class UserInterfaceState extends State<UserInterface> {
               constants.subtype: constants.history,
               constants.id: this.id.text.trim(),
               constants.password: this.pw.text.trim(),
-              constants.friend: id,
+              constants.friend: fid,
               constants.version: constants.currentVersion
             };
 
@@ -381,10 +400,10 @@ class UserInterfaceState extends State<UserInterface> {
             if (response.statusCode == 200) {
               var string = await response.transform(utf8.decoder).join();
               var result = json.decode(string);
-
-              if(currentRoute == UserRoute.dialog){
+              if(currentRoute == UserRoute.dialog && result[constants.friend] == friendId){
                 setState(() => messages.addAll((result[constants.history] as List).reversed));
                 scrollController.position.animateTo(0, duration: Duration(seconds: 3), curve: Curves.decelerate);
+                messageDate = result[constants.date];
               }
             } else {
               this.showMessage("服务器错误!");
