@@ -67,7 +67,7 @@ class UserInterfaceState extends State<UserInterface> {
           };
 
           try {
-            var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+            var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/"));
             request.headers.add("content-type", "application/json;charset=utf-8");
             request.write(json.encode(msg));
             var response = await request.close();
@@ -393,7 +393,7 @@ class UserInterfaceState extends State<UserInterface> {
               constants.version: constants.currentVersion
             };
 
-            var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+            var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/"));
             request.headers.add("content-type", "application/json;charset=utf-8");
             request.write(json.encode(msg));
             var response = await request.close();
@@ -445,7 +445,7 @@ class UserInterfaceState extends State<UserInterface> {
             constants.version: constants.currentVersion
           };
 
-          var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+          var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/"));
           request.headers.add("content-type", "application/json;charset=utf-8");
           request.write(json.encode(msg));
           var response = await request.close();

@@ -67,7 +67,7 @@ class SearchInterfaceState extends State<SearchInterface> {
                         constants.version: constants.currentVersion
                       };
                       httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-                      var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+                      var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/"));
                       request.headers.add("content-type", "application/json;charset=utf-8");
                       request.write(json.encode(message));
                       var response = await request.close();
@@ -171,7 +171,7 @@ class SearchInterfaceState extends State<SearchInterface> {
                     constants.version: constants.currentVersion
                   };
                   httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-                  var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/${constants.search}"));
+                  var request = await httpClient.putUrl(Uri.parse("${constants.protocol}${constants.server}/"));
                   request.headers.add("content-type", "application/json;charset=utf-8");
                   request.write(json.encode(message));
                   var response = await request.close();
