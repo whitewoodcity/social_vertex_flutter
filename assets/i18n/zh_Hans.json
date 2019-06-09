@@ -1,7 +1,10 @@
 {
-  "language" :"zh_Hans",
-  "login"    :"登录",
-  "username" :"用户名",
-  "password" :"密码",
-  "register" :"注册"
+  "language"    :"zh_Hans",
+  "login"       :"登录",
+  "username"    :"用户名",
+  "password"    :"密码",
+  "register"    :"注册",
+  "login_fail"  :"登录失败",
+  "server_error":"系统错误，请稍后再试",
+  "user_pw_null":"请输入用户名和密码"
 }

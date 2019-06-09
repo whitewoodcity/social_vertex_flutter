@@ -82,7 +82,7 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
       key: Key(constants.login),
       appBar: AppBar(
-        title: Text(uiVariables[constants.login]),
+        title: Text(uiVariables["login"]),
       ),
       body: Center(
         child: ListView(
@@ -108,14 +108,14 @@ class HomePageState extends State<HomePage> {
                     textAlign: TextAlign.start,
 //                  onChanged: (value) => (state.id = value),
                     controller: id,
-                    decoration: InputDecoration(labelText: uiVariables[constants.username]),
+                    decoration: InputDecoration(labelText: uiVariables["username"]),
                   ),
                   TextFormField(
                     textAlign: TextAlign.start,
 //                  onChanged: (value) => (state.password = value),
                     controller: pw,
                     obscureText: true,
-                    decoration: InputDecoration(labelText: uiVariables[constants.password]),
+                    decoration: InputDecoration(labelText: uiVariables["password"]),
                   ),
                   SizedBox.fromSize(
                     size: Size(0.00, 10.0),
@@ -138,20 +138,20 @@ class HomePageState extends State<HomePage> {
                             if (result[constants.login]) {
                               Navigator.pushNamed(context, "/login", arguments: result);
                             } else {
-                              showMessage("登录失败");
+                              showMessage(uiVariables["login_fail"]);
                             }
                           } else {
-                            showMessage("服务器异常,请重试!");
+                            showMessage(uiVariables["system_error"]);
                           }
-                        }, onError: (error) => showMessage("服务器异常,请重试!"));
+                        }, onError: (error) => showMessage(uiVariables["system_error"]));
                       } else {
-                        showMessage("用户名/密码不能为空！");
+                        showMessage(uiVariables["user_pw_null"]);
                       }
                     },
-                    child: Text(uiVariables[constants.login]),
+                    child: Text(uiVariables["login"]),
                   ),
                   DropdownButton(
-                    value: uiVariables[constants.language],
+                    value: uiVariables["language"],
                     items: languageList,
                     onChanged: (language) =>
                       rootBundle.loadString("assets/i18n/$language.json")
@@ -177,7 +177,7 @@ class HomePageState extends State<HomePage> {
                 pw.text = map[constants.password];
             }
           })),
-          child: Text(uiVariables[constants.register]),
+          child: Text(uiVariables["register"]),
         ),
       ),
     );
