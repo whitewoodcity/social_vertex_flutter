@@ -53,9 +53,7 @@ class SearchInterfaceState extends State<SearchInterface> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: TextField(
-                    controller: keyword,
-                  ),
+                  child: TextField(controller: keyword),
                   flex: 8,
                 ),
                 Expanded(

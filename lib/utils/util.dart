@@ -14,3 +14,12 @@ String md5(String data) {
 String uuid(){
   return Uuid().v4().toString().replaceAll("-", "");
 }
+
+String convertToCountryCode(String description){
+  switch(description){
+    case "简体中文":
+      return "zh_Hans";
+    default:
+      return "en";
+  }
+}

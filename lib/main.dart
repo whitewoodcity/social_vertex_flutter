@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
+import 'config/ui_variables.dart';
 import 'search_interface.dart';
 import 'user_interface.dart';
 import 'utils/util.dart';
 
 import 'register.dart';
 import 'config/constants.dart' as constants;
+import 'dart:ui' as ui;
+import 'package:flutter/services.dart' show rootBundle;
 
 void main() => runApp(Application()); //整个应用的入口
 
@@ -36,14 +39,50 @@ class HomePageState extends State<HomePage> {
   TextEditingController id = TextEditingController();
   TextEditingController pw = TextEditingController();
 
+  void initState() {
+    super.initState();
+    Locale locale = ui.window.locale == null ? ui.window.locale:Locale.fromSubtags();
+    loadSystemUIVariables(locale);
+  }
+
+  void loadSystemUIVariables(Locale locale) {
+    if(locale == null) return;
+    rootBundle.loadString("assets/i18n/$locale.json")
+      .then((string) => setState(() => uiVariables = json.decode(string)))
+      .catchError((error) {
+      var scriptCode = locale.scriptCode == null ? "" : "_${locale.scriptCode}";
+      rootBundle.loadString("assets/i18n/${locale.languageCode}$scriptCode.json")
+        .then((string) => setState(() => uiVariables = json.decode(string)))
+        .catchError((error) =>
+        rootBundle.loadString("assets/i18n/${locale.languageCode}.json")
+          .then((string) => setState(() => uiVariables = json.decode(string)))
+          .catchError((e) {})
+      );
+    }
+    );
+  }
+
+  void loadUIVariablesByString(String param) {
+    rootBundle.loadString("assets/i18n/$param.json")
+      .then((string) => setState(() => uiVariables = json.decode(string)));
+  }
+
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+    List<DropdownMenuItem<String>> languageList = [];
+    for (int i = 0; i < languageValues.length; i++) {
+      languageList.add(DropdownMenuItem(
+        value: languageValues[i],
+        child: Text(languageDescriptions[i])
+      ));
+    }
+
     return Scaffold(
       key: Key(constants.login),
       appBar: AppBar(
-        title: Text("登录"),
+        title: Text(uiVariables[constants.login]),
       ),
       body: Center(
         child: ListView(
@@ -69,14 +108,14 @@ class HomePageState extends State<HomePage> {
                     textAlign: TextAlign.start,
 //                  onChanged: (value) => (state.id = value),
                     controller: id,
-                    decoration: InputDecoration(labelText: "用户名："),
+                    decoration: InputDecoration(labelText: uiVariables[constants.username]),
                   ),
                   TextFormField(
                     textAlign: TextAlign.start,
 //                  onChanged: (value) => (state.password = value),
                     controller: pw,
                     obscureText: true,
-                    decoration: InputDecoration(labelText: "密码："),
+                    decoration: InputDecoration(labelText: uiVariables[constants.password]),
                   ),
                   SizedBox.fromSize(
                     size: Size(0.00, 10.0),
@@ -104,32 +143,42 @@ class HomePageState extends State<HomePage> {
                           } else {
                             showMessage("服务器异常,请重试!");
                           }
-                        },onError: (error)=>showMessage("服务器异常,请重试!"));
+                        }, onError: (error) => showMessage("服务器异常,请重试!"));
                       } else {
                         showMessage("用户名/密码不能为空！");
                       }
                     },
-                    child: Text("登录"),
-                  )
+                    child: Text(uiVariables[constants.login]),
+                  ),
+                  DropdownButton(
+                    value: uiVariables[constants.language],
+                    items: languageList,
+                    onChanged: (language) =>
+                      rootBundle.loadString("assets/i18n/$language.json")
+                        .then((string) => setState(() => uiVariables = json.decode(string)))),
                 ],
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-        (Navigator.pushNamed(context, "/register")
-          .then((value) {
-          if (value is Map) {
-            Map map = value as Map<String, String>;
-            if (map.containsKey(constants.id))
-              id.text = map[constants.id];
-            if (map.containsKey(constants.password))
-              pw.text = map[constants.password];
-          }
-        })),
-        child: Text("注册"),
+      floatingActionButton: SizedBox(
+        width: 75.0,
+        height: 75.0,
+        child: FloatingActionButton(
+          onPressed: () =>
+          (Navigator.pushNamed(context, "/register")
+            .then((value) {
+            if (value is Map) {
+              Map map = value as Map<String, String>;
+              if (map.containsKey(constants.id))
+                id.text = map[constants.id];
+              if (map.containsKey(constants.password))
+                pw.text = map[constants.password];
+            }
+          })),
+          child: Text(uiVariables[constants.register]),
+        ),
       ),
     );
   }
@@ -142,12 +191,10 @@ class HomePageState extends State<HomePage> {
   }
 
   void showMessage(String message) {
-    //显示系统消息
     showDialog(
       context: context,
       builder: (BuildContext context) =>
         SimpleDialog(
-//              title: Text("消息"),
           children: <Widget>[
             Center(
               child: Text(message),

@@ -6,6 +6,8 @@ const String server = "polyglot.net.cn";
 const int tcpPort = 7373;
 final ThemeData applicationTheme = ThemeData.light();
 
+const language = "language";
+
 const int loginPage = 0;
 const int userPage = 1;
 const int messagePage = 2;
@@ -24,6 +26,7 @@ const String request = "request";
 const String response = "response";
 const String delete = "delete";
 const String login = "login";
+const String username = "username";
 const String register = "register";
 const String type = "type";
 const String subtype = "subtype";
