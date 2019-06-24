@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'config/ui_variables.dart';
+import 'package:social_vertex_flutter/config/ui_variables.dart';
+
 import 'config/constants.dart' as constants;
 
 class SearchInterface extends StatefulWidget {
@@ -33,7 +36,7 @@ class SearchInterfaceState extends State<SearchInterface> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("搜索"),
+        title: Text(uiVariables["search"]),
         centerTitle: true,
         leading: IconButton(
           icon: InputDecorator(
@@ -81,10 +84,10 @@ class SearchInterfaceState extends State<SearchInterface> {
                           }
                         });
                       } else {
-                        this.showMessage("服务器错误!");
+                        this.showMessage(uiVariables["system_error"]);
                       }
                     },
-                    child: Text("搜索"),
+                    child: Text(uiVariables["search"]),
                   ),
                   flex: 2,
                 )
@@ -165,7 +168,7 @@ class SearchInterfaceState extends State<SearchInterface> {
                     constants.password: this.pw.text.trim(),
                     constants.nickname: this.nickname,
                     constants.to: friendId,
-                    constants.message: "请添加我为你的好友，我是${this.id.text.trim()}",
+                    constants.message: "${uiVariables['friend_add']} ${this.id.text.trim()}",
                     constants.version: constants.currentVersion
                   };
                   httpClient.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
@@ -174,13 +177,13 @@ class SearchInterfaceState extends State<SearchInterface> {
                   request.write(json.encode(message));
                   var response = await request.close();
                   if (response.statusCode == 200) {
-                    this.showMessage("请求已经发送！");
+                    this.showMessage(uiVariables["sent"]);
                     setState(() {
                       this.friendId = null;
                       this.friendNickname = null;
                     });
                   } else {
-                    this.showMessage("服务器错误!");
+                    this.showMessage(uiVariables["system_error"]);
                   }
                 },
               ),

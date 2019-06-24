@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:social_vertex_flutter/config/ui_variables.dart';
 import 'config/constants.dart' as constants;
 
 class UserInterface extends StatefulWidget {
@@ -79,10 +80,10 @@ class UserInterfaceState extends State<UserInterface> {
                 messageDate = result[constants.date];
               }
             } else {
-              this.showMessage("服务器错误!");
+              this.showMessage(uiVariables['system_error']);
             }
           }catch(e){
-            this.showMessage("网络错误!");
+            this.showMessage(uiVariables['network_error']);
           }
 
           loading = false;
@@ -181,7 +182,7 @@ class UserInterfaceState extends State<UserInterface> {
                     ),
                   ),
                   RaisedButton(
-                    child: Text("发送"),
+                    child: Text(uiVariables['send']),
                     onPressed: () async {
                       if(dialogTtileController.text.isNotEmpty){
                         var msg = {
@@ -201,7 +202,7 @@ class UserInterfaceState extends State<UserInterface> {
                           setState(() => messages.insert(0,msg));
                           scrollController.position.jumpTo(0);
                         } else {
-                          this.showMessage("网络错误!");
+                          this.showMessage(uiVariables['network_error']);
                         }
                       }
                     },
@@ -215,7 +216,7 @@ class UserInterfaceState extends State<UserInterface> {
     }else {
       return Scaffold(
         appBar: AppBar(
-          title: Text("好友列表"),
+          title: Text(uiVariables['friends']),
           centerTitle: true,
           actions: <Widget>[
             IconButton(
@@ -235,9 +236,9 @@ class UserInterfaceState extends State<UserInterface> {
         bottomNavigationBar: BottomNavigationBar(
           items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.account_box), title: Text("好友")),
+              icon: Icon(Icons.account_box), title: Text(uiVariables['friends'])),
             BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_active), title: Text("消息"),
+              icon: Icon(Icons.notifications_active), title: Text(uiVariables['msg']),
             ),
           ],
           onTap: (index) => setState(() => currentRoute = index==0?UserRoute.friends:UserRoute.notifications),
@@ -279,7 +280,7 @@ class UserInterfaceState extends State<UserInterface> {
                 friends.insert(0, {constants.id: map[constants.id], constants.nickname: map[constants.nickname]});
               });
             } else {
-              this.showMessage("${map[constants.id]}拒绝了您的好友请求");
+              this.showMessage("${map[constants.id]}${uiVariables['friend_add_refuse']}");
             }
             break;
           default:
@@ -324,9 +325,9 @@ class UserInterfaceState extends State<UserInterface> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.cloud_upload), title: Text("更新")),
+            icon: Icon(Icons.cloud_upload), title: Text(uiVariables['update'])),
           BottomNavigationBarItem(
-            icon: Icon(Icons.exit_to_app), title: Text("退出"))
+            icon: Icon(Icons.exit_to_app), title: Text(uiVariables['quit']))
         ],
         onTap: (value) {
           if (value == 1) {
@@ -361,7 +362,7 @@ class UserInterfaceState extends State<UserInterface> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(fid + "($fnickname)"),
-                    Text("无消息")
+                    Text(uiVariables['no_msg'])
                   ],
                 ),
               ),
@@ -406,7 +407,7 @@ class UserInterfaceState extends State<UserInterface> {
                 messageDate = result[constants.date];
               }
             } else {
-              this.showMessage("服务器错误!");
+              this.showMessage(uiVariables['system_error']);
             }
           },
           child: container,
@@ -458,7 +459,7 @@ class UserInterfaceState extends State<UserInterface> {
               notifications.removeWhere((e) => e[constants.id] == id);
             });
           } else {
-            this.showMessage("服务器错误!");
+            this.showMessage(uiVariables['system_error']);
           }
         }
 
@@ -468,12 +469,12 @@ class UserInterfaceState extends State<UserInterface> {
             RaisedButton(
               padding: EdgeInsets.all(10.0),
               onPressed: () => _pressed(true),
-              child: Text("接受"),
+              child: Text(uiVariables['accept']),
             ),
             RaisedButton(
               padding: EdgeInsets.all(10.0),
               onPressed: () => _pressed(false),
-              child: Text("拒绝"),
+              child: Text(uiVariables['refuse']),
             ),
           ],
         );
