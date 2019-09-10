@@ -41,12 +41,12 @@ class HomePageState extends State<HomePage> {
 
   void initState() {
     super.initState();
-    Locale locale = ui.window.locale == null ? ui.window.locale:Locale.fromSubtags();
+    Locale locale = ui.window.locale == null ? ui.window.locale : Locale.fromSubtags();
     loadSystemUIVariables(locale);
   }
 
   void loadSystemUIVariables(Locale locale) {
-    if(locale == null) return;
+    if (locale == null) return;
     rootBundle.loadString("assets/i18n/$locale.json")
       .then((string) => setState(() => uiVariables = json.decode(string)))
       .catchError((error) {
@@ -58,8 +58,7 @@ class HomePageState extends State<HomePage> {
           .then((string) => setState(() => uiVariables = json.decode(string)))
           .catchError((e) {})
       );
-    }
-    );
+    });
   }
 
   void loadUIVariablesByString(String param) {
