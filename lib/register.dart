@@ -76,8 +76,8 @@ class RegisterState extends State<RegisterPage> {
       constants.type: constants.user,
       constants.subtype: constants.register,
       constants.id: "$_userName",
-      constants.password: "${util.md5(_password)}",
-      constants.password2: "${util.md5(_repassword)}",
+      constants.password: "${util.md5(_userName+_password)}",
+      constants.password2: "${util.md5(_userName+_repassword)}",
       constants.nickname: "$_nickname",
       constants.version: constants.currentVersion
     };
@@ -93,7 +93,7 @@ class RegisterState extends State<RegisterPage> {
             constants.password: _password
           }, arguments: {
             constants.id: _userName,
-            constants.password: util.md5(_password),
+            constants.password: util.md5(_userName+_password),
             constants.nickname: _nickname
           });
         } else {
