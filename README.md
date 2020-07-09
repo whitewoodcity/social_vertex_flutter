@@ -1,6 +1,6 @@
 # Social Vertex Flutter
 
-A new Flutter client application of Social Vertex.
+A new Flutter client application for Social Vertex.
 
 ## Getting Started
 
