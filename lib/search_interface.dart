@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'config/ui_variables.dart';
-import 'package:social_vertex_flutter/config/ui_variables.dart';
 
 import 'config/constants.dart' as constants;
 
